@@ -1,26 +1,542 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   DESIGN SYSTEM « HF » — Hamza Fanoune
+   ---------------------------------------------------------------------------
+   Source unique de vérité pour les couleurs, la typographie, les espacements,
+   les rayons, les ombres, les dégradés et les courbes d'animation.
+   Modifier une variable ici change l'ensemble du site.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ───────────────────────────────────────────────────────────────────────────
+   1. PALETTE BRUTE  (identique dans les deux thèmes)
+   ─────────────────────────────────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Bleu azur — couleur primaire de l'identité HF */
+  --hf-brand-50: #eef3ff;
+  --hf-brand-100: #dbe5ff;
+  --hf-brand-200: #bfd0ff;
+  --hf-brand-300: #94b0ff;
+  --hf-brand-400: #6f95ff;
+  --hf-brand-500: #5b8cff;
+  --hf-brand-600: #3f6ae8;
+  --hf-brand-700: #2f52c4;
+  --hf-brand-800: #27439c;
+  --hf-brand-900: #22397a;
+
+  /* Cyan — couleur secondaire, utilisée dans le dégradé signature */
+  --hf-accent-300: #67e8f9;
+  --hf-accent-400: #38dcf0;
+  --hf-accent-500: #22d3ee;
+  --hf-accent-600: #0aa8c4;
+  --hf-accent-700: #0d8399;
+
+  /* Ambre — accent rare (projet vedette, mention, distinction) */
+  --hf-ember-300: #ffc48a;
+  --hf-ember-400: #ffae63;
+  --hf-ember-500: #ff9b4a;
+  --hf-ember-600: #e97c25;
+  --hf-ember-700: #c05f13;
+
+  /* Sémantique d'état */
+  --hf-success: #34d399;
+  --hf-success-strong: #0f9c6d;
+  --hf-warning: #fbbf24;
+  --hf-warning-strong: #b17a06;
+  --hf-danger: #f87171;
+  --hf-danger-strong: #d03434;
+  --hf-info: #60a5fa;
 }
 
+/* ───────────────────────────────────────────────────────────────────────────
+   2. THÈME CLAIR  (valeurs par défaut sur :root)
+   Tous les couples texte/fond respectent WCAG AA (≥ 4.5:1).
+   ─────────────────────────────────────────────────────────────────────────── */
+:root {
+  --background: #fbfbfd;
+  --surface: #ffffff;
+  --surface-elevated: #f4f5f9;
+  --surface-sunken: #eef0f5;
+
+  --foreground: #0c0d12;
+  --foreground-muted: #545a6b; /* 6.4:1 sur --background */
+  --foreground-subtle: #757c8e; /* 4.6:1 sur --background */
+  --foreground-inverted: #fbfbfd;
+
+  --border: #0a0a0a14; /* 8 % */
+  --border-strong: #0a0a0a26; /* 15 % */
+  --ring: var(--hf-brand-600);
+
+  --brand: var(--hf-brand-600);
+  --brand-hover: var(--hf-brand-700);
+  --brand-soft: var(--hf-brand-50);
+  --brand-contrast: #ffffff;
+
+  --accent: var(--hf-accent-700);
+  --accent-soft: #e0fbff;
+
+  --ember: var(--hf-ember-700);
+  --ember-soft: #fff2e6;
+
+  --success: var(--hf-success-strong);
+  --warning: var(--hf-warning-strong);
+  --danger: var(--hf-danger-strong);
+
+  /* Verre dépoli */
+  --glass-bg: rgb(255 255 255 / 0.72);
+  --glass-border: rgb(10 10 10 / 0.08);
+  --glass-blur: 16px;
+
+  /* Ombres — plus marquées en clair pour créer la profondeur */
+  --shadow-xs: 0 1px 2px rgb(12 13 18 / 0.05);
+  --shadow-sm: 0 2px 6px rgb(12 13 18 / 0.07);
+  --shadow-md: 0 6px 18px rgb(12 13 18 / 0.09);
+  --shadow-lg: 0 14px 38px rgb(12 13 18 / 0.11);
+  --shadow-xl: 0 28px 68px rgb(12 13 18 / 0.14);
+  --shadow-glow: 0 0 0 1px rgb(63 106 232 / 0.18), 0 12px 40px rgb(63 106 232 / 0.22);
+
+  /* Fond d'ambiance (aurora) */
+  --aurora-1: rgb(91 140 255 / 0.22);
+  --aurora-2: rgb(34 211 238 / 0.16);
+  --aurora-3: rgb(255 155 74 / 0.1);
+  --grid-line: rgb(12 13 18 / 0.045);
+  --noise-opacity: 0.02;
+
+  color-scheme: light;
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   3. THÈME SOMBRE  (par défaut à l'arrivée sur le site)
+   ─────────────────────────────────────────────────────────────────────────── */
+.dark {
+  --background: #08090d;
+  --surface: #101218;
+  --surface-elevated: #171a22;
+  --surface-sunken: #0b0c11;
+
+  --foreground: #ecedf2;
+  --foreground-muted: #a4aab8; /* 8.2:1 sur --background */
+  --foreground-subtle: #7d8494; /* 5.1:1 sur --background */
+  --foreground-inverted: #08090d;
+
+  --border: #ffffff14; /* 8 % */
+  --border-strong: #ffffff2e; /* 18 % */
+  --ring: var(--hf-brand-400);
+
+  --brand: var(--hf-brand-500);
+  --brand-hover: var(--hf-brand-400);
+  --brand-soft: rgb(91 140 255 / 0.12);
+  --brand-contrast: #06070a;
+
+  --accent: var(--hf-accent-500);
+  --accent-soft: rgb(34 211 238 / 0.12);
+
+  --ember: var(--hf-ember-500);
+  --ember-soft: rgb(255 155 74 / 0.12);
+
+  --success: var(--hf-success);
+  --warning: var(--hf-warning);
+  --danger: var(--hf-danger);
+
+  --glass-bg: rgb(255 255 255 / 0.045);
+  --glass-border: rgb(255 255 255 / 0.09);
+  --glass-blur: 16px;
+
+  --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-sm: 0 2px 8px rgb(0 0 0 / 0.45);
+  --shadow-md: 0 8px 24px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 18px 48px rgb(0 0 0 / 0.55);
+  --shadow-xl: 0 32px 80px rgb(0 0 0 / 0.6);
+  --shadow-glow: 0 0 0 1px rgb(91 140 255 / 0.28), 0 14px 48px rgb(91 140 255 / 0.28);
+
+  --aurora-1: rgb(91 140 255 / 0.2);
+  --aurora-2: rgb(34 211 238 / 0.14);
+  --aurora-3: rgb(255 155 74 / 0.08);
+  --grid-line: rgb(255 255 255 / 0.035);
+  --noise-opacity: 0.035;
+
+  color-scheme: dark;
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   4. EXPOSITION DES TOKENS À TAILWIND
+   → génère bg-surface, text-muted, rounded-xl, shadow-lg, font-display, etc.
+   ─────────────────────────────────────────────────────────────────────────── */
 @theme inline {
+  /* Couleurs sémantiques */
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-elevated: var(--surface-elevated);
+  --color-sunken: var(--surface-sunken);
+
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--foreground-muted);
+  --color-subtle: var(--foreground-subtle);
+  --color-inverted: var(--foreground-inverted);
+
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-ring: var(--ring);
+
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-contrast: var(--brand-contrast);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-ember: var(--ember);
+  --color-ember-soft: var(--ember-soft);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--hf-info);
+
+  /* Échelle brand complète, disponible via bg-hf-500, text-hf-300… */
+  --color-hf-50: var(--hf-brand-50);
+  --color-hf-100: var(--hf-brand-100);
+  --color-hf-200: var(--hf-brand-200);
+  --color-hf-300: var(--hf-brand-300);
+  --color-hf-400: var(--hf-brand-400);
+  --color-hf-500: var(--hf-brand-500);
+  --color-hf-600: var(--hf-brand-600);
+  --color-hf-700: var(--hf-brand-700);
+  --color-hf-800: var(--hf-brand-800);
+  --color-hf-900: var(--hf-brand-900);
+
+  /* Typographie — les variables --font-* sont injectées par next/font */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-space-grotesk), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Échelle typographique fluide */
+  --text-display-xl: clamp(2.75rem, 1.2rem + 6.4vw, 6rem);
+  --text-display-xl--line-height: 0.94;
+  --text-display-xl--letter-spacing: -0.035em;
+  --text-display-lg: clamp(2.25rem, 1.2rem + 4.4vw, 4rem);
+  --text-display-lg--line-height: 1;
+  --text-display-lg--letter-spacing: -0.03em;
+  --text-display-md: clamp(1.875rem, 1.2rem + 2.8vw, 3rem);
+  --text-display-md--line-height: 1.08;
+  --text-display-md--letter-spacing: -0.025em;
+  --text-display-sm: clamp(1.5rem, 1.1rem + 1.7vw, 2.25rem);
+  --text-display-sm--line-height: 1.15;
+  --text-display-sm--letter-spacing: -0.02em;
+
+  /* Rayons */
+  --radius-sm: 0.5rem; /* 8  */
+  --radius-md: 0.75rem; /* 12 */
+  --radius-lg: 1rem; /* 16 */
+  --radius-xl: 1.5rem; /* 24 */
+  --radius-2xl: 2rem; /* 32 */
+  --radius-3xl: 2.5rem; /* 40 */
+
+  /* Ombres */
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-glow: var(--shadow-glow);
+
+  /* Durées et courbes d'animation */
+  --ease-signature: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --animate-marquee: marquee 42s linear infinite;
+  --animate-marquee-reverse: marquee-reverse 42s linear infinite;
+  --animate-aurora: aurora 22s ease-in-out infinite;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-shimmer: shimmer 2.4s linear infinite;
+  --animate-caret: caret 1.05s steps(1) infinite;
+
+  /* Largeur de contenu */
+  --container-content: 76rem; /* 1216px */
+  --container-prose: 44rem; /* 704px  */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ───────────────────────────────────────────────────────────────────────────
+   5. KEYFRAMES
+   ─────────────────────────────────────────────────────────────────────────── */
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+@keyframes marquee-reverse {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes aurora {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.9;
+  }
+  33% {
+    transform: translate3d(3%, -4%, 0) scale(1.08);
+    opacity: 1;
+  }
+  66% {
+    transform: translate3d(-3%, 3%, 0) scale(0.96);
+    opacity: 0.85;
+  }
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+@keyframes caret {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ───────────────────────────────────────────────────────────────────────────
+   6. BASE
+   ─────────────────────────────────────────────────────────────────────────── */
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Compense la navbar collante lors des ancres #section */
+    scroll-padding-top: 6rem;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Focus visible cohérent sur tout le site (§20) */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--brand) 30%, transparent);
+    color: var(--foreground);
+  }
+
+  /* Barre de défilement discrète */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--border-strong);
+    border-radius: 9999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: color-mix(in oklab, var(--brand) 60%, transparent);
+    background-clip: content-box;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   7. UTILITAIRES DU DESIGN SYSTEM
+   ─────────────────────────────────────────────────────────────────────────── */
+@utility container-content {
+  width: 100%;
+  max-width: var(--container-content);
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  @media (width >= 48rem) {
+    padding-inline: 2rem;
+  }
+  @media (width >= 80rem) {
+    padding-inline: 2.5rem;
+  }
+}
+
+/* Verre dépoli — carte, navbar, modale */
+@utility glass {
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+  border: 1px solid var(--glass-border);
+}
+
+/* Dégradé signature appliqué au texte */
+@utility text-gradient {
+  background-image: linear-gradient(
+    100deg,
+    var(--foreground) 0%,
+    var(--brand) 45%,
+    var(--accent) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+@utility text-gradient-brand {
+  background-image: linear-gradient(100deg, var(--brand) 0%, var(--accent) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Bordure dégradée (masque) — utilisée sur les cartes vedettes */
+@utility border-gradient {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklab, var(--brand) 60%, transparent),
+      transparent 45%,
+      color-mix(in oklab, var(--accent) 45%, transparent)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+}
+
+/* Halo lumineux suivant le curseur — piloté par --mx / --my (composant Spotlight) */
+@utility spotlight {
+  position: relative;
+  isolation: isolate;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: radial-gradient(
+      340px circle at var(--mx, 50%) var(--my, 50%),
+      color-mix(in oklab, var(--brand) 16%, transparent),
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 300ms var(--ease-signature);
+    pointer-events: none;
+    z-index: -1;
+  }
+  &:hover::after {
+    opacity: 1;
+  }
+}
+
+/* Fond quadrillé technique */
+@utility bg-grid {
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Masque de fondu radial pour les fonds décoratifs */
+@utility mask-fade {
+  -webkit-mask-image: radial-gradient(ellipse 75% 55% at 50% 0%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(ellipse 75% 55% at 50% 0%, #000 40%, transparent 100%);
+}
+
+/* Effet de chargement (skeleton) */
+@utility shimmer {
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in oklab, var(--foreground) 8%, transparent) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+}
+
+/* Rythme vertical standard des sections */
+@utility section-y {
+  padding-block: 5rem;
+  @media (width >= 48rem) {
+    padding-block: 7.5rem;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   8. ACCESSIBILITÉ — respect de prefers-reduced-motion (§20)
+   Toutes les animations dégradent en transition instantanée.
+   ─────────────────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

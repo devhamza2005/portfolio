@@ -1,36 +1,106 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio — Hamza Fanoune
 
-## Getting Started
+Portfolio personnel de **Hamza Fanoune**, développeur Full Stack Java (Spring Boot / React), basé à Casablanca.
 
-First, run the development server:
+Ce dépôt n'est pas un template statique : c'est une **application full-stack** dont le contenu
+(projets, expériences, formations, certifications, compétences, technologies, réalisations)
+est stocké en base de données et administrable depuis un back-office `/admin`.
+Ajouter un projet ne demande **aucune modification de code**.
+
+---
+
+## Stack
+
+| Couche | Technologie |
+|---|---|
+| Framework | Next.js 16 (App Router, React 19, Server Components + Server Actions) |
+| Langage | TypeScript strict (`noUncheckedIndexedAccess`) |
+| Styles | Tailwind CSS v4 — design system en tokens CSS natifs |
+| Composants | Radix UI (accessibilité) + primitives maison |
+| Animations | Motion — respect systématique de `prefers-reduced-motion` |
+| Base de données | PostgreSQL (Neon) via Prisma 6 |
+| Authentification | Auth.js v5 — Credentials + Argon2id |
+| Images | Cloudinary (via un adaptateur `StorageProvider` interchangeable) |
+| Validation | Zod (partagée entre formulaires, Server Actions et types) |
+| Déploiement | Vercel |
+
+---
+
+## Démarrage
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 1. Dépendances
+npm install
+
+# 2. Variables d'environnement
+cp .env.example .env      # puis compléter les valeurs
+
+# 3. Base de données
+npm run db:push           # crée les tables
+npm run db:seed           # injecte le contenu initial + le compte admin
+
+# 4. Développement
+npm run dev               # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Variables d'environnement requises
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Voir [`.env.example`](.env.example) pour la liste complète et commentée.
+Le minimum pour démarrer : `DATABASE_URL`, `AUTH_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+| Commande | Rôle |
+|---|---|
+| `npm run dev` | Serveur de développement |
+| `npm run build` | Build de production |
+| `npm run start` | Serveur de production |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | Vérification TypeScript |
+| `npm run db:push` | Synchronise le schéma Prisma avec la base |
+| `npm run db:migrate` | Crée et applique une migration |
+| `npm run db:seed` | Injecte les données initiales |
+| `npm run db:studio` | Explorateur de base Prisma Studio |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Architecture
 
-## Deploy on Vercel
+```
+src/
+├─ app/
+│  ├─ (site)/          Site public — Server Components, contenu lu en base
+│  ├─ (admin)/admin/   Back-office protégé
+│  ├─ api/             Upload, authentification, images OG dynamiques
+│  └─ globals.css      ⭐ Design system : couleurs, typo, espacements, animations
+├─ components/
+│  ├─ ui/              Primitives (Button, Card, Badge, Input, Dialog…)
+│  ├─ motion/          Composants d'animation réutilisables
+│  ├─ layout/          Navbar, Footer, thème, curseur, progression
+│  ├─ sections/        Les sections de la page d'accueil
+│  └─ admin/           DataTable, ResourceForm, champs génériques
+├─ server/
+│  ├─ queries/         Lectures mises en cache (revalidation par tag)
+│  ├─ actions/         Mutations (Server Actions) — authentifiées + validées
+│  └─ storage/         Adaptateur d'upload (Cloudinary | local)
+├─ schemas/            Schémas Zod — source unique de vérité des données
+├─ resources/          ⭐ Descripteurs CRUD : génèrent les écrans d'administration
+└─ lib/                Utilitaires (SEO, dates, slug, env…)
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Principe clé — le CRUD déclaratif
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Chaque entité administrable est décrite par un fichier de `src/resources/`
+(champs, colonnes, validation, libellés). Les composants `DataTable` et
+`ResourceForm` lisent ce descripteur et génèrent l'écran correspondant.
+
+**Conséquence :** ajouter une nouvelle entité au back-office (blog, témoignages…)
+= 1 modèle Prisma + 1 fichier descripteur. Aucun écran à écrire.
+
+---
+
+## Licence
+
+Code sous licence MIT. Le contenu éditorial, les images et le CV sont la propriété de Hamza Fanoune.

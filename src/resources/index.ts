@@ -1,3 +1,20 @@
+import {
+  certificationResource,
+  educationResource,
+  experienceResource,
+} from "./career.resource";
+import { projectResource } from "./project.resource";
+import {
+  achievementResource,
+  categoryResource,
+  languageResource,
+  qualityResource,
+  serviceResource,
+  skillResource,
+  socialLinkResource,
+  statCardResource,
+  technologyResource,
+} from "./stack.resource";
 import type { ResourceDef } from "./types";
 
 /**
@@ -10,12 +27,29 @@ import type { ResourceDef } from "./types";
  *
  * Pour ajouter une nouvelle entité au back-office (blog, témoignages…) :
  *   1. ajouter le modèle dans prisma/schema.prisma puis migrer ;
- *   2. créer <entité>.resource.ts dans ce dossier ;
- *   3. l'ajouter au tableau ci-dessous.
- * Aucun composant, aucune action, aucune route à écrire.
+ *   2. créer son schéma Zod dans src/schemas ;
+ *   3. créer son descripteur dans ce dossier ;
+ *   4. l'ajouter au tableau ci-dessous.
+ * Aucun écran, aucun formulaire, aucune action, aucune route à écrire.
+ *
+ * L'ordre du tableau est celui de la navigation du back-office.
  */
 
-const RESOURCES: ResourceDef[] = [];
+const RESOURCES: ResourceDef[] = [
+  projectResource,
+  experienceResource,
+  educationResource,
+  certificationResource,
+  achievementResource,
+  skillResource,
+  technologyResource,
+  serviceResource,
+  categoryResource,
+  statCardResource,
+  socialLinkResource,
+  qualityResource,
+  languageResource,
+];
 
 /** Toutes les ressources, dans l'ordre d'affichage de la navigation. */
 export function listResources(): ResourceDef[] {
@@ -37,3 +71,5 @@ export function getResource(key: string): ResourceDef {
 export function hasResource(key: string): boolean {
   return RESOURCES.some((item) => item.key === key);
 }
+
+export type { ResourceDef, FieldDef, ColumnDef } from "./types";

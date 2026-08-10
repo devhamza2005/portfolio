@@ -26,11 +26,16 @@ type BaseField = {
   placeholder?: string;
   required?: boolean;
   /** Largeur dans la grille du formulaire (12 colonnes). */
-  span?: 4 | 6 | 8 | 12;
+  span?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
   /** Regroupe les champs sous un titre de section dans le formulaire. */
   group?: string;
-  /** Masque le champ tant que la condition n'est pas remplie. */
-  showIf?: (values: Record<string, unknown>) => boolean;
+  /**
+   * Masque le champ tant que la condition n'est pas remplie.
+   *
+   * Décrit sous forme de données, et non de fonction : le descripteur traverse
+   * la frontière serveur → client, où seules les valeurs sérialisables passent.
+   */
+  showIf?: { field: string; equals: string | number | boolean };
 };
 
 export type SelectOption = { value: string; label: string; description?: string };
@@ -132,6 +137,14 @@ export type NestedRelation = {
   model: PrismaModelKey;
   /** Clé étrangère pointant vers le parent. */
   foreignKey: string;
+  /**
+   * Pour une table de liaison N-N : colonne portant l'identifiant lié
+   * (ex. « technologyId »). Sa présence indique que le champ manipule une
+   * simple liste d'identifiants, et non des lignes complètes.
+   */
+  linkKey?: string;
+  /** Relation à charger pour reconstituer le formulaire à l'édition. */
+  include?: Record<string, unknown>;
 };
 
 /** Modèles Prisma exposés au moteur CRUD générique. */
@@ -141,8 +154,10 @@ export type PrismaModelKey =
   | "projectChallenge"
   | "projectMetric"
   | "projectImage"
+  | "projectTechnology"
   | "experience"
   | "experienceHighlight"
+  | "experienceTechnology"
   | "education"
   | "certification"
   | "achievement"

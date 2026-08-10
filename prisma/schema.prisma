@@ -1,0 +1,715 @@
+// ═══════════════════════════════════════════════════════════════════════════
+//  PORTFOLIO HAMZA FANOUNE — Modèle de données
+//  ---------------------------------------------------------------------------
+//  Principe directeur : TOUT le contenu affiché sur le site public vit ici.
+//  Aucun texte, aucune image, aucun lien n'est écrit en dur dans un composant.
+//  Chaque modèle éditable possède :
+//    • `order`     → tri manuel (glisser-déposer dans le back-office)
+//    • `visible`   → visibilité publique
+//    • `i18n`      → traductions futures, sans migration (FR/EN — §26)
+// ═══════════════════════════════════════════════════════════════════════════
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+// Prisma 7 : les URL de connexion ne vivent plus ici.
+//  • CLI / migrations → `prisma.config.ts`
+//  • Runtime          → adaptateur `@prisma/adapter-pg` (voir src/server/db.ts)
+datasource db {
+  provider = "postgresql"
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+//  ADMINISTRATION
+// ───────────────────────────────────────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  EDITOR
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  role         Role      @default(ADMIN)
+  avatarUrl    String?
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@map("users")
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+//  MÉDIATHÈQUE — table centrale : aucun chemin d'image n'est codé en dur (§16)
+// ───────────────────────────────────────────────────────────────────────────
+
+enum MediaProvider {
+  CLOUDINARY
+  LOCAL
+  EXTERNAL
+}
+
+model Media {
+  id       String        @id @default(cuid())
+  url      String
+  provider MediaProvider @default(CLOUDINARY)
+  /// Identifiant chez le fournisseur — nécessaire pour supprimer le fichier distant.
+  publicId String?
+  alt      String        @default("")
+  caption  String?
+  width    Int?
+  height   Int?
+  mime     String?
+  bytes    Int?
+  /// Dossier logique : projects, certifications, logos, avatar, cv…
+  folder   String        @default("general")
+  /// Couleur dominante — sert de fond pendant le chargement (évite le flash).
+  blurHash String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations inverses : permettent de détecter qu'un média est utilisé
+  // avant d'autoriser sa suppression depuis la médiathèque.
+  profileAvatar   Profile[]       @relation("ProfileAvatar")
+  profileOg       Profile[]       @relation("ProfileOg")
+  projectCovers   Project[]       @relation("ProjectCover")
+  projectImages   ProjectImage[]
+  experienceLogos Experience[]
+  educationLogos  Education[]
+  certifications  Certification[]
+  technologyLogos Technology[]
+
+  @@index([folder])
+  @@index([createdAt])
+  @@map("media")
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+//  PROFIL — table à ligne unique (singleton)
+// ───────────────────────────────────────────────────────────────────────────
+
+enum Availability {
+  OPEN_TO_WORK
+  FREELANCE
+  BUSY
+  HIDDEN
+}
+
+model Profile {
+  /// Toujours « profile » : garantit qu'il n'existe qu'une seule ligne.
+  id String @id @default("profile")
+
+  fullName String
+  /// Titre principal affiché sous le nom dans le Hero.
+  headline String
+  /// Sous-titre technique : « Java | Spring Boot | React ».
+  subline String?
+  /// Phrase courte et forte du Hero.
+  tagline String?
+
+  bioShort String? @db.Text
+  bioLong  String? @db.Text
+
+  location String?
+  email    String
+  phone    String?
+
+  avatarId String?
+  avatar   Media?  @relation("ProfileAvatar", fields: [avatarId], references: [id], onDelete: SetNull)
+
+  /// CV téléchargeable — remplaçable depuis le back-office (§16).
+  cvUrl       String?
+  cvLabel     String?   @default("Télécharger mon CV")
+  cvUpdatedAt DateTime?
+
+  availability      Availability @default(OPEN_TO_WORK)
+  availabilityLabel String?
+  /// Année de départ, utilisée pour calculer « années d'expérience » (§25).
+  careerStartYear   Int?
+
+  // SEO global (§18)
+  seoTitle       String?
+  seoDescription String? @db.Text
+  ogImageId      String?
+  ogImage        Media?  @relation("ProfileOg", fields: [ogImageId], references: [id], onDelete: SetNull)
+
+  /// Traductions : { "en": { "headline": "…", "tagline": "…" } }
+  i18n Json?
+
+  updatedAt DateTime @updatedAt
+
+  @@map("profile")
+}
+
+model SocialLink {
+  id String @id @default(cuid())
+  /// Clé technique : github, linkedin, email, x, dribbble…
+  platform String @unique
+  label    String
+  url      String
+  /// Nom d'icône (lucide ou simple-icons) — aucun upload nécessaire.
+  iconKey String?
+  /// Afficher dans le Hero, en plus du footer.
+  inHero  Boolean @default(true)
+  visible Boolean @default(true)
+  order   Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+  @@map("social_links")
+}
+
+/// Qualités personnelles (§5) — éditables sans toucher au code.
+model Quality {
+  id      String  @id @default(cuid())
+  label   String
+  iconKey String?
+  order   Int     @default(0)
+
+  @@index([order])
+  @@map("qualities")
+}
+
+/// Langues parlées (§6).
+model Language {
+  id   String @id @default(cuid())
+  name String
+  /// Niveau libre : « Langue maternelle », « Courant », « B2 »…
+  level String?
+  /// Pourcentage optionnel, pour la barre de progression.
+  percent Int?
+  order   Int  @default(0)
+
+  @@index([order])
+  @@map("languages")
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+//  TAXONOMIE — catégories entièrement gérées depuis le back-office
+// ───────────────────────────────────────────────────────────────────────────
+
+enum CategoryKind {
+  /// Catégories de technologies et de compétences (Backend, Frontend, DevOps…)
+  TECH
+  /// Catégories de projets (Web, Desktop, DevOps, IoT…)
+  PROJECT
+}
+
+model Category {
+  id   String       @id @default(cuid())
+  kind CategoryKind
+  name String
+  slug String
+  /// Description courte affichée en tête de groupe.
+  description String?
+  iconKey     String?
+  /// Couleur d'accent optionnelle (hex) pour différencier les groupes.
+  color String?
+  order Int     @default(0)
+
+  technologies Technology[]
+  skills       Skill[]
+  projects     Project[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([kind, slug])
+  @@index([kind, order])
+  @@map("categories")
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+//  TECHNOLOGIES & COMPÉTENCES
+//  Technology = registre canonique de la stack (logo, couleur).
+//  Skill      = déclaration de niveau, qui peut pointer vers une Technology
+//               afin d'éviter toute double saisie.
+// ───────────────────────────────────────────────────────────────────────────
+
+model Technology {
+  id   String @id @default(cuid())
+  name String @unique
+  slug String @unique
+
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  /// Icône vectorielle (clé simple-icons, ex. « springboot ») — aucun upload requis.
+  iconKey String?
+  /// Logo téléversé, prioritaire sur iconKey s'il est renseigné.
+  logoId String?
+  logo   Media?  @relation(fields: [logoId], references: [id], onDelete: SetNull)
+  /// Couleur de marque (hex), utilisée sur les badges et le bandeau défilant.
+  color String?
+  url   String?
+
+  /// Mise en avant dans le bandeau de la section Technologies.
+  featured Boolean @default(false)
+  visible  Boolean @default(true)
+  order    Int     @default(0)
+
+  projects    ProjectTechnology[]
+  experiences ExperienceTechnology[]
+  skills      Skill[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+  @@index([featured])
+  @@map("technologies")
+}
+
+/// Niveau de maîtrise — reprend les paliers utilisés dans le CV.
+enum Proficiency {
+  BASICS
+  GOOD_KNOWLEDGE
+  ADVANCED
+  EXPERT
+}
+
+model Skill {
+  id   String @id @default(cuid())
+  name String
+
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  /// Lien optionnel vers la technologie : réutilise son logo et sa couleur.
+  technologyId String?
+  technology   Technology? @relation(fields: [technologyId], references: [id], onDelete: SetNull)
+
+  proficiency Proficiency @default(GOOD_KNOWLEDGE)
+  /// 0–100 : alimente la barre de progression. Déduit du palier si absent.
+  percent     Int?
+  iconKey     String?
+  description String?
+
+  /// Remonte la compétence dans la section « points forts ».
+  highlighted Boolean @default(false)
+  visible     Boolean @default(true)
+  order       Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+  @@index([categoryId])
+  @@map("skills")
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+//  PROJETS  (+ tout le contenu de la case study — §24)
+// ───────────────────────────────────────────────────────────────────────────
+
+enum ProjectStatus {
+  COMPLETED
+  IN_PROGRESS
+  MAINTAINED
+  ARCHIVED
+}
+
+model Project {
+  id       String  @id @default(cuid())
+  slug     String  @unique
+  title    String
+  subtitle String?
+  /// Résumé affiché sur les cartes (2 à 3 lignes).
+  summary  String  @db.Text
+
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  status ProjectStatus @default(COMPLETED)
+
+  startDate DateTime?
+  endDate   DateTime?
+  /// Année affichée lorsque les dates précises ne sont pas pertinentes.
+  year      Int?
+
+  /// Rôle personnel tenu sur le projet (§24).
+  role     String?
+  teamSize Int?
+  client   String?
+  /// Contexte : projet de fin d'études, freelance, personnel, académique…
+  context  String?
+
+  coverId String?
+  cover   Media?  @relation("ProjectCover", fields: [coverId], references: [id], onDelete: SetNull)
+
+  demoUrl String?
+  repoUrl String?
+  docUrl  String?
+
+  // ── Sections de la case study
+  //    Toute section laissée vide est automatiquement masquée à l'affichage :
+  //    un projet simple reste élégant, un projet riche est déployé en entier.
+  overview     String? @db.Text
+  problem      String? @db.Text
+  solution     String? @db.Text
+  architecture String? @db.Text
+  results      String? @db.Text
+  learnings    String? @db.Text
+
+  featured  Boolean @default(false)
+  published Boolean @default(true)
+  order     Int     @default(0)
+
+  /// Traductions (§26).
+  i18n Json?
+
+  technologies ProjectTechnology[]
+  features     ProjectFeature[]
+  challenges   ProjectChallenge[]
+  metrics      ProjectMetric[]
+  images       ProjectImage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([published, featured, order])
+  @@index([categoryId])
+  @@map("projects")
+}
+
+model ProjectTechnology {
+  projectId    String
+  technologyId String
+  project      Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  technology   Technology @relation(fields: [technologyId], references: [id], onDelete: Cascade)
+  order        Int        @default(0)
+
+  @@id([projectId, technologyId])
+  @@index([technologyId])
+  @@map("project_technologies")
+}
+
+/// Fonctionnalités du projet — ajoutables une par une depuis le back-office.
+model ProjectFeature {
+  id          String  @id @default(cuid())
+  projectId   String
+  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title       String
+  description String? @db.Text
+  iconKey     String?
+  order       Int     @default(0)
+
+  @@index([projectId, order])
+  @@map("project_features")
+}
+
+/// Défis rencontrés et solutions apportées (§24).
+model ProjectChallenge {
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title     String
+  problem   String  @db.Text
+  solution  String  @db.Text
+  order     Int     @default(0)
+
+  @@index([projectId, order])
+  @@map("project_challenges")
+}
+
+/// Chiffres clés du projet — saisis depuis le back-office, jamais inventés (§25).
+model ProjectMetric {
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  label     String
+  value     String
+  unit      String?
+  iconKey   String?
+  order     Int     @default(0)
+
+  @@index([projectId, order])
+  @@map("project_metrics")
+}
+
+enum ProjectImageKind {
+  SCREENSHOT
+  DIAGRAM
+  MOCKUP
+  LOGO
+}
+
+model ProjectImage {
+  id        String           @id @default(cuid())
+  projectId String
+  project   Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  mediaId   String
+  media     Media            @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  kind      ProjectImageKind @default(SCREENSHOT)
+  caption   String?
+  order     Int              @default(0)
+
+  @@index([projectId, order])
+  @@map("project_images")
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+//  EXPÉRIENCES
+// ───────────────────────────────────────────────────────────────────────────
+
+enum EmploymentType {
+  INTERNSHIP
+  APPRENTICESHIP
+  FULL_TIME
+  PART_TIME
+  FREELANCE
+  PROJECT
+}
+
+enum WorkMode {
+  ONSITE
+  HYBRID
+  REMOTE
+}
+
+model Experience {
+  id      String @id @default(cuid())
+  company String
+  role    String
+
+  employmentType EmploymentType @default(INTERNSHIP)
+  workMode       WorkMode?
+  location       String?
+  companyUrl     String?
+
+  logoId String?
+  logo   Media?  @relation(fields: [logoId], references: [id], onDelete: SetNull)
+
+  startDate DateTime
+  endDate   DateTime?
+  current   Boolean   @default(false)
+
+  description String? @db.Text
+
+  visible Boolean @default(true)
+  order   Int     @default(0)
+
+  i18n Json?
+
+  highlights   ExperienceHighlight[]
+  technologies ExperienceTechnology[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+  @@map("experiences")
+}
+
+/// Missions et réalisations, listées en puces sous chaque expérience.
+model ExperienceHighlight {
+  id           String     @id @default(cuid())
+  experienceId String
+  experience   Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+  text         String     @db.Text
+  order        Int        @default(0)
+
+  @@index([experienceId, order])
+  @@map("experience_highlights")
+}
+
+model ExperienceTechnology {
+  experienceId String
+  technologyId String
+  experience   Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+  technology   Technology @relation(fields: [technologyId], references: [id], onDelete: Cascade)
+  order        Int        @default(0)
+
+  @@id([experienceId, technologyId])
+  @@index([technologyId])
+  @@map("experience_technologies")
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+//  FORMATION
+// ───────────────────────────────────────────────────────────────────────────
+
+enum EducationStatus {
+  COMPLETED
+  /// Diplôme obtenu, en attente de délivrance.
+  PENDING_DIPLOMA
+  ONGOING
+}
+
+model Education {
+  id     String  @id @default(cuid())
+  school String
+  degree String
+  field  String?
+
+  /// Note obtenue, ex. « 17/20 ».
+  grade String?
+  /// Mention, ex. « Très Bien ».
+  mention String?
+  /// Distinction libre, ex. « Soutenance de PFE validée ».
+  honors String?
+
+  status EducationStatus @default(COMPLETED)
+
+  startDate DateTime?
+  endDate   DateTime?
+  location  String?
+  schoolUrl String?
+
+  logoId String?
+  logo   Media?  @relation(fields: [logoId], references: [id], onDelete: SetNull)
+
+  description String? @db.Text
+
+  visible Boolean @default(true)
+  order   Int     @default(0)
+
+  i18n Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+  @@map("education")
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+//  CERTIFICATIONS · RÉALISATIONS · SERVICES
+// ───────────────────────────────────────────────────────────────────────────
+
+model Certification {
+  id     String @id @default(cuid())
+  name   String
+  issuer String
+
+  issueDate  DateTime?
+  expiryDate DateTime?
+
+  credentialId  String?
+  credentialUrl String?
+
+  description String? @db.Text
+
+  imageId String?
+  image   Media?  @relation(fields: [imageId], references: [id], onDelete: SetNull)
+  /// PDF de l'attestation, téléversé depuis le back-office.
+  fileUrl String?
+
+  featured Boolean @default(false)
+  visible  Boolean @default(true)
+  order    Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+  @@map("certifications")
+}
+
+model Achievement {
+  id          String  @id @default(cuid())
+  title       String
+  description String? @db.Text
+  /// Catégorie libre : Compétition, Distinction, Projet, Communauté…
+  category     String?
+  organisation String?
+  date         DateTime?
+  year         Int?
+  url          String?
+  iconKey      String?
+
+  featured Boolean @default(false)
+  visible  Boolean @default(true)
+  order    Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+  @@map("achievements")
+}
+
+/// Section « What I do » (§9).
+model Service {
+  id          String @id @default(cuid())
+  title       String
+  description String @db.Text
+  iconKey     String?
+  /// Points détaillés listés dans la carte.
+  features String[]
+  visible  Boolean  @default(true)
+  order    Int      @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+  @@map("services")
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+//  STATISTIQUES — les chiffres proviennent des données réelles (§25)
+// ───────────────────────────────────────────────────────────────────────────
+
+enum StatSource {
+  PROJECTS_COUNT
+  TECHNOLOGIES_COUNT
+  EXPERIENCES_COUNT
+  CERTIFICATIONS_COUNT
+  ACHIEVEMENTS_COUNT
+  SKILLS_COUNT
+  YEARS_SINCE_START
+  /// Valeur saisie à la main — à utiliser avec parcimonie.
+  MANUAL
+}
+
+model StatCard {
+  id     String     @id @default(cuid())
+  label  String
+  source StatSource
+  /// Utilisé uniquement lorsque source = MANUAL.
+  manualValue Int?
+  prefix      String?
+  suffix      String?
+  iconKey     String?
+  visible     Boolean @default(true)
+  order       Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+  @@map("stat_cards")
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+//  MESSAGES DU FORMULAIRE DE CONTACT
+// ───────────────────────────────────────────────────────────────────────────
+
+model ContactMessage {
+  id      String  @id @default(cuid())
+  name    String
+  email   String
+  subject String?
+  message String  @db.Text
+
+  isRead     Boolean @default(false)
+  isArchived Boolean @default(false)
+
+  /// Conservés pour la limitation de débit et la lutte anti-spam.
+  ipHash    String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+
+  @@index([isRead, createdAt])
+  @@map("contact_messages")
+}

@@ -70,7 +70,7 @@ export default function DesignSystemPage() {
           <p className="text-muted max-w-prose text-base leading-relaxed">
             Corps de texte en Inter. Le contraste est validé WCAG AA dans les deux thèmes.
           </p>
-          <p className="text-subtle font-mono text-sm">// 01 — label monospace</p>
+          <p className="text-subtle font-mono text-sm">{"// 01 — label monospace"}</p>
         </div>
       </Section>
 

@@ -1,15 +1,26 @@
 "use client";
 
+import { FolderOpen } from "lucide-react";
 import { useMemo, useState } from "react";
 
-import { Icon } from "@/components/admin/icon";
 import { StaggerGroup, StaggerItem } from "@/components/motion/reveal";
 import { ProjectCard } from "@/components/projects/project-card";
 import { EmptyState } from "@/components/ui/skeleton";
 import type { ProjectCard as ProjectCardData } from "@/server/queries/portfolio";
 import { cn } from "@/lib/utils";
 
-type Category = { id: string; name: string; slug: string; iconKey: string | null; count: number };
+/**
+ * L'icône arrive déjà rendue depuis le serveur plutôt que sous forme de nom.
+ * Résoudre un `iconKey` dans le navigateur imposerait d'y embarquer toute la
+ * bibliothèque Lucide (~800 Ko) pour n'afficher que quelques pictogrammes.
+ */
+type Category = {
+  id: string;
+  name: string;
+  slug: string;
+  icon: React.ReactNode;
+  count: number;
+};
 
 /**
  * Grille filtrable des projets.
@@ -41,8 +52,15 @@ export function ProjectFilters({
   return (
     <>
       {showFilters ? (
+        /*
+          `group` et non `tablist` : le motif ARIA des onglets impose une
+          navigation aux flèches et un `tabpanel` associé à chaque onglet.
+          Rien de tout cela ici — ce sont des boutons bascule qui filtrent une
+          liste. Annoncer « onglet » à un lecteur d'écran promettrait un
+          comportement que la page n'offre pas.
+        */
         <div
-          role="tablist"
+          role="group"
           aria-label="Filtrer les projets par catégorie"
           className="mb-8 flex flex-wrap gap-2"
         >
@@ -56,7 +74,7 @@ export function ProjectFilters({
             <FilterChip
               key={category.id}
               label={category.name}
-              iconKey={category.iconKey}
+              icon={category.icon}
               count={category.count}
               active={active === category.slug}
               onClick={() => setActive(category.slug)}
@@ -67,7 +85,7 @@ export function ProjectFilters({
 
       {visible.length === 0 ? (
         <EmptyState
-          icon={<Icon name="FolderOpen" />}
+          icon={<FolderOpen className="size-4" />}
           title="Aucun projet dans cette catégorie"
           description="Choisissez une autre catégorie."
         />
@@ -84,7 +102,12 @@ export function ProjectFilters({
         </StaggerGroup>
       )}
 
-      <p className="text-subtle mt-8 text-sm">
+      {/*
+        `aria-live` : le filtrage ne déplace pas le focus, un lecteur d'écran
+        n'aurait donc aucun moyen de savoir que la grille a changé. Ce compteur
+        est le seul retour parlé du filtre.
+      */}
+      <p aria-live="polite" className="text-subtle mt-8 text-sm">
         {visible.length} projet{visible.length > 1 ? "s" : ""}
         {active !== "all" ? ` sur ${projects.length}` : ""}
       </p>
@@ -95,21 +118,20 @@ export function ProjectFilters({
 function FilterChip({
   label,
   count,
-  iconKey,
+  icon,
   active,
   onClick,
 }: {
   label: string;
   count: number;
-  iconKey?: string | null;
+  icon?: React.ReactNode;
   active: boolean;
   onClick: () => void;
 }) {
   return (
     <button
       type="button"
-      role="tab"
-      aria-selected={active}
+      aria-pressed={active}
       onClick={onClick}
       className={cn(
         "flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium",
@@ -120,7 +142,7 @@ function FilterChip({
           : "border-border text-muted hover:border-border-strong hover:text-foreground",
       )}
     >
-      {iconKey ? <Icon name={iconKey} className="size-3.5" /> : null}
+      {icon}
       {label}
       <span className={cn("font-mono text-[0.6875rem] tabular-nums", !active && "text-subtle")}>
         {count}

@@ -352,18 +352,27 @@ export async function getProjectBySlug(slug: string) {
 export type ProjectDetail = NonNullable<Awaited<ReturnType<typeof getProjectBySlug>>>;
 
 /** Slugs publiés — alimente `generateStaticParams` pour prégénérer les pages. */
-export async function getPublishedProjectSlugs() {
+/**
+ * Références des projets publiés : slug, titre et date de dernière écriture.
+ *
+ * Une seule et même lecture sert `generateStaticParams`, le sitemap et le
+ * JSON-LD de la collection. Comme elle porte `use cache` avec les mêmes
+ * balises, les trois appels retombent sur la même entrée : une requête pour
+ * l'ensemble du build, pas trois.
+ *
+ * `updatedAt` alimente `lastModified` du sitemap — une date réelle, issue de
+ * la base, jamais l'heure du build.
+ */
+export async function getPublishedProjectRefs() {
   "use cache";
   cacheTag("projects", "portfolio");
   cacheLife("max");
 
-  const rows = await db.project.findMany({
+  return db.project.findMany({
     where: { published: true },
     orderBy: [{ featured: "desc" }, { order: "asc" }],
-    select: { slug: true },
+    select: { slug: true, title: true, updatedAt: true },
   });
-
-  return rows.map((row) => row.slug);
 }
 
 /**

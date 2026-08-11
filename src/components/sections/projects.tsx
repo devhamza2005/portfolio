@@ -3,7 +3,8 @@ import Link from "next/link";
 
 import { Reveal, Section, StaggerGroup, StaggerItem } from "@/components/motion/reveal";
 import { SectionLabel } from "@/components/motion/text-reveal";
-import { FeaturedProjectCard, ProjectCard } from "@/components/projects/project-card";
+import { FeaturedProjectCard } from "@/components/projects/featured-project-card";
+import { ProjectCard } from "@/components/projects/project-card";
 import { Button } from "@/components/ui/button";
 import type { ProjectCard as ProjectCardData } from "@/server/queries/portfolio";
 

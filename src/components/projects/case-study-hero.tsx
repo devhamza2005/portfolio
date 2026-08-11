@@ -100,12 +100,18 @@ export function CaseStudyHero({ project }: { project: ProjectDetail }) {
             </Reveal>
 
             {hasLinks ? (
+              /*
+                Ces liens quittent le site dans un nouvel onglet. La mention
+                « nouvelle fenêtre » est réservée aux lecteurs d'écran : à la
+                souris le changement est visible, au clavier il ne l'est pas.
+              */
               <Reveal delay={0.5} className="mt-7 flex flex-wrap items-center gap-3">
                 {project.demoUrl ? (
                   <Button asChild size="md">
                     <a href={project.demoUrl} target="_blank" rel="noreferrer noopener">
                       <ExternalLink />
                       Voir la démo
+                      <span className="sr-only"> (nouvelle fenêtre)</span>
                     </a>
                   </Button>
                 ) : null}
@@ -114,6 +120,7 @@ export function CaseStudyHero({ project }: { project: ProjectDetail }) {
                     <a href={project.repoUrl} target="_blank" rel="noreferrer noopener">
                       <GithubIcon className="size-4" />
                       Code source
+                      <span className="sr-only"> (nouvelle fenêtre)</span>
                     </a>
                   </Button>
                 ) : null}
@@ -122,6 +129,7 @@ export function CaseStudyHero({ project }: { project: ProjectDetail }) {
                     <a href={project.docUrl} target="_blank" rel="noreferrer noopener">
                       <FileText />
                       Documentation
+                      <span className="sr-only"> (nouvelle fenêtre)</span>
                     </a>
                   </Button>
                 ) : null}

@@ -75,8 +75,9 @@ export function ContactForm() {
           name="subject"
           placeholder="Opportunité, mission freelance, question…"
           aria-invalid={Boolean(state.fieldErrors?.["subject"])}
+          aria-describedby={state.fieldErrors?.["subject"] ? "contact-subject-error" : undefined}
         />
-        <FieldError>{state.fieldErrors?.["subject"]}</FieldError>
+        <FieldError id="contact-subject-error">{state.fieldErrors?.["subject"]}</FieldError>
       </div>
 
       <div className="grid gap-2">

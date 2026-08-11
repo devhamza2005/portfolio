@@ -3,7 +3,6 @@
 import { motion, useInView, useReducedMotion } from "motion/react";
 import { useRef, useState } from "react";
 
-import { Icon } from "@/components/admin/icon";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { SkillGroup } from "@/server/queries/portfolio";
@@ -15,8 +14,20 @@ import { cn } from "@/lib/utils";
  * Les catégories, leur ordre et les niveaux viennent tous de la base :
  * ajouter une catégorie depuis /admin/categories crée un nouvel onglet, sans
  * aucune modification de ce composant.
+ *
+ * Les icônes arrivent DÉJÀ RENDUES depuis le serveur (voir skills-section) :
+ * les résoudre ici obligerait le navigateur à télécharger toute la
+ * bibliothèque Lucide pour n'en afficher qu'une poignée.
  */
-export function SkillsTabs({ groups }: { groups: SkillGroup[] }) {
+export function SkillsTabs({
+  groups,
+  groupIcons,
+  skillIcons,
+}: {
+  groups: SkillGroup[];
+  groupIcons: Record<string, React.ReactNode>;
+  skillIcons: Record<string, React.ReactNode>;
+}) {
   const [value, setValue] = useState(groups[0]?.slug ?? "");
 
   if (groups.length === 0) return null;
@@ -26,14 +37,24 @@ export function SkillsTabs({ groups }: { groups: SkillGroup[] }) {
       <TabsList className="mx-auto flex">
         {groups.map((group) => (
           <TabsTrigger key={group.id} value={group.slug}>
-            {group.iconKey ? <Icon name={group.iconKey} className="mr-1.5 inline size-3.5" /> : null}
+            {groupIcons[group.id] ?? null}
             {group.name}
           </TabsTrigger>
         ))}
       </TabsList>
 
+      {/*
+        `forceMount` : par défaut Radix démonte les onglets inactifs, et seules
+        les compétences du premier groupe existaient dans le HTML — les autres
+        étaient invisibles pour un moteur de recherche comme pour un lecteur
+        d'écran explorant la page. Montés en permanence, ils sont présents dans
+        le document et masqués par l'attribut `hidden`, que Radix pose lui-même.
+
+        Le remplissage des barres reste conditionné à `active` : elles ne
+        s'animent qu'une fois leur onglet réellement ouvert.
+      */}
       {groups.map((group) => (
-        <TabsContent key={group.id} value={group.slug}>
+        <TabsContent key={group.id} value={group.slug} forceMount>
           <ul className="grid gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
             {group.skills.map((skill, index) => (
               <SkillBar
@@ -41,7 +62,7 @@ export function SkillsTabs({ groups }: { groups: SkillGroup[] }) {
                 name={skill.name}
                 percent={skill.percent}
                 label={skill.proficiencyLabel}
-                iconKey={skill.iconKey}
+                icon={skillIcons[skill.id] ?? null}
                 color={skill.color}
                 highlighted={skill.highlighted}
                 index={index}
@@ -59,7 +80,7 @@ function SkillBar({
   name,
   percent,
   label,
-  iconKey,
+  icon,
   color,
   highlighted,
   index,
@@ -68,7 +89,7 @@ function SkillBar({
   name: string;
   percent: number;
   label: string;
-  iconKey: string | null;
+  icon: React.ReactNode;
   color: string | null;
   highlighted: boolean;
   index: number;
@@ -86,9 +107,7 @@ function SkillBar({
     <li ref={ref}>
       <div className="mb-2 flex items-center justify-between gap-3">
         <span className="flex min-w-0 items-center gap-2">
-          {iconKey ? (
-            <Icon name={iconKey} className="size-3.5 shrink-0" style={color ? { color } : undefined} />
-          ) : null}
+          {icon}
           <span className={cn("truncate text-sm", highlighted ? "font-medium" : "text-muted")}>
             {name}
           </span>

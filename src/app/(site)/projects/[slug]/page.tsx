@@ -13,14 +13,17 @@ import {
 } from "@/components/projects/case-study-blocks";
 import { CaseStudyHero } from "@/components/projects/case-study-hero";
 import { CaseStudySection } from "@/components/projects/case-study-section";
+import { JsonLd } from "@/components/seo/json-ld";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { siteConfig } from "@/config/site";
+import { openGraph, truncate, twitterCard } from "@/lib/seo";
+import { breadcrumbJsonLd, projectJsonLd } from "@/lib/structured-data";
 import {
   getAdjacentProjects,
   getProfile,
   getProjectBySlug,
-  getPublishedProjectSlugs,
+  getPublishedProjectRefs,
 } from "@/server/queries/portfolio";
 
 /**
@@ -34,8 +37,8 @@ import {
 
 /** Prégénère les études de cas des projets publiés. */
 export async function generateStaticParams() {
-  const slugs = await getPublishedProjectSlugs();
-  return slugs.map((slug) => ({ slug }));
+  const projects = await getPublishedProjectRefs();
+  return projects.map((project) => ({ slug: project.slug }));
 }
 
 export async function generateMetadata({
@@ -49,28 +52,28 @@ export async function generateMetadata({
   if (!project) return { title: "Projet introuvable", robots: { index: false, follow: false } };
 
   const name = profile?.fullName ?? siteConfig.fallback.name;
-  const description = project.summary.slice(0, 300);
+  const description = truncate(project.summary);
   const technologies = project.technologies.map((link) => link.technology.name);
+  const title = `${project.title} — ${name}`;
+
+  // Couverture du projet en priorité ; à défaut, l'image Open Graph du profil.
+  // Si aucune des deux n'existe, la clé disparaît : jamais d'URL inventée.
+  const image = project.cover ?? profile?.ogImage ?? null;
 
   return {
     title: project.title,
     description,
     keywords: [project.title, ...technologies, name, "étude de cas", "projet"],
     alternates: { canonical: `/projects/${project.slug}` },
-    openGraph: {
-      title: `${project.title} — ${name}`,
+    openGraph: openGraph({
+      title,
       description,
-      url: `${siteConfig.url}/projects/${project.slug}`,
+      path: `/projects/${project.slug}`,
+      siteName: `${name} — Portfolio`,
       type: "article",
-      // L'image n'est déclarée que si le projet en possède réellement une.
-      ...(project.cover ? { images: [{ url: project.cover.url, alt: project.cover.alt }] } : {}),
-    },
-    twitter: {
-      card: project.cover ? "summary_large_image" : "summary",
-      title: `${project.title} — ${name}`,
-      description,
-      ...(project.cover ? { images: [project.cover.url] } : {}),
-    },
+      image,
+    }),
+    twitter: twitterCard({ title, description, image }),
   };
 }
 
@@ -87,8 +90,40 @@ export default async function ProjectCaseStudyPage({
 
   const adjacent = await getAdjacentProjects(slug);
 
+  /**
+   * Données structurées de l'étude de cas.
+   *
+   * `CreativeWork` décrit l'œuvre réalisée ; l'auteur est référencé par `@id`
+   * vers la `Person` déclarée sur l'accueil, ce qui relie tous les projets à
+   * une seule identité aux yeux d'un moteur. Le fil d'Ariane reproduit le
+   * chemin réel : Accueil › Projets › ce projet.
+   */
+  const jsonLd = [
+    projectJsonLd({
+      slug: project.slug,
+      title: project.title,
+      subtitle: project.subtitle,
+      summary: project.summary,
+      year: project.year,
+      startDate: project.startDate,
+      endDate: project.endDate,
+      cover: project.cover,
+      repoUrl: project.repoUrl,
+      demoUrl: project.demoUrl,
+      category: project.category,
+      technologies: project.technologies.map((link) => link.technology.name),
+    }),
+    breadcrumbJsonLd([
+      { name: "Accueil", path: "/" },
+      { name: "Projets", path: "/projects" },
+      { name: project.title, path: `/projects/${project.slug}` },
+    ]),
+  ];
+
   return (
     <article>
+      <JsonLd data={jsonLd} />
+
       <CaseStudyHero project={project} />
 
       <div className="container-content">

@@ -1,3 +1,6 @@
+import type { Metadata } from "next";
+
+import { JsonLd } from "@/components/seo/json-ld";
 import { About } from "@/components/sections/about";
 import { Achievements } from "@/components/sections/achievements";
 import { Certifications } from "@/components/sections/certifications";
@@ -11,6 +14,8 @@ import { SkillsSection } from "@/components/sections/skills-section";
 import { Stats } from "@/components/sections/stats";
 import { Technologies } from "@/components/sections/technologies";
 import { siteConfig } from "@/config/site";
+import { openGraph, resolveSeoIdentity, truncate, twitterCard } from "@/lib/seo";
+import { personJsonLd, webSiteJsonLd } from "@/lib/structured-data";
 import {
   getAchievements,
   getCertifications,
@@ -38,6 +43,36 @@ import {
  * Toutes les lectures sont mises en cache et balisées : un enregistrement
  * dans /admin invalide la balise concernée et la page se régénère (§12).
  */
+
+/**
+ * Métadonnées de la page d'accueil, tirées de la base.
+ *
+ * `Profile.seoTitle` et `seoDescription` permettent de piloter ce que voit un
+ * recruteur dans Google sans changer une ligne de ce qui s'affiche à l'écran —
+ * et sans toucher au code (§12). Le titre est déclaré en `absolute` : la page
+ * d'accueil porte déjà le nom, le gabarit « %s — Hamza Fanoune » le répéterait.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const profile = await getProfile();
+  const { name, title, description, ogImage } = resolveSeoIdentity(profile);
+  const shortDescription = truncate(description);
+
+  return {
+    title: { absolute: title },
+    description: shortDescription,
+    alternates: { canonical: "/" },
+    openGraph: openGraph({
+      title,
+      description: shortDescription,
+      path: "/",
+      siteName: `${name} — Portfolio`,
+      type: "website",
+      image: ogImage,
+    }),
+    twitter: twitterCard({ title, description: shortDescription, image: ogImage }),
+  };
+}
+
 export default async function HomePage() {
   const [
     profile,
@@ -76,8 +111,33 @@ export default async function HomePage() {
 
   const heroLinks = socialLinks.filter((link) => link.inHero);
 
+  /**
+   * Graphe de données structurées.
+   *
+   * Tout provient de la base : le nom, le métier, la bio, les liens sociaux
+   * visibles et les technologies réellement affichées. Rien n'est ajouté pour
+   * « faire riche » — une propriété que la page ne montre pas ne doit pas
+   * figurer ici.
+   */
+  const seo = resolveSeoIdentity(profile);
+  const jsonLd = [
+    personJsonLd({
+      fullName: name,
+      headline: profile?.headline ?? siteConfig.fallback.description,
+      bioShort: profile?.bioShort ?? null,
+      email,
+      location: profile?.location ?? null,
+      avatar: profile?.avatar ?? null,
+      socialUrls: socialLinks.map((link) => link.url),
+      knowsAbout: technologies.map((technology) => technology.name),
+    }),
+    webSiteJsonLd(name, truncate(seo.description)),
+  ];
+
   return (
     <>
+      <JsonLd data={jsonLd} />
+
       <Hero
         name={name}
         headline={profile?.headline ?? siteConfig.fallback.description}

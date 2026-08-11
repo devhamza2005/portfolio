@@ -18,7 +18,28 @@ import { env } from "@/lib/env";
  */
 
 function createPrismaClient() {
-  const adapter = new PrismaPg({ connectionString: env.DATABASE_URL });
+  // Le pool est dimensionné explicitement plutôt que laissé par défaut (10).
+  //
+  //  • Production (Vercel) : chaque instance sans serveur ouvre son propre
+  //    pool. Un plafond bas évite d'épuiser le quota de connexions Neon quand
+  //    plusieurs instances tournent en parallèle — le pooler Neon se charge
+  //    déjà de la mutualisation.
+  //  • Développement : un pool réduit limite la charge sur le serveur local.
+  //
+  // Les paramètres `connection_limit` placés dans l'URL sont propres au moteur
+  // historique de Prisma ; avec l'adaptateur `pg`, c'est bien cette
+  // configuration-ci qui fait foi.
+  const adapter = new PrismaPg({
+    connectionString: env.DATABASE_URL,
+    max: env.NODE_ENV === "production" ? 5 : 2,
+    idleTimeoutMillis: 10_000,
+    connectionTimeoutMillis: 15_000,
+    // Neon impose TLS. `sslmode=require` dans l'URL suffit, mais l'expliciter
+    // évite un échec silencieux si le paramètre venait à disparaître de l'URL.
+    ...(env.DATABASE_URL.includes("neon.tech")
+      ? { ssl: { rejectUnauthorized: true } }
+      : {}),
+  });
 
   return new PrismaClient({
     adapter,

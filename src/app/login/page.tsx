@@ -13,6 +13,10 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+// Route bloquante assumée : la page lit la session pour rediriger un
+// utilisateur déjà connecté. Rien à prérendre ici.
+export const instant = false;
+
 export default async function LoginPage({
   searchParams,
 }: {

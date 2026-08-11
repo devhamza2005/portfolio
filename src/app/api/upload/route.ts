@@ -26,9 +26,10 @@ import { getStorage, toMediaProvider } from "@/server/storage";
  * passerait l'étape 2 mais échoue à l'étape 3.
  */
 
-export const runtime = "nodejs";
-/** Le corps peut atteindre 10 Mo : pas de mise en cache possible. */
-export const dynamic = "force-dynamic";
+// Avec Cache Components, les configurations `runtime` et `dynamic` ne sont
+// plus acceptées : Node.js est le seul runtime, et rien n'est mis en cache
+// tant qu'aucun `use cache` ne le demande. Une route de téléversement ne
+// cache évidemment rien.
 
 export async function POST(request: Request) {
   const user = await getCurrentUser();

@@ -10,11 +10,15 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-/**
- * Le back-office n'est jamais rendu statiquement : chaque requête revérifie
- * la session côté serveur.
- */
-export const dynamic = "force-dynamic";
+// `force-dynamic` n'est plus nécessaire : avec Cache Components, tout est
+// dynamique par défaut et seul ce qui porte `use cache` est mis en cache.
+// Le back-office ne cache rien — chaque requête revérifie la session.
+//
+// `instant = false` assume explicitement que ces routes sont bloquantes :
+// une page d'administration doit lire la session et la base avant de
+// s'afficher, il n'y a pas de coquille statique à prérendre. Le prérendu
+// partiel reste actif là où il compte vraiment — sur le site public.
+export const instant = false;
 
 export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   // Garde serveur — la vraie protection (§15). `proxy.ts` ne fait que rediriger.

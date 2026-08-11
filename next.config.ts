@@ -3,6 +3,16 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
 
+  /**
+   * Cache Components — active `use cache`, `cacheTag` et le prérendu partiel.
+   *
+   * C'est ce qui donne son sens à `updateTag()` appelé par les actions du
+   * back-office : les pages publiques sont servies depuis un cache balisé, et
+   * un enregistrement dans /admin l'invalide immédiatement. Le visiteur reçoit
+   * du HTML prérendu, pas une requête base de données (§19).
+   */
+  cacheComponents: true,
+
   images: {
     // Cloudinary est le fournisseur par défaut. Les autres hôtes sont déclarés
     // ici pour que le passage à un autre StorageProvider ne casse rien.
@@ -16,6 +26,19 @@ const nextConfig: NextConfig = {
 
   experimental: {
     optimizePackageImports: ["lucide-react", "motion", "date-fns"],
+
+    /**
+     * Un seul processus de prérendu.
+     *
+     * Par défaut, Next.js répartit la génération statique sur autant de
+     * workers que de cœurs — chacun ouvrant son propre pool de connexions.
+     * Sur un portfolio d'une douzaine de pages, la parallélisation ne fait
+     * gagner qu'une poignée de secondes, mais multiplie les connexions
+     * simultanées à la base. Un worker unique suffit largement et rend le
+     * build reproductible quelle que soit la machine.
+     */
+    staticGenerationMinPagesPerWorker: 100,
+    staticGenerationRetryCount: 2,
   },
 
   async headers() {

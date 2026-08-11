@@ -43,7 +43,11 @@ if (!connectionString) {
   throw new Error("DATABASE_URL est absent. Copiez .env.example en .env avant de lancer le seed.");
 }
 
-const db = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
+// Le seed écrit séquentiellement : deux connexions suffisent largement, et
+// un pool réduit évite de saturer la base (locale comme distante).
+const db = new PrismaClient({
+  adapter: new PrismaPg({ connectionString, max: 2, connectionTimeoutMillis: 20_000 }),
+});
 
 /** Paramètres Argon2id conformes aux recommandations OWASP. */
 const ARGON2_OPTIONS = { memoryCost: 19_456, timeCost: 2, parallelism: 1 } as const;

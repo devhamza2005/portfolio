@@ -242,5 +242,6 @@ export function toSerializableResource(resource: ResourceDef) {
     key: resource.key,
     label: resource.label,
     fields: resource.fields,
+    ...(resource.singleton ? { singleton: true as const } : {}),
   };
 }

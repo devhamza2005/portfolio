@@ -26,7 +26,7 @@ type Props = {
  *
  * Tout le contenu vient du profil en base : le nom, le titre, la phrase
  * d'accroche, la disponibilité et les liens sont modifiables depuis
- * /admin/settings sans toucher à ce composant.
+ * /admin/profile sans toucher à ce composant.
  */
 export function Hero({
   name,

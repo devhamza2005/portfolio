@@ -3,6 +3,8 @@ import {
   educationResource,
   experienceResource,
 } from "./career.resource";
+import { messageResource } from "./message.resource";
+import { profileResource } from "./profile.resource";
 import { projectResource } from "./project.resource";
 import {
   achievementResource,
@@ -49,11 +51,24 @@ const RESOURCES: ResourceDef[] = [
   socialLinkResource,
   qualityResource,
   languageResource,
+
+  /**
+   * Ressources de service — enregistrées pour que `getResource` les trouve
+   * (les actions génériques en dépendent), mais marquées `system` : elles ont
+   * leur propre écran et n'apparaissent pas dans la navigation « Contenu ».
+   */
+  profileResource,
+  messageResource,
 ];
 
-/** Toutes les ressources, dans l'ordre d'affichage de la navigation. */
+/**
+ * Ressources de contenu, dans l'ordre d'affichage de la navigation.
+ *
+ * Les ressources `system` en sont écartées : le profil et les messages ont
+ * leur propre entrée dans la section « Réglages » et leur propre écran.
+ */
 export function listResources(): ResourceDef[] {
-  return RESOURCES;
+  return RESOURCES.filter((resource) => !resource.system);
 }
 
 /** Récupère un descripteur par sa clé d'URL. */
@@ -67,9 +82,15 @@ export function getResource(key: string): ResourceDef {
   return resource;
 }
 
-/** Vérifie l'existence d'une ressource sans lever d'erreur (routes dynamiques). */
+/**
+ * Vérifie qu'une ressource est servie par les routes CRUD génériques.
+ *
+ * Les ressources `system` (profil, messages) sont volontairement exclues :
+ * elles disposent d'un écran dédié, et `/admin/profile/new` ou
+ * `/admin/messages/<id>` n'auraient aucun sens.
+ */
 export function hasResource(key: string): boolean {
-  return RESOURCES.some((item) => item.key === key);
+  return RESOURCES.some((item) => item.key === key && !item.system);
 }
 
 export type { ResourceDef, FieldDef, ColumnDef } from "./types";

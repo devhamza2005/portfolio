@@ -27,6 +27,8 @@ type Props = {
   onSelect: (media: PickedMedia) => void;
   /** Dossier logique proposé par défaut au téléversement. */
   folder?: string;
+  /** Intitulé de la fenêtre — « Choisir un fichier » pour un CV, par exemple. */
+  title?: string;
 };
 
 /**
@@ -36,7 +38,13 @@ type Props = {
  * et surtout côté serveur dans /api/upload, qui inspecte les octets réels.
  * Le contrôle client n'est qu'un confort et n'a aucune valeur de sécurité.
  */
-export function MediaPicker({ open, onOpenChange, onSelect, folder = "general" }: Props) {
+export function MediaPicker({
+  open,
+  onOpenChange,
+  onSelect,
+  folder = "general",
+  title = "Choisir une image",
+}: Props) {
   const [items, setItems] = useState<MediaItem[]>([]);
   const [search, setSearch] = useState("");
   const [failed, setFailed] = useState(false);
@@ -127,7 +135,7 @@ export function MediaPicker({ open, onOpenChange, onSelect, folder = "general" }
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Choisir une image</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
             Téléversez un nouveau fichier ou reprenez-en un de la médiathèque.
             JPEG, PNG, WebP, AVIF, GIF ou PDF — 5 Mo maximum pour une image.

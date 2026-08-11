@@ -42,6 +42,14 @@ export function TabsContent({ className, ...props }: ComponentProps<typeof TabsP
     <TabsPrimitive.Content
       className={cn(
         "mt-6 outline-none",
+        /*
+          Radix rend le panneau focalisable (`tabIndex={0}`) — c'est le motif
+          WAI-ARIA : un panneau sans élément focalisable à l'intérieur doit
+          pouvoir être atteint au clavier pour être lu et défilé. Mais
+          `outline-none` le privait de tout repère visuel : l'utilisateur au
+          clavier voyait le focus disparaître. On rétablit un anneau.
+        */
+        "focus-visible:ring-ring rounded-[var(--radius-md)] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]",
         "data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-bottom-2",
         "duration-300",
         className,

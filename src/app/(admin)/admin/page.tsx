@@ -50,12 +50,12 @@ export default async function AdminDashboardPage() {
   // Éléments de contenu qu'il reste à compléter — évite d'oublier
   // un champ important avant de partager le portfolio.
   const todos = [
-    { done: Boolean(profile?.cvUrl), label: "Téléverser le CV", href: "/admin/settings" },
-    { done: Boolean(profile?.avatarId), label: "Ajouter une photo de profil", href: "/admin/settings" },
+    { done: Boolean(profile?.cvUrl), label: "Téléverser le CV", href: "/admin/profile" },
+    { done: Boolean(profile?.avatarId), label: "Ajouter une photo de profil", href: "/admin/profile" },
     {
       done: Boolean(profile?.seoDescription),
       label: "Renseigner la description SEO",
-      href: "/admin/settings",
+      href: "/admin/profile",
     },
     { done: counts.certifications > 0, label: "Ajouter une certification", href: "/admin/certifications" },
   ];

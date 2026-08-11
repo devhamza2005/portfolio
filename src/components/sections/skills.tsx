@@ -47,14 +47,24 @@ export function SkillsTabs({
         `forceMount` : par défaut Radix démonte les onglets inactifs, et seules
         les compétences du premier groupe existaient dans le HTML — les autres
         étaient invisibles pour un moteur de recherche comme pour un lecteur
-        d'écran explorant la page. Montés en permanence, ils sont présents dans
-        le document et masqués par l'attribut `hidden`, que Radix pose lui-même.
+        d'écran explorant la page.
+
+        ATTENTION : `forceMount` seul ne suffit pas. Radix calcule
+        `hidden: !present`, or `present` vaut `forceMount || isSelected` — donc
+        toujours vrai ici. Sans le `hidden` explicite ci-dessous, les neuf
+        groupes s'afficheraient EMPILÉS les uns sous les autres. Radix pose
+        `hidden` avant d'étaler les props reçues, ce qui nous laisse la main.
 
         Le remplissage des barres reste conditionné à `active` : elles ne
         s'animent qu'une fois leur onglet réellement ouvert.
       */}
       {groups.map((group) => (
-        <TabsContent key={group.id} value={group.slug} forceMount>
+        <TabsContent
+          key={group.id}
+          value={group.slug}
+          forceMount
+          hidden={value !== group.slug}
+        >
           <ul className="grid gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
             {group.skills.map((skill, index) => (
               <SkillBar

@@ -22,14 +22,27 @@ const SESSION_COOKIES = [
 export default function proxy(request: NextRequest) {
   const hasSession = SESSION_COOKIES.some((name) => request.cookies.has(name));
 
-  if (!hasSession) {
-    const loginUrl = new URL("/login", request.url);
-    // Mémorise la destination pour y revenir après connexion.
-    loginUrl.searchParams.set("from", request.nextUrl.pathname);
-    return NextResponse.redirect(loginUrl);
-  }
+  if (hasSession) return NextResponse.next();
 
-  return NextResponse.next();
+  /**
+   * Les invocations de Server Action passent SANS redirection.
+   *
+   * Rediriger un POST d'action vers /login remplace silencieusement l'écran :
+   * l'utilisateur clique « Enregistrer », sa saisie disparaît, et rien
+   * n'explique pourquoi. En laissant la requête aller au serveur,
+   * `requireAdminOrThrow()` la refuse et renvoie « Session expirée.
+   * Reconnectez-vous. », que le formulaire affiche.
+   *
+   * Aucune permissivité ici : ce fichier ne protège rien (le cookie n'y est
+   * pas vérifié cryptographiquement). La garde côté serveur reste la seule
+   * autorisation, et elle s'applique de la même façon.
+   */
+  if (request.headers.has("next-action")) return NextResponse.next();
+
+  const loginUrl = new URL("/login", request.url);
+  // Mémorise la destination pour y revenir après connexion.
+  loginUrl.searchParams.set("from", request.nextUrl.pathname);
+  return NextResponse.redirect(loginUrl);
 }
 
 export const config = {

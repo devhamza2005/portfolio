@@ -29,7 +29,7 @@ export const ADMIN_NAV_STATIC: AdminNavSection[] = [
     items: [
       { href: "/admin/media", label: "Médiathèque", icon: "Images" },
       { href: "/admin/messages", label: "Messages", icon: "Inbox" },
-      { href: "/admin/settings", label: "Profil & réglages", icon: "Settings" },
+      { href: "/admin/profile", label: "Profil", icon: "UserRound" },
     ],
   },
 ];

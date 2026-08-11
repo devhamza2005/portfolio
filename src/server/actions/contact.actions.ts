@@ -22,8 +22,9 @@ export type ContactState = {
  *  3. validation Zod stricte avant tout accès à la base.
  *
  * Le message est systématiquement enregistré et consultable dans
- * /admin/messages, même si aucun service d'email n'est configuré : aucune
- * prise de contact ne peut être perdue.
+ * /admin/messages, même si aucun service d'email n'est configuré : la boîte de
+ * réception du back-office est la garantie qu'aucune prise de contact ne se
+ * perd, indépendamment de l'envoi d'email.
  */
 export async function sendContactMessage(
   _prev: ContactState,

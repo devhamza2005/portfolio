@@ -39,6 +39,8 @@ export type SerializableResource = {
   key: string;
   label: ResourceDef["label"];
   fields: FieldDef[];
+  /** Ressource à ligne unique : ni liste où retourner, ni suppression possible. */
+  singleton?: boolean;
 };
 
 /**
@@ -113,7 +115,9 @@ export function ResourceForm({
 
       if (result.ok) {
         toast.success(result.message ?? "Enregistré.");
-        router.push(`/admin/${resource.key}`);
+        // Une ressource à ligne unique n'a pas de liste où revenir : on reste
+        // sur le formulaire et on recharge les valeurs enregistrées.
+        if (!resource.singleton) router.push(`/admin/${resource.key}`);
         router.refresh();
         return;
       }
@@ -203,13 +207,16 @@ export function ResourceForm({
       <div className="bg-surface/90 border-border fixed inset-x-0 bottom-0 z-40 border-t backdrop-blur-lg lg:left-64">
         <div className="mx-auto flex max-w-4xl items-center gap-3 px-4 py-3 lg:px-8">
           <Button asChild variant="ghost" size="sm" disabled={busy}>
-            <Link href={`/admin/${resource.key}`}>
+            <Link href={resource.singleton ? "/admin" : `/admin/${resource.key}`}>
               <ArrowLeft />
-              <span className="hidden sm:inline">Annuler</span>
+              <span className="hidden sm:inline">
+                {resource.singleton ? "Retour" : "Annuler"}
+              </span>
             </Link>
           </Button>
 
-          {mode === "edit" ? (
+          {/* Supprimer le profil viderait tout le site : l'option n'existe pas. */}
+          {mode === "edit" && !resource.singleton ? (
             <Button
               type="button"
               variant="ghost"

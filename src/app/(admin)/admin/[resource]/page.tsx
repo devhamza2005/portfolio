@@ -12,8 +12,9 @@ import { listResourceRows } from "@/server/queries/resource";
 /**
  * Liste d'une ressource — une seule route dessert les treize entités.
  *
- * Les segments statiques (/admin/media, /admin/settings) sont prioritaires sur
- * ce segment dynamique : ils ne sont donc jamais interceptés ici.
+ * Les segments statiques (/admin/media, /admin/profile, /admin/messages) sont
+ * prioritaires sur ce segment dynamique : ils ne sont jamais interceptés ici.
+ * Les ressources marquées `system` sont en outre refusées par `hasResource`.
  */
 
 export async function generateMetadata({

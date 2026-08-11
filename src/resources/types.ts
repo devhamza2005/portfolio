@@ -57,6 +57,13 @@ export type FieldDef =
   | (BaseField & { type: "icon" })
   /** Une image issue de la médiathèque. */
   | (BaseField & { type: "image"; folder?: string })
+  /**
+   * Un fichier de la médiathèque, stocké par son URL et non par son
+   * identifiant — pour les colonnes qui portent une adresse plutôt qu'une
+   * relation (le CV du profil, par exemple). Même médiathèque, même
+   * téléversement, même contrôle des octets : seule la valeur retenue diffère.
+   */
+  | (BaseField & { type: "file"; folder?: string; accept?: string })
   /** Plusieurs images ordonnées (captures d'écran d'un projet). */
   | (BaseField & { type: "gallery"; folder?: string })
   /** Relation vers une autre ressource (technologies, catégorie…). */
@@ -115,6 +122,15 @@ export type ResourceDef = {
   sortable?: boolean;
   /** Ressource à ligne unique : pas de liste, formulaire direct (Profil). */
   singleton?: boolean;
+  /**
+   * Ressource de service, servie par un écran dédié.
+   *
+   * Elle reste accessible au moteur CRUD — `getResource` la trouve, donc les
+   * Server Actions génériques (bascule, suppression) fonctionnent — mais elle
+   * n'apparaît pas dans la navigation « Contenu » et les routes génériques
+   * `/admin/<clé>`, `/new` et `/<id>` la refusent : son écran est ailleurs.
+   */
+  system?: boolean;
 
   /** Relations Prisma à charger pour l'affichage de la liste. */
   listInclude?: Record<string, unknown>;

@@ -264,7 +264,15 @@ export async function deleteResourceAction(
 //  BASCULE RAPIDE  (publié / en vedette / visible)
 // ───────────────────────────────────────────────────────────────────────────
 
-const TOGGLEABLE = new Set(["featured", "published", "visible", "current", "isRead", "highlighted"]);
+const TOGGLEABLE = new Set([
+  "featured",
+  "published",
+  "visible",
+  "current",
+  "isRead",
+  "isArchived",
+  "highlighted",
+]);
 
 export async function toggleResourceFieldAction(
   resourceKey: string,

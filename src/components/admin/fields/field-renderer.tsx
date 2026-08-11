@@ -13,6 +13,7 @@ import {
   TextInputField,
   TextareaFieldInput,
 } from "./basic-fields";
+import { FileFieldInput } from "./file-field";
 import { IconFieldInput } from "./icon-field";
 import { ImageFieldInput } from "./image-field";
 import { type RelationOption, RelationFieldInput } from "./relation-field";
@@ -167,6 +168,11 @@ export function FieldRenderer({
             }
           }}
         />
+      );
+
+    case "file":
+      return (
+        <FileFieldInput {...common} folder={field.folder} value={asText} onChange={onChange} />
       );
 
     case "gallery":

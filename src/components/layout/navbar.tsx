@@ -2,6 +2,7 @@
 
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Monogram } from "@/components/brand/monogram";
@@ -22,6 +23,18 @@ export function Navbar({ name, cvUrl }: { name: string; cvUrl: string | null }) 
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string | null>(null);
+  const pathname = usePathname();
+
+  const isHome = pathname === "/";
+
+  /**
+   * Une entrée est active soit parce qu'on se trouve sur sa page, soit — sur
+   * l'accueil uniquement — parce que sa section est à l'écran.
+   */
+  const isActive = (item: { id: string; isPage?: boolean }) =>
+    item.isPage
+      ? pathname.startsWith(`/${item.id}`)
+      : isHome && active === item.id;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -96,25 +109,31 @@ export function Navbar({ name, cvUrl }: { name: string; cvUrl: string | null }) 
             </Link>
 
             <ul className="mx-auto hidden items-center gap-0.5 lg:flex">
-              {SECTION_NAV.map((item) => (
-                <li key={item.id}>
-                  <a
-                    href={item.href}
-                    aria-current={active === item.id ? "true" : undefined}
-                    className={cn(
-                      "relative rounded-full px-3.5 py-2 text-sm transition-colors duration-200",
-                      active === item.id
-                        ? "text-foreground font-medium"
-                        : "text-muted hover:text-foreground",
-                    )}
-                  >
-                    {active === item.id ? (
-                      <span className="bg-brand absolute inset-x-3.5 -bottom-0.5 h-px" aria-hidden />
-                    ) : null}
-                    {item.label}
-                  </a>
-                </li>
-              ))}
+              {SECTION_NAV.map((item) => {
+                const current = isActive(item);
+                return (
+                  <li key={item.id}>
+                    <Link
+                      href={item.href}
+                      aria-current={current ? "page" : undefined}
+                      className={cn(
+                        "relative rounded-full px-3.5 py-2 text-sm transition-colors duration-200",
+                        current
+                          ? "text-foreground font-medium"
+                          : "text-muted hover:text-foreground",
+                      )}
+                    >
+                      {current ? (
+                        <span
+                          className="bg-brand absolute inset-x-3.5 -bottom-0.5 h-px"
+                          aria-hidden
+                        />
+                      ) : null}
+                      {item.label}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
 
             <div className="ml-auto flex shrink-0 items-center gap-2 lg:ml-0">
@@ -167,22 +186,21 @@ export function Navbar({ name, cvUrl }: { name: string; cvUrl: string | null }) 
           <ul className="space-y-1">
             {SECTION_NAV.map((item, index) => (
               <li key={item.id}>
-                <a
+                <Link
                   href={item.href}
                   onClick={() => setOpen(false)}
                   tabIndex={open ? 0 : -1}
+                  aria-current={isActive(item) ? "page" : undefined}
                   style={{ transitionDelay: open ? `${index * 45}ms` : "0ms" }}
                   className={cn(
                     "font-display block py-3 text-3xl font-semibold transition-all duration-400 ease-[var(--ease-signature)]",
                     open ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
-                    active === item.id ? "text-brand" : "text-foreground",
+                    isActive(item) ? "text-brand" : "text-foreground",
                   )}
                 >
-                  <span className="text-subtle mr-3 font-mono text-sm">
-                    0{index + 1}
-                  </span>
+                  <span className="text-subtle mr-3 font-mono text-sm">0{index + 1}</span>
                   {item.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

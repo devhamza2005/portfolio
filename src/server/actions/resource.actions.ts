@@ -63,9 +63,21 @@ function delegate(model: PrismaModelKey): AnyDelegate {
  * version périmée : après un enregistrement dans le back-office, la page
  * publique affiche la nouvelle valeur dès le rechargement suivant.
  */
-function revalidateResource(key: string) {
+function revalidateResource(key: string, slug?: string | null) {
   updateTag(key);
   updateTag("portfolio");
+
+  // Les pages de détail portent en plus un tag par slug (`project:mon-projet`).
+  // Le tag global suffirait à les rafraîchir, mais purger précisément la page
+  // concernée évite de recalculer les six autres études de cas à chaque
+  // enregistrement.
+  if (slug) updateTag(`${key.replace(/s$/, "")}:${slug}`);
+}
+
+/** Extrait le slug d'un enregistrement, quand le modèle en possède un. */
+function slugOf(record: Record<string, unknown> | null | undefined): string | null {
+  const slug = record?.["slug"];
+  return typeof slug === "string" && slug ? slug : null;
 }
 
 function toActionError(error: unknown): ActionResult<never> {
@@ -168,7 +180,7 @@ export async function createResourceAction(
     const id = String(created["id"]);
 
     await replaceNested(id, children);
-    revalidateResource(resource.key);
+    revalidateResource(resource.key, slugOf(created));
 
     return { ok: true, data: { id }, message: `${resource.label.singular} créé.` };
   } catch (error) {
@@ -205,9 +217,18 @@ export async function updateResourceAction(
       resource.nested,
     );
 
-    await delegate(resource.model).update({ where: { id }, data: scalars });
+    // L'ancien slug est relu AVANT la mise à jour : renommer un projet doit
+    // purger l'ancienne URL autant que la nouvelle, sinon la page précédente
+    // resterait servie depuis le cache.
+    const previous = await delegate(resource.model).findUnique({ where: { id } });
+    const updated = await delegate(resource.model).update({ where: { id }, data: scalars });
     await replaceNested(id, children);
-    revalidateResource(resource.key);
+
+    revalidateResource(resource.key, slugOf(updated));
+    const previousSlug = slugOf(previous);
+    if (previousSlug && previousSlug !== slugOf(updated)) {
+      revalidateResource(resource.key, previousSlug);
+    }
 
     return { ok: true, data: { id }, message: `${resource.label.singular} enregistré.` };
   } catch (error) {
@@ -227,8 +248,11 @@ export async function deleteResourceAction(
     await requireAdminOrThrow();
 
     const resource = getResource(resourceKey);
+    // Le slug est relu avant la suppression : après, il n'existe plus.
+    const existing = await delegate(resource.model).findUnique({ where: { id } });
+
     await delegate(resource.model).delete({ where: { id } });
-    revalidateResource(resource.key);
+    revalidateResource(resource.key, slugOf(existing));
 
     return { ok: true, data: null, message: `${resource.label.singular} supprimé.` };
   } catch (error) {
@@ -256,8 +280,11 @@ export async function toggleResourceFieldAction(
     }
 
     const resource = getResource(resourceKey);
-    await delegate(resource.model).update({ where: { id }, data: { [field]: value } });
-    revalidateResource(resource.key);
+    const updated = await delegate(resource.model).update({
+      where: { id },
+      data: { [field]: value },
+    });
+    revalidateResource(resource.key, slugOf(updated));
 
     return { ok: true, data: null };
   } catch (error) {

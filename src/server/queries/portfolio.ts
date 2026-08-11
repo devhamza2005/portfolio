@@ -300,6 +300,98 @@ export async function getProjects() {
   });
 }
 
+/**
+ * Un projet complet, avec tout le contenu de son étude de cas.
+ *
+ * Le tag `project:<slug>` s'ajoute au tag global `projects` : le second permet
+ * d'invalider toutes les pages projet d'un coup, le premier de ne recalculer
+ * qu'une seule étude de cas. Les actions du back-office émettent les deux.
+ */
+export async function getProjectBySlug(slug: string) {
+  "use cache";
+  cacheTag("projects", `project:${slug}`, "technologies", "categories", "portfolio");
+  cacheLife("max");
+
+  return db.project.findFirst({
+    where: { slug, published: true },
+    include: {
+      category: { select: { id: true, name: true, slug: true, iconKey: true } },
+      cover: { select: MEDIA_SELECT },
+      technologies: {
+        orderBy: { order: "asc" },
+        select: {
+          technology: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              iconKey: true,
+              color: true,
+              url: true,
+              category: { select: { id: true, name: true } },
+            },
+          },
+        },
+      },
+      features: { orderBy: { order: "asc" } },
+      challenges: { orderBy: { order: "asc" } },
+      metrics: { orderBy: { order: "asc" } },
+      images: {
+        orderBy: { order: "asc" },
+        select: {
+          id: true,
+          kind: true,
+          caption: true,
+          media: { select: MEDIA_SELECT },
+        },
+      },
+    },
+  });
+}
+
+export type ProjectDetail = NonNullable<Awaited<ReturnType<typeof getProjectBySlug>>>;
+
+/** Slugs publiés — alimente `generateStaticParams` pour prégénérer les pages. */
+export async function getPublishedProjectSlugs() {
+  "use cache";
+  cacheTag("projects", "portfolio");
+  cacheLife("max");
+
+  const rows = await db.project.findMany({
+    where: { published: true },
+    orderBy: [{ featured: "desc" }, { order: "asc" }],
+    select: { slug: true },
+  });
+
+  return rows.map((row) => row.slug);
+}
+
+/**
+ * Projets précédent et suivant, dans l'ordre d'affichage du portfolio.
+ *
+ * Permet de terminer une étude de cas par un lien vers la suivante plutôt que
+ * par un cul-de-sac — le visiteur continue à parcourir les réalisations.
+ */
+export async function getAdjacentProjects(slug: string) {
+  "use cache";
+  cacheTag("projects", `project:${slug}`, "portfolio");
+  cacheLife("max");
+
+  const projects = await db.project.findMany({
+    where: { published: true },
+    orderBy: [{ featured: "desc" }, { order: "asc" }],
+    select: { slug: true, title: true, summary: true, cover: { select: MEDIA_SELECT } },
+  });
+
+  const index = projects.findIndex((project) => project.slug === slug);
+  if (index === -1) return { previous: null, next: null };
+
+  return {
+    previous: index > 0 ? (projects[index - 1] ?? null) : null,
+    next: index < projects.length - 1 ? (projects[index + 1] ?? null) : null,
+  };
+}
+
 /** Catégories réellement utilisées par au moins un projet publié. */
 export async function getProjectCategories() {
   "use cache";

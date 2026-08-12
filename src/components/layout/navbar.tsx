@@ -76,7 +76,7 @@ export function Navbar({ name, cvUrl }: { name: string; cvUrl: string | null }) 
     <>
       <a
         href="#main"
-        className="bg-brand text-brand-contrast focus:ring-ring sr-only rounded-[var(--radius-md)] px-4 py-2 text-sm font-medium focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[70] focus:ring-2"
+        className="bg-brand-solid text-brand-contrast focus:ring-ring sr-only rounded-[var(--radius-md)] px-4 py-2 text-sm font-medium focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[70] focus:ring-2"
       >
         Aller au contenu principal
       </a>

@@ -16,24 +16,32 @@
    1. PALETTE BRUTE  (identique dans les deux thèmes)
    ─────────────────────────────────────────────────────────────────────────── */
 :root {
-  /* Bleu azur — couleur primaire de l'identité HF */
-  --hf-brand-50: #eef3ff;
-  --hf-brand-100: #dbe5ff;
-  --hf-brand-200: #bfd0ff;
-  --hf-brand-300: #94b0ff;
-  --hf-brand-400: #6f95ff;
-  --hf-brand-500: #5b8cff;
-  --hf-brand-600: #3f6ae8;
-  --hf-brand-700: #2f52c4;
-  --hf-brand-800: #27439c;
-  --hf-brand-900: #22397a;
+  /* Rouge — couleur primaire de l'identité HF.
+     Les quatre teintes de référence de la marque sont repérées ci-dessous ;
+     les autres échelons ne servent qu'à garder une progression régulière. */
+  --hf-brand-50: #fff1f2;
+  --hf-brand-100: #ffe1e3;
+  --hf-brand-200: #ffc7ca;
+  --hf-brand-300: #ff9d9b;
+  --hf-brand-400: #ff6b62;
+  --hf-brand-500: #ff3b30; /* ROUGE CLAIR      — texte, icônes, accents sur fond sombre */
+  --hf-brand-600: #e50914; /* ROUGE PRINCIPAL  — aplats, boutons, halos */
+  --hf-brand-700: #c20812;
+  --hf-brand-800: #a3070f;
+  --hf-brand-900: #8b0000; /* ROUGE FONCÉ      — fin des dégradés, profondeur */
 
-  /* Cyan — couleur secondaire, utilisée dans le dégradé signature */
-  --hf-accent-300: #67e8f9;
-  --hf-accent-400: #38dcf0;
-  --hf-accent-500: #22d3ee;
-  --hf-accent-600: #0aa8c4;
-  --hf-accent-700: #0d8399;
+  /* Rouge profond — couleur secondaire, second ton du dégradé signature */
+  --hf-accent-300: #ff8a80;
+  --hf-accent-400: #ff5f57;
+  --hf-accent-500: #dc2626; /* ROUGE INTERMÉDIAIRE — aplat calme sur fond clair */
+  --hf-accent-600: #b0141b;
+  --hf-accent-700: #8b0000;
+
+  /* Dégradé signature — du rouge clair au rouge foncé, identique dans les deux
+     thèmes : c'est lui qui porte l'identité (titres, monogramme, barres). */
+  --hf-gradient-from: var(--hf-brand-500); /* #ff3b30 */
+  --hf-gradient-via: var(--hf-brand-600); /* #e50914 */
+  --hf-gradient-to: var(--hf-brand-900); /* #8b0000 */
 
   /* Ambre — accent rare (projet vedette, mention, distinction) */
   --hf-ember-300: #ffc48a;
@@ -69,15 +77,21 @@
 
   --border: #0a0a0a14; /* 8 % */
   --border-strong: #0a0a0a26; /* 15 % */
-  --ring: var(--hf-brand-600);
+  --ring: var(--hf-accent-500);
 
-  --brand: var(--hf-brand-600);
-  --brand-hover: var(--hf-brand-700);
+  /* `--brand` sert surtout de couleur de TEXTE (liens, libellés, icônes) :
+     il lui faut donc 4.5:1 sur --background. `--brand-solid` sert aux APLATS
+     (boutons pleins) où c'est le blanc posé dessus qui doit atteindre 4.5:1.
+     Un seul rouge ne peut pas satisfaire les deux — d'où les deux jetons. */
+  --brand: var(--hf-brand-700); /* #c20812 — 6.3:1 sur --background   */
+  --brand-hover: var(--hf-brand-900);
+  --brand-solid: var(--hf-accent-500); /* #dc2626 — 4.8:1 avec du blanc      */
+  --brand-solid-hover: var(--hf-brand-700);
   --brand-soft: var(--hf-brand-50);
   --brand-contrast: #ffffff;
 
-  --accent: var(--hf-accent-700);
-  --accent-soft: #e0fbff;
+  --accent: var(--hf-accent-700); /* #8b0000 — 10:1 sur --background    */
+  --accent-soft: #fff1f0;
 
   --ember: var(--hf-ember-700);
   --ember-soft: #fff2e6;
@@ -97,12 +111,12 @@
   --shadow-md: 0 6px 18px rgb(12 13 18 / 0.09);
   --shadow-lg: 0 14px 38px rgb(12 13 18 / 0.11);
   --shadow-xl: 0 28px 68px rgb(12 13 18 / 0.14);
-  --shadow-glow: 0 0 0 1px rgb(63 106 232 / 0.18), 0 12px 40px rgb(63 106 232 / 0.22);
+  --shadow-glow: 0 0 0 1px rgb(220 38 38 / 0.16), 0 12px 40px rgb(220 38 38 / 0.18);
 
-  /* Fond d'ambiance (aurora) */
-  --aurora-1: rgb(91 140 255 / 0.22);
-  --aurora-2: rgb(34 211 238 / 0.16);
-  --aurora-3: rgb(255 155 74 / 0.1);
+  /* Fond d'ambiance (aurora) — trois rouges de la palette, très dilués */
+  --aurora-1: rgb(229 9 20 / 0.14);
+  --aurora-2: rgb(255 59 48 / 0.1);
+  --aurora-3: rgb(139 0 0 / 0.08);
   --grid-line: rgb(12 13 18 / 0.045);
   --noise-opacity: 0.02;
 
@@ -113,27 +127,32 @@
    3. THÈME SOMBRE  (par défaut à l'arrivée sur le site)
    ─────────────────────────────────────────────────────────────────────────── */
 .dark {
-  --background: #08090d;
-  --surface: #101218;
-  --surface-elevated: #171a22;
-  --surface-sunken: #0b0c11;
+  /* Base neutre et profonde — aucune teinte bleutée dans les gris de fond,
+     pour que le rouge soit la seule couleur perçue. */
+  --background: #050505;
+  --surface: #0d0d0d;
+  --surface-elevated: #151515;
+  --surface-sunken: #0a0a0a;
 
-  --foreground: #ecedf2;
-  --foreground-muted: #a4aab8; /* 8.2:1 sur --background */
-  --foreground-subtle: #7d8494; /* 5.1:1 sur --background */
-  --foreground-inverted: #08090d;
+  --foreground: #ecedf2; /* 17.4:1 sur --background */
+  --foreground-muted: #a4aab8; /* 8.8:1  sur --background */
+  --foreground-subtle: #7d8494; /* 5.4:1  sur --background */
+  --foreground-inverted: #050505;
 
   --border: #ffffff14; /* 8 % */
   --border-strong: #ffffff2e; /* 18 % */
-  --ring: var(--hf-brand-400);
+  --ring: var(--hf-brand-500);
 
-  --brand: var(--hf-brand-500);
+  /* Voir la note du thème clair : texte et aplat n'utilisent pas le même rouge. */
+  --brand: var(--hf-brand-500); /* #ff3b30 — 5.8:1 sur --background   */
   --brand-hover: var(--hf-brand-400);
-  --brand-soft: rgb(91 140 255 / 0.12);
-  --brand-contrast: #06070a;
+  --brand-solid: var(--hf-brand-600); /* #e50914 — 4.8:1 avec du blanc      */
+  --brand-solid-hover: var(--hf-brand-500);
+  --brand-soft: rgb(229 9 20 / 0.14);
+  --brand-contrast: #ffffff;
 
-  --accent: var(--hf-accent-500);
-  --accent-soft: rgb(34 211 238 / 0.12);
+  --accent: var(--hf-accent-400); /* #ff5f57 — 6.8:1 sur --background   */
+  --accent-soft: rgb(220 38 38 / 0.14);
 
   --ember: var(--hf-ember-500);
   --ember-soft: rgb(255 155 74 / 0.12);
@@ -151,11 +170,13 @@
   --shadow-md: 0 8px 24px rgb(0 0 0 / 0.5);
   --shadow-lg: 0 18px 48px rgb(0 0 0 / 0.55);
   --shadow-xl: 0 32px 80px rgb(0 0 0 / 0.6);
-  --shadow-glow: 0 0 0 1px rgb(91 140 255 / 0.28), 0 14px 48px rgb(91 140 255 / 0.28);
+  /* Halo rouge volontairement discret : un liseré net + une diffusion large et
+     faible. Au-delà de ~0.30 d'opacité l'effet vire au « néon ». */
+  --shadow-glow: 0 0 0 1px rgb(229 9 20 / 0.3), 0 14px 48px rgb(229 9 20 / 0.24);
 
-  --aurora-1: rgb(91 140 255 / 0.2);
-  --aurora-2: rgb(34 211 238 / 0.14);
-  --aurora-3: rgb(255 155 74 / 0.08);
+  --aurora-1: rgb(229 9 20 / 0.18);
+  --aurora-2: rgb(255 59 48 / 0.12);
+  --aurora-3: rgb(139 0 0 / 0.14);
   --grid-line: rgb(255 255 255 / 0.035);
   --noise-opacity: 0.035;
 
@@ -184,6 +205,8 @@
 
   --color-brand: var(--brand);
   --color-brand-hover: var(--brand-hover);
+  --color-brand-solid: var(--brand-solid);
+  --color-brand-solid-hover: var(--brand-solid-hover);
   --color-brand-soft: var(--brand-soft);
   --color-brand-contrast: var(--brand-contrast);
   --color-accent: var(--accent);
@@ -426,16 +449,23 @@
   background-image: linear-gradient(
     100deg,
     var(--foreground) 0%,
-    var(--brand) 45%,
-    var(--accent) 100%
+    var(--hf-gradient-from) 55%,
+    var(--hf-gradient-via) 100%
   );
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
 }
 
+/* Réservé aux grands titres : le dégradé descend jusqu'au rouge foncé, ce qui
+   suppose une graisse et une taille suffisantes (≥ 24 px semi-gras, seuil 3:1). */
 @utility text-gradient-brand {
-  background-image: linear-gradient(100deg, var(--brand) 0%, var(--accent) 100%);
+  background-image: linear-gradient(
+    100deg,
+    var(--hf-gradient-from) 0%,
+    var(--hf-gradient-via) 55%,
+    var(--hf-gradient-to) 100%
+  );
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;

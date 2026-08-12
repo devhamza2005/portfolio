@@ -325,7 +325,7 @@ export function ColorFieldInput({
         <input
           type="color"
           aria-label={`${common.label} — sélecteur de couleur`}
-          value={isValid ? value : "#5b8cff"}
+          value={isValid ? value : "#e50914"}
           disabled={common.disabled}
           onChange={(event) => onChange(event.target.value.toUpperCase())}
           className="border-border size-11 shrink-0 cursor-pointer rounded-[var(--radius-md)] border bg-transparent p-1"

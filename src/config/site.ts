@@ -67,7 +67,7 @@ export const siteConfig = {
   ],
   themeColor: {
     light: "#FBFBFD",
-    dark: "#08090D",
+    dark: "#050505",
   },
 } as const;
 

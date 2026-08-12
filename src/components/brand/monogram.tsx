@@ -22,8 +22,8 @@ export function Monogram({
     >
       <defs>
         <linearGradient id="hf-monogram" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse">
-          <stop stopColor="var(--brand)" />
-          <stop offset="1" stopColor="var(--accent)" />
+          <stop stopColor="var(--hf-gradient-from)" />
+          <stop offset="1" stopColor="var(--hf-gradient-via)" />
         </linearGradient>
       </defs>
 

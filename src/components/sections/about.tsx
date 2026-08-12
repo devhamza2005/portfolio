@@ -116,7 +116,7 @@ export function About({ bioShort, bioLong, location, avatar, qualities, language
                       {language.percent !== null ? (
                         <div className="bg-elevated mt-2 h-1 overflow-hidden rounded-full">
                           <div
-                            className="bg-brand h-full rounded-full"
+                            className="h-full rounded-full bg-[linear-gradient(90deg,var(--hf-gradient-via),var(--hf-gradient-from))]"
                             style={{ width: `${language.percent}%` }}
                           />
                         </div>

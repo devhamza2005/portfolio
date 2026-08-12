@@ -224,7 +224,7 @@ function MultiRelation({
                       <span
                         className={cn(
                           "grid size-4 shrink-0 place-items-center rounded-[4px] border transition-colors",
-                          selected ? "border-brand bg-brand" : "border-border-strong",
+                          selected ? "border-brand-solid bg-brand-solid" : "border-border-strong",
                         )}
                         aria-hidden
                       >

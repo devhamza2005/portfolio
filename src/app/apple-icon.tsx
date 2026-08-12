@@ -11,9 +11,9 @@ import { ImageResponse } from "next/og";
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 
-const MARQUE = "#5b8cff";
-const ACCENT = "#22d3ee";
-const FOND = "#08090d";
+const MARQUE = "#ff3b30";
+const ACCENT = "#e50914";
+const FOND = "#050505";
 
 export default function AppleIcon() {
   return new ImageResponse(

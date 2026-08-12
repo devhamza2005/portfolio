@@ -143,7 +143,7 @@ function SkillBar({
           style={{
             background: color
               ? `linear-gradient(90deg, ${color}, color-mix(in oklab, ${color} 55%, var(--accent)))`
-              : "linear-gradient(90deg, var(--brand), var(--accent))",
+              : "linear-gradient(90deg, var(--hf-gradient-via), var(--hf-gradient-from))",
           }}
           initial={{ width: 0 }}
           animate={{ width: shouldFill ? `${percent}%` : 0 }}

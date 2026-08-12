@@ -18,13 +18,21 @@ import { cn } from "@/lib/utils";
 type Line = { indent: number; parts: { text: string; tone?: Tone }[] };
 type Tone = "keyword" | "annotation" | "type" | "string" | "comment" | "fn";
 
+/**
+ * Coloration syntaxique de la fenêtre.
+ *
+ * Les deux tons qui étaient bleus (`type`, `fn`) passent dans la famille
+ * chaude pour rejoindre l'identité rouge. Les autres restent inchangés :
+ * un thème de code a besoin de teintes distinctes pour rester lisible, et
+ * l'ambre, le vert et le violet ne relèvent pas de l'identité bleue.
+ */
 const TONE_CLASS: Record<Tone, string> = {
   keyword: "text-[#c792ea]",
   annotation: "text-[#ffcb6b]",
-  type: "text-[#82aaff]",
+  type: "text-[#ff8a80]",
   string: "text-[#c3e88d]",
   comment: "text-subtle italic",
-  fn: "text-[#89ddff]",
+  fn: "text-[#f48fb1]",
 };
 
 const CODE: Line[] = [

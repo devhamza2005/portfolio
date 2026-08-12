@@ -82,7 +82,7 @@ export function FeaturedProjectCard({ project }: { project: ProjectCardData }) {
             <div className="flex flex-wrap items-center gap-3">
               <Link
                 href={`/projects/${project.slug}`}
-                className="bg-brand text-brand-contrast hover:bg-brand-hover inline-flex h-11 items-center gap-2 rounded-[var(--radius-md)] px-5 text-sm font-medium transition-colors"
+                className="bg-brand-solid text-brand-contrast hover:bg-brand-solid-hover inline-flex h-11 items-center gap-2 rounded-[var(--radius-md)] px-5 text-sm font-medium transition-colors"
               >
                 Lire l&apos;étude de cas
                 <ArrowUpRight className="size-4" />

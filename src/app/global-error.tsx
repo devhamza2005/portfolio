@@ -30,11 +30,13 @@
  * affiche sa propre surcouche d'erreur.
  */
 
-const COULEUR_FOND = "#08090d";
+const COULEUR_FOND = "#050505";
 const COULEUR_TEXTE = "#ecedf2";
 const COULEUR_ATTENUEE = "#9aa0ae";
-const COULEUR_MARQUE = "#5b8cff";
-const COULEUR_ACCENT = "#22d3ee";
+const COULEUR_MARQUE = "#ff3b30";
+const COULEUR_ACCENT = "#e50914";
+/** Aplat du bouton : le rouge principal, seul à porter du blanc à 4.8:1. */
+const COULEUR_APLAT = "#e50914";
 
 export default function GlobalError({
   error,
@@ -134,8 +136,8 @@ export default function GlobalError({
                 fontSize: "0.875rem",
                 fontWeight: 500,
                 fontFamily: "inherit",
-                background: COULEUR_MARQUE,
-                color: "#0b1020",
+                background: COULEUR_APLAT,
+                color: "#ffffff",
               }}
             >
               Réessayer

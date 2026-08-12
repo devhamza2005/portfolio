@@ -19,8 +19,10 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
+        // Aplat = `brand-solid` (rouge principal) et non `brand` : c'est le seul
+        // rouge sur lequel le blanc de `brand-contrast` atteint 4.5:1.
         primary:
-          "bg-brand text-brand-contrast shadow-sm hover:bg-brand-hover hover:shadow-[var(--shadow-glow)]",
+          "bg-brand-solid text-brand-contrast shadow-sm hover:bg-brand-solid-hover hover:shadow-[var(--shadow-glow)]",
         secondary:
           "bg-elevated text-foreground border border-border hover:border-border-strong hover:bg-sunken",
         outline:

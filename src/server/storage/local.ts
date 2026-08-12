@@ -78,6 +78,8 @@ export const localProvider: StorageProvider = {
     };
   },
 
+  // `mime` fait partie du contrat mais ne sert pas ici : sur disque, le chemin
+  // suffit à retrouver le fichier quel que soit son type.
   async remove(publicId: string): Promise<void> {
     // `publicId` est le chemin public : on le reconstruit puis on vérifie qu'il
     // reste bien à l'intérieur de public/uploads avant toute suppression.

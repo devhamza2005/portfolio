@@ -28,6 +28,13 @@ export type UploadOptions = {
 export interface StorageProvider {
   readonly name: "cloudinary" | "local";
   upload(data: Uint8Array, options: UploadOptions): Promise<StoredFile>;
-  /** La suppression ne doit jamais faire échouer l'opération appelante. */
-  remove(publicId: string): Promise<void>;
+  /**
+   * La suppression ne doit jamais faire échouer l'opération appelante.
+   *
+   * `mime` est transmis parce que certains fournisseurs rangent les fichiers
+   * par catégorie : Cloudinary stocke les PDF en `raw` et les images en
+   * `image`, et sa suppression exige de préciser laquelle. Sans cette
+   * information, un PDF supprimé du back-office resterait en ligne.
+   */
+  remove(publicId: string, mime?: string | null): Promise<void>;
 }

@@ -67,9 +67,33 @@ export const cloudinaryProvider: StorageProvider = {
     };
   },
 
-  async remove(publicId: string): Promise<void> {
+  async remove(publicId: string, mime?: string | null): Promise<void> {
     configure();
-    // `invalidate` purge aussi le CDN, sinon l'image resterait visible en cache.
-    await cloudinary.uploader.destroy(publicId, { invalidate: true });
+
+    /*
+      `destroy` cible `resource_type: "image"` par défaut. Or les PDF sont
+      téléversés en `raw` (voir plus haut) : appeler la suppression sans le
+      préciser renvoie « not found » SANS lever d'erreur, et le fichier reste
+      accessible par son URL — un CV retiré du back-office resterait en ligne.
+
+      Quand le type est connu, on vise directement la bonne catégorie. Sinon on
+      essaie les deux : `destroy` est idempotent, une catégorie qui ne contient
+      pas le fichier répond simplement « not found ».
+    */
+    const categories =
+      mime === "application/pdf"
+        ? (["raw"] as const)
+        : mime
+          ? (["image"] as const)
+          : (["image", "raw"] as const);
+
+    for (const resourceType of categories) {
+      // `invalidate` purge aussi le CDN, sinon le fichier resterait en cache.
+      const result = await cloudinary.uploader.destroy(publicId, {
+        resource_type: resourceType,
+        invalidate: true,
+      });
+      if (result.result === "ok") return;
+    }
   },
 };

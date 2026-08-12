@@ -93,7 +93,9 @@ export async function deleteMediaAction(id: string): Promise<ActionResult<null>>
 
     const media = await db.media.findUnique({
       where: { id },
-      select: { publicId: true, provider: true },
+      // `mime` est nécessaire à la suppression distante : Cloudinary range les
+      // PDF et les images dans deux catégories différentes.
+      select: { publicId: true, provider: true, mime: true },
     });
 
     if (!media) return { ok: false, error: "Média introuvable." };
@@ -104,7 +106,7 @@ export async function deleteMediaAction(id: string): Promise<ActionResult<null>>
       // Un échec ici ne doit pas remonter comme une erreur à l'utilisateur :
       // la ligne est déjà supprimée, le fichier orphelin est sans impact.
       await getStorage()
-        .remove(media.publicId)
+        .remove(media.publicId, media.mime)
         .catch((error: unknown) => {
           console.warn("[media.actions] fichier distant non supprimé :", error);
         });

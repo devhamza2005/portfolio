@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
-import { siteConfig } from "@/config/site";
+import { DEFAULT_LOCALE, LOCALES, isNoindexLocale, localizedPath } from "@/lib/i18n/config";
+import { absoluteUrl } from "@/lib/seo";
 import { getProfile, getPublishedProjectRefs } from "@/server/queries/portfolio";
 
 /**
@@ -18,7 +19,33 @@ import { getProfile, getPublishedProjectRefs } from "@/server/queries/portfolio"
  * `lastModified` vient de `updatedAt` en base. Utiliser l'heure du build
  * ferait croire aux moteurs que tout le site change à chaque déploiement, et
  * ils finissent par ignorer le signal.
+ *
+ * ── Multilingue ────────────────────────────────────────────────────────────
+ *
+ * Seules les locales INDEXABLES figurent dans le plan. En phase A, le contenu
+ * éditorial n'est traduit ni en anglais ni en arabe : y envoyer un moteur
+ * reviendrait à lui soumettre trois fois la même page. `/fr` est donc la seule
+ * langue listée pour l'instant, et chaque entrée déclare quand même ses
+ * `alternates` — c'est ce couple sitemap + hreflang que Google attend.
+ *
+ * Ouvrir `/en` et `/ar` à l'indexation ne demandera aucune modification ici :
+ * il suffira de les retirer de `NOINDEX_LOCALES`.
  */
+
+const INDEXABLE = LOCALES.filter((locale) => !isNoindexLocale(locale));
+
+/** Bloc `alternates.languages` d'une entrée : les trois langues + x-default. */
+function languagesFor(path: string): Record<string, string> {
+  const languages: Record<string, string> = {};
+
+  for (const locale of LOCALES) {
+    languages[locale] = absoluteUrl(localizedPath(locale, path));
+  }
+  languages["x-default"] = absoluteUrl(localizedPath(DEFAULT_LOCALE, path));
+
+  return languages;
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [profile, projects] = await Promise.all([getProfile(), getPublishedProjectRefs()]);
 
@@ -28,26 +55,36 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     null,
   );
 
-  const home: MetadataRoute.Sitemap[number] = {
-    url: `${siteConfig.url}/`,
-    changeFrequency: "monthly",
-    priority: 1,
-    ...(profile?.updatedAt ? { lastModified: profile.updatedAt } : {}),
-  };
+  const entries: MetadataRoute.Sitemap = [];
 
-  const projectsIndex: MetadataRoute.Sitemap[number] = {
-    url: `${siteConfig.url}/projects`,
-    changeFrequency: "monthly",
-    priority: 0.8,
-    ...(projectsUpdatedAt ? { lastModified: projectsUpdatedAt } : {}),
-  };
+  for (const locale of INDEXABLE) {
+    entries.push({
+      url: absoluteUrl(localizedPath(locale, "/")),
+      changeFrequency: "monthly",
+      priority: 1,
+      alternates: { languages: languagesFor("/") },
+      ...(profile?.updatedAt ? { lastModified: profile.updatedAt } : {}),
+    });
 
-  const caseStudies: MetadataRoute.Sitemap = projects.map((project) => ({
-    url: `${siteConfig.url}/projects/${project.slug}`,
-    lastModified: project.updatedAt,
-    changeFrequency: "yearly",
-    priority: 0.7,
-  }));
+    entries.push({
+      url: absoluteUrl(localizedPath(locale, "/projects")),
+      changeFrequency: "monthly",
+      priority: 0.8,
+      alternates: { languages: languagesFor("/projects") },
+      ...(projectsUpdatedAt ? { lastModified: projectsUpdatedAt } : {}),
+    });
 
-  return [home, projectsIndex, ...caseStudies];
+    for (const project of projects) {
+      const path = `/projects/${project.slug}`;
+      entries.push({
+        url: absoluteUrl(localizedPath(locale, path)),
+        lastModified: project.updatedAt,
+        changeFrequency: "yearly",
+        priority: 0.7,
+        alternates: { languages: languagesFor(path) },
+      });
+    }
+  }
+
+  return entries;
 }

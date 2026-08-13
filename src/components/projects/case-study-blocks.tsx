@@ -52,7 +52,15 @@ export function FeatureGrid({ features }: { features: ProjectDetail["features"] 
 //  DÉFIS TECHNIQUES
 // ───────────────────────────────────────────────────────────────────────────
 
-export function ChallengeList({ challenges }: { challenges: ProjectDetail["challenges"] }) {
+export function ChallengeList({
+  challenges,
+  problemLabel,
+  solutionLabel,
+}: {
+  challenges: ProjectDetail["challenges"];
+  problemLabel: string;
+  solutionLabel: string;
+}) {
   if (challenges.length === 0) return null;
 
   return (
@@ -70,7 +78,7 @@ export function ChallengeList({ challenges }: { challenges: ProjectDetail["chall
             <div className="p-5">
               <p className="text-danger mb-2 flex items-center gap-1.5 font-mono text-[0.6875rem] tracking-wider uppercase">
                 <Icon name="TriangleAlert" className="size-3" />
-                Le problème
+                {problemLabel}
               </p>
               <p className="text-muted text-sm leading-relaxed">{challenge.problem}</p>
             </div>
@@ -78,7 +86,7 @@ export function ChallengeList({ challenges }: { challenges: ProjectDetail["chall
             <div className="p-5">
               <p className="text-success mb-2 flex items-center gap-1.5 font-mono text-[0.6875rem] tracking-wider uppercase">
                 <Icon name="Lightbulb" className="size-3" />
-                La solution
+                {solutionLabel}
               </p>
               <p className="text-muted text-sm leading-relaxed">{challenge.solution}</p>
             </div>
@@ -124,8 +132,10 @@ export function MetricGrid({ metrics }: { metrics: ProjectDetail["metrics"] }) {
 
 export function TechnologyBreakdown({
   technologies,
+  otherCategory,
 }: {
   technologies: ProjectDetail["technologies"];
+  otherCategory: string;
 }) {
   if (technologies.length === 0) return null;
 
@@ -133,7 +143,7 @@ export function TechnologyBreakdown({
   for (const link of technologies) {
     const key = link.technology.category?.id ?? "autres";
     if (!groups.has(key)) {
-      groups.set(key, { name: link.technology.category?.name ?? "Autres", items: [] });
+      groups.set(key, { name: link.technology.category?.name ?? otherCategory, items: [] });
     }
     groups.get(key)!.items.push(link);
   }
@@ -171,14 +181,14 @@ export function TechnologyBreakdown({
 //  GALERIE
 // ───────────────────────────────────────────────────────────────────────────
 
-const IMAGE_KIND_LABEL: Record<string, string> = {
-  SCREENSHOT: "Capture d'écran",
-  DIAGRAM: "Schéma",
-  MOCKUP: "Maquette",
-  LOGO: "Logo",
-};
-
-export function ProjectGallery({ images }: { images: ProjectDetail["images"] }) {
+export function ProjectGallery({
+  images,
+  kinds: IMAGE_KIND,
+}: {
+  images: ProjectDetail["images"];
+  /** Libellés de ProjectImageKind, indexés par valeur d'énumération Prisma. */
+  kinds: Record<string, string>;
+}) {
   if (images.length === 0) return null;
 
   return (
@@ -197,8 +207,8 @@ export function ProjectGallery({ images }: { images: ProjectDetail["images"] }) 
             </div>
             {image.caption ? (
               <figcaption className="text-muted border-border border-t px-4 py-2.5 text-xs">
-                <span className="text-subtle mr-2 font-mono text-[0.625rem] uppercase">
-                  {IMAGE_KIND_LABEL[image.kind] ?? image.kind}
+                <span className="text-subtle me-2 font-mono text-[0.625rem] uppercase">
+                  {IMAGE_KIND[image.kind] ?? image.kind}
                 </span>
                 {image.caption}
               </figcaption>

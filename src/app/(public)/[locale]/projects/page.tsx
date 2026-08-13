@@ -8,23 +8,34 @@ import { ProjectFilters } from "@/components/projects/project-filters";
 import { JsonLd } from "@/components/seo/json-ld";
 import { EmptyState } from "@/components/ui/skeleton";
 import { siteConfig } from "@/config/site";
-import { openGraph, truncate, twitterCard } from "@/lib/seo";
+import type { Locale } from "@/lib/i18n/config";
+import { getDictionary, requireLocale, type Messages } from "@/lib/i18n/dictionaries";
+import { interpolate } from "@/lib/i18n/format";
+import { alternatesFor, openGraph, robotsFor, truncate, twitterCard } from "@/lib/seo";
 import { breadcrumbJsonLd, projectCollectionJsonLd } from "@/lib/structured-data";
 import { getProfile, getProjectCategories, getProjects } from "@/server/queries/portfolio";
 
 /** Description partagée par les métadonnées et le JSON-LD — une seule vérité. */
-function describeCollection(name: string, count: number): string {
+function describeCollection(t: Messages, name: string, count: number): string {
   return count > 0
-    ? `${count} projets réalisés par ${name} : applications web Java/Spring Boot et React, ` +
-        `desktop, DevOps et systèmes embarqués. Études de cas détaillées.`
-    : `Les projets de ${name}.`;
+    ? interpolate(t.seo.projectsDescription, { count, name })
+    : interpolate(t.projectsPage.emptyDescription, { name });
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  const [profile, projects] = await Promise.all([getProfile(), getProjects()]);
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const locale: Locale = requireLocale((await params).locale);
+  const [t, profile, projects] = await Promise.all([
+    getDictionary(locale),
+    getProfile(),
+    getProjects(),
+  ]);
   const name = profile?.fullName ?? siteConfig.fallback.name;
-  const description = describeCollection(name, projects.length);
-  const title = `Projets — ${name}`;
+  const description = describeCollection(t, name, projects.length);
+  const title = `${t.seo.projectsTitle} — ${name}`;
 
   // À défaut d'illustration propre à la page, l'image Open Graph du profil
   // sert de repli. Si elle n'existe pas non plus, aucune balise image n'est
@@ -32,9 +43,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const image = profile?.ogImage ?? null;
 
   return {
-    title: "Projets",
+    title: t.seo.projectsTitle,
     description,
-    alternates: { canonical: "/projects" },
+    alternates: alternatesFor(locale, "/projects"),
+    robots: robotsFor(locale),
     openGraph: openGraph({
       title,
       description,
@@ -42,12 +54,20 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: `${name} — Portfolio`,
       type: "website",
       image,
+      locale,
     }),
     twitter: twitterCard({ title, description: truncate(description), image }),
   };
 }
 
-export default async function ProjectsPage() {
+export default async function ProjectsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const locale = requireLocale((await params).locale);
+  const t = await getDictionary(locale);
+
   const [projects, categories, profile] = await Promise.all([
     getProjects(),
     getProjectCategories(),
@@ -60,11 +80,14 @@ export default async function ProjectsPage() {
 
   const name = profile?.fullName ?? siteConfig.fallback.name;
   const jsonLd = [
-    projectCollectionJsonLd(projects, describeCollection(name, projects.length)),
-    breadcrumbJsonLd([
-      { name: "Accueil", path: "/" },
-      { name: "Projets", path: "/projects" },
-    ]),
+    projectCollectionJsonLd(projects, describeCollection(t, name, projects.length), locale),
+    breadcrumbJsonLd(
+      [
+        { name: t.seo.breadcrumbHome, path: "/" },
+        { name: t.seo.breadcrumbProjects, path: "/projects" },
+      ],
+      locale,
+    ),
   ];
 
   return (
@@ -77,45 +100,40 @@ export default async function ProjectsPage() {
 
         <div className="container-content relative">
           <Reveal>
-            <SectionLabel index="—">Réalisations</SectionLabel>
+            <SectionLabel index="—">{t.projectsPage.label}</SectionLabel>
           </Reveal>
 
           <h1 className="text-display-lg font-display">
-            <TextReveal text="Mes projets" className="text-gradient block" />
+            <TextReveal text={t.projectsPage.title} className="text-gradient block" />
           </h1>
 
           <Reveal delay={0.3}>
-            <p className="text-muted mt-5 max-w-2xl leading-relaxed">
-              Des applications réellement livrées, du projet professionnel mené pour une société de
-              développement local aux expérimentations DevOps. Chaque projet dispose d&apos;une
-              étude de cas détaillant le contexte, les choix techniques et les difficultés
-              rencontrées.
-            </p>
+            <p className="text-muted mt-5 max-w-2xl leading-relaxed">{t.projectsPage.intro}</p>
           </Reveal>
 
           {projects.length > 0 ? (
             <Reveal delay={0.4}>
               <dl className="text-muted mt-7 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm">
                 <div className="flex items-baseline gap-2">
-                  <dt className="sr-only">Projets</dt>
+                  <dt className="sr-only">{t.projectsPage.title}</dt>
                   <dd className="font-display text-foreground text-xl font-semibold tabular-nums">
                     {projects.length}
                   </dd>
-                  <span>projets</span>
+                  <span>{t.projectsPage.statProjects}</span>
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <dt className="sr-only">Technologies</dt>
+                  <dt className="sr-only">{t.technologies.label}</dt>
                   <dd className="font-display text-foreground text-xl font-semibold tabular-nums">
                     {technologies.size}
                   </dd>
-                  <span>technologies mobilisées</span>
+                  <span>{t.projectsPage.statTechnologies}</span>
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <dt className="sr-only">Catégories</dt>
+                  <dt className="sr-only">{t.projectsPage.categoriesLabel}</dt>
                   <dd className="font-display text-foreground text-xl font-semibold tabular-nums">
                     {categories.length}
                   </dd>
-                  <span>domaines</span>
+                  <span>{t.projectsPage.statCategories}</span>
                 </div>
               </dl>
             </Reveal>
@@ -132,12 +150,14 @@ export default async function ProjectsPage() {
             <h2> manquerait et la hiérarchie sauterait de 1 à 3 : ce titre le
             rétablit pour les lecteurs d'écran sans alourdir la page.
           */}
-          <h2 className="sr-only">Tous les projets</h2>
+          <h2 className="sr-only">{t.projectsPage.srTitle}</h2>
 
           {projects.length === 0 ? (
             <EmptyState
-              title="Aucun projet publié"
-              description={`${profile?.fullName ?? "Le propriétaire du site"} n'a pas encore publié de projet.`}
+              title={t.projectsPage.emptyTitle}
+              description={interpolate(t.projectsPage.emptyDescription, {
+                name: profile?.fullName ?? t.projectsPage.ownerFallback,
+              })}
             />
           ) : (
             <ProjectFilters
@@ -154,6 +174,9 @@ export default async function ProjectsPage() {
                 ) : null,
                 count: category._count.projects,
               }))}
+              locale={locale}
+              status={t.enums.projectStatus}
+              t={t.projectsPage}
             />
           )}
         </div>

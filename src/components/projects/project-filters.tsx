@@ -6,6 +6,8 @@ import { useMemo, useState } from "react";
 import { StaggerGroup, StaggerItem } from "@/components/motion/reveal";
 import { ProjectCard } from "@/components/projects/project-card";
 import { EmptyState } from "@/components/ui/skeleton";
+import type { Locale } from "@/lib/i18n/config";
+import { interpolate } from "@/lib/i18n/format";
 import type { ProjectCard as ProjectCardData } from "@/server/queries/portfolio";
 import { cn } from "@/lib/utils";
 
@@ -35,9 +37,22 @@ type Category = {
 export function ProjectFilters({
   projects,
   categories,
+  locale,
+  status,
+  t,
 }: {
   projects: ProjectCardData[];
   categories: Category[];
+  locale: Locale;
+  status: Record<string, string>;
+  t: {
+    filterAria: string;
+    filterAll: string;
+    filterEmptyTitle: string;
+    filterEmptyDescription: string;
+    resultsCount: string;
+    resultsOutOf: string;
+  };
 }) {
   const [active, setActive] = useState<string>("all");
 
@@ -61,11 +76,11 @@ export function ProjectFilters({
         */
         <div
           role="group"
-          aria-label="Filtrer les projets par catégorie"
+          aria-label={t.filterAria}
           className="mb-8 flex flex-wrap gap-2"
         >
           <FilterChip
-            label="Tous"
+            label={t.filterAll}
             count={projects.length}
             active={active === "all"}
             onClick={() => setActive("all")}
@@ -86,8 +101,8 @@ export function ProjectFilters({
       {visible.length === 0 ? (
         <EmptyState
           icon={<FolderOpen className="size-4" />}
-          title="Aucun projet dans cette catégorie"
-          description="Choisissez une autre catégorie."
+          title={t.filterEmptyTitle}
+          description={t.filterEmptyDescription}
         />
       ) : (
         <StaggerGroup
@@ -96,7 +111,7 @@ export function ProjectFilters({
         >
           {visible.map((project) => (
             <StaggerItem key={project.id} className="h-full">
-              <ProjectCard project={project} />
+              <ProjectCard project={project} locale={locale} status={status} />
             </StaggerItem>
           ))}
         </StaggerGroup>
@@ -108,8 +123,8 @@ export function ProjectFilters({
         est le seul retour parlé du filtre.
       */}
       <p aria-live="polite" className="text-subtle mt-8 text-sm">
-        {visible.length} projet{visible.length > 1 ? "s" : ""}
-        {active !== "all" ? ` sur ${projects.length}` : ""}
+        {interpolate(t.resultsCount, { shown: visible.length })}
+        {active !== "all" ? interpolate(t.resultsOutOf, { total: projects.length }) : ""}
       </p>
     </>
   );

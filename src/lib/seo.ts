@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
 
 import { siteConfig } from "@/config/site";
+import {
+  DEFAULT_LOCALE,
+  LOCALES,
+  OG_LOCALES,
+  isNoindexLocale,
+  localizedPath,
+  type Locale,
+} from "@/lib/i18n/config";
 
 /**
  * ═══════════════════════════════════════════════════════════════════════════
@@ -118,23 +126,71 @@ export function openGraph({
   siteName,
   type = "website",
   image,
+  locale = DEFAULT_LOCALE,
 }: {
   title: string;
   description: string;
+  /** Chemin SANS préfixe de langue : « / », « /projects »… */
   path: string;
   siteName: string;
   type?: "website" | "article";
   image?: SeoImage | null;
+  locale?: Locale;
 }): NonNullable<Metadata["openGraph"]> {
   return {
     title,
     description,
-    url: absoluteUrl(path),
+    url: absoluteUrl(localizedPath(locale, path)),
     siteName,
-    locale: siteConfig.locale,
+    locale: OG_LOCALES[locale],
+    // Les deux autres versions sont annoncées : LinkedIn et Facebook s'en
+    // servent pour proposer l'aperçu dans la langue du lecteur.
+    alternateLocale: LOCALES.filter((item) => item !== locale).map((item) => OG_LOCALES[item]),
     type,
     ...(openGraphImages(image) ? { images: openGraphImages(image) } : {}),
   };
+}
+
+/**
+ * Bloc `alternates` d'une page publique : canonical + hreflang.
+ *
+ * `path` est le chemin NU, sans préfixe de langue (« /projects »). Les trois
+ * versions localisées et `x-default` en sont dérivées, si bien qu'aucune URL
+ * n'est écrite en dur et qu'ajouter une locale dans `LOCALES` suffira à la
+ * faire apparaître partout.
+ *
+ * `x-default` pointe vers le français : c'est la langue de référence du site et
+ * celle du contenu éditorial en base.
+ */
+export function alternatesFor(locale: Locale, path = "/"): NonNullable<Metadata["alternates"]> {
+  const languages: Record<string, string> = {};
+
+  for (const item of LOCALES) {
+    languages[item] = absoluteUrl(localizedPath(item, path));
+  }
+  languages["x-default"] = absoluteUrl(localizedPath(DEFAULT_LOCALE, path));
+
+  return {
+    canonical: absoluteUrl(localizedPath(locale, path)),
+    languages,
+  };
+}
+
+/**
+ * Directives d'indexation d'une page publique, selon sa langue.
+ *
+ * En phase A, seule l'INTERFACE est traduite : projets, biographie et
+ * expériences restent en français quelle que soit l'URL. Laisser Google
+ * indexer `/en` et `/ar` reviendrait à lui annoncer trois versions distinctes
+ * là où il n'en existe qu'une — du contenu dupliqué, doublé d'un `hreflang`
+ * mensonger. Ces deux langues sont donc `noindex` jusqu'à la phase B.
+ *
+ * `follow` reste actif : les moteurs peuvent suivre les liens et découvrir la
+ * version française, qui, elle, est indexable.
+ */
+export function robotsFor(locale: Locale): NonNullable<Metadata["robots"]> {
+  if (isNoindexLocale(locale)) return { index: false, follow: true };
+  return publicRobots;
 }
 
 /** Coupe une description au plus près d'une limite, sans casser un mot. */

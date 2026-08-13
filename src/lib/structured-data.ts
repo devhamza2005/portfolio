@@ -1,4 +1,5 @@
 import { siteConfig } from "@/config/site";
+import { DEFAULT_LOCALE, localizedPath, type Locale } from "@/lib/i18n/config";
 import { absoluteUrl } from "@/lib/seo";
 
 /**
@@ -49,6 +50,8 @@ type PersonInput = {
   socialUrls: string[];
   /** Sujets réellement maîtrisés — les technologies visibles du portfolio. */
   knowsAbout: string[];
+  /** Langue de la page qui déclare ce nœud. */
+  locale?: Locale;
 };
 
 /** La personne derrière le portfolio. */
@@ -71,11 +74,16 @@ export function personJsonLd(profile: PersonInput): JsonLdObject {
     // LinkedIn…). Un lien social peut être un `mailto:` — déjà exprimé par
     // `email`, et invalide ici : on ne garde que le web.
     sameAs: profile.socialUrls.filter((url) => /^https?:\/\//.test(url)),
+    inLanguage: profile.locale ?? DEFAULT_LOCALE,
   });
 }
 
 /** Le site lui-même, rattaché à son auteur. */
-export function webSiteJsonLd(name: string, description: string): JsonLdObject {
+export function webSiteJsonLd(
+  name: string,
+  description: string,
+  locale: Locale = DEFAULT_LOCALE,
+): JsonLdObject {
   return compact({
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -83,14 +91,17 @@ export function webSiteJsonLd(name: string, description: string): JsonLdObject {
     name: `${name} — Portfolio`,
     url: siteConfig.url,
     description,
-    inLanguage: siteConfig.lang,
+    inLanguage: locale,
     author: { "@id": PERSON_ID },
     publisher: { "@id": PERSON_ID },
   });
 }
 
 /** Fil d'Ariane — améliore réellement l'affichage dans les résultats Google. */
-export function breadcrumbJsonLd(trail: { name: string; path: string }[]): JsonLdObject {
+export function breadcrumbJsonLd(
+  trail: { name: string; path: string }[],
+  locale: Locale = DEFAULT_LOCALE,
+): JsonLdObject {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -98,7 +109,9 @@ export function breadcrumbJsonLd(trail: { name: string; path: string }[]): JsonL
       "@type": "ListItem",
       position: index + 1,
       name: step.name,
-      item: absoluteUrl(step.path),
+      // Le fil doit pointer vers les URL RÉELLES de la langue affichée,
+      // sans quoi Google verrait un chemin qui n'existe pas.
+      item: absoluteUrl(localizedPath(locale, step.path)),
     })),
   };
 }
@@ -116,6 +129,7 @@ type ProjectInput = {
   demoUrl: string | null;
   category: { name: string } | null;
   technologies: string[];
+  locale?: Locale;
 };
 
 /** Une étude de cas : l'œuvre décrite, pas la page qui la décrit. */
@@ -125,6 +139,8 @@ export function projectJsonLd(project: ProjectInput): JsonLdObject {
   const created = project.startDate?.toISOString() ?? (project.year ? String(project.year) : null);
   const published = project.endDate?.toISOString() ?? created;
 
+  const locale = project.locale ?? DEFAULT_LOCALE;
+
   return compact({
     "@context": "https://schema.org",
     "@type": "CreativeWork",
@@ -133,13 +149,13 @@ export function projectJsonLd(project: ProjectInput): JsonLdObject {
     alternateName: project.subtitle,
     headline: project.title,
     description: project.summary,
-    url: absoluteUrl(`/projects/${project.slug}`),
+    url: absoluteUrl(localizedPath(locale, `/projects/${project.slug}`)),
     image: project.cover ? absoluteUrl(project.cover.url) : null,
     dateCreated: created,
     datePublished: published,
     genre: project.category?.name ?? null,
     keywords: project.technologies,
-    inLanguage: siteConfig.lang,
+    inLanguage: locale,
     author: { "@id": PERSON_ID },
     creator: { "@id": PERSON_ID },
     isPartOf: { "@id": WEBSITE_ID },
@@ -153,6 +169,7 @@ export function projectJsonLd(project: ProjectInput): JsonLdObject {
 export function projectCollectionJsonLd(
   projects: { slug: string; title: string }[],
   description: string,
+  locale: Locale = DEFAULT_LOCALE,
 ): JsonLdObject {
   return {
     "@context": "https://schema.org",
@@ -160,8 +177,8 @@ export function projectCollectionJsonLd(
     "@id": `${siteConfig.url}/projects#collection`,
     name: "Projets",
     description,
-    url: absoluteUrl("/projects"),
-    inLanguage: siteConfig.lang,
+    url: absoluteUrl(localizedPath(locale, "/projects")),
+    inLanguage: locale,
     isPartOf: { "@id": WEBSITE_ID },
     about: { "@id": PERSON_ID },
     mainEntity: {

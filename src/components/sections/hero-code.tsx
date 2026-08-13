@@ -107,7 +107,10 @@ export function HeroCode({ className }: { className?: string }) {
   const reduced = useReducedMotion();
 
   return (
-    <div className={cn("relative", className)} aria-hidden>
+    // `dir="ltr"` explicite : du code source se lit toujours de gauche à
+    // droite. Sans cela, la page arabe inverserait l'indentation et les
+    // ponctuations, rendant l'extrait illisible.
+    <div className={cn("relative", className)} dir="ltr" aria-hidden>
       {/* Halo sous la fenêtre */}
       <div
         className="absolute -inset-6 rounded-[var(--radius-3xl)] blur-3xl"

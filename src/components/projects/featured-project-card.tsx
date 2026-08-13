@@ -1,6 +1,8 @@
 import { ArrowUpRight, Star } from "lucide-react";
 import Link from "next/link";
 
+import { localizedPath, type Locale } from "@/lib/i18n/config";
+
 import { Icon } from "@/components/admin/icon";
 import { GithubIcon } from "@/components/brand/brand-icons";
 import { SpotlightCard } from "@/components/motion/spotlight-card";
@@ -21,7 +23,19 @@ import type { ProjectCard as ProjectCardData } from "@/server/queries/portfolio"
  * serveur, depuis la section « Projets » de l'accueil — la grille filtrable,
  * elle, est un composant client et ne touche jamais ce fichier.
  */
-export function FeaturedProjectCard({ project }: { project: ProjectCardData }) {
+export function FeaturedProjectCard({
+  project,
+  locale,
+  readCaseStudy,
+  newWindow,
+  featuredBadge,
+}: {
+  project: ProjectCardData;
+  locale: Locale;
+  readCaseStudy: string;
+  newWindow: string;
+  featuredBadge: string;
+}) {
   return (
     <SpotlightCard as="article" className="rounded-[var(--radius-xl)]">
       <Card variant="gradient" className="group overflow-hidden p-0">
@@ -38,7 +52,7 @@ export function FeaturedProjectCard({ project }: { project: ProjectCardData }) {
             <div className="mb-4 flex flex-wrap items-center gap-2">
               <Badge variant="ember" size="md">
                 <Star className="size-3" />
-                Projet phare
+                {featuredBadge}
               </Badge>
               {project.category ? (
                 <Badge variant="brand" size="md">
@@ -81,11 +95,11 @@ export function FeaturedProjectCard({ project }: { project: ProjectCardData }) {
 
             <div className="flex flex-wrap items-center gap-3">
               <Link
-                href={`/projects/${project.slug}`}
+                href={localizedPath(locale, `/projects/${project.slug}`)}
                 className="bg-brand-solid text-brand-contrast hover:bg-brand-solid-hover inline-flex h-11 items-center gap-2 rounded-[var(--radius-md)] px-5 text-sm font-medium transition-colors"
               >
-                Lire l&apos;étude de cas
-                <ArrowUpRight className="size-4" />
+                {readCaseStudy}
+                <ArrowUpRight className="size-4 rtl:-scale-x-100" />
               </Link>
 
               {project.repoUrl ? (
@@ -97,7 +111,7 @@ export function FeaturedProjectCard({ project }: { project: ProjectCardData }) {
                 >
                   <GithubIcon className="size-4" />
                   Code
-                  <span className="sr-only"> (nouvelle fenêtre)</span>
+                  <span className="sr-only">{newWindow}</span>
                 </a>
               ) : null}
             </div>

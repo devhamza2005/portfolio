@@ -42,7 +42,7 @@ export function CaseStudySection({
             <Icon name={iconKey ?? "FileText"} className="size-4" />
           </span>
           <h2 className="font-display text-lg font-semibold sm:text-xl">
-            <span className="text-subtle mr-2 font-mono text-xs">{index}</span>
+            <span className="text-subtle me-2 font-mono text-xs">{index}</span>
             {title}
           </h2>
         </header>

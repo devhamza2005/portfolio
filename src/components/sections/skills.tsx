@@ -23,10 +23,19 @@ export function SkillsTabs({
   groups,
   groupIcons,
   skillIcons,
+  proficiency,
 }: {
   groups: SkillGroup[];
   groupIcons: Record<string, React.ReactNode>;
   skillIcons: Record<string, React.ReactNode>;
+  /**
+   * Libellés des niveaux, indexés par valeur d'énumération Prisma.
+   *
+   * `skill.proficiencyLabel` est calculé dans une requête `use cache` et reste
+   * donc en français : le traduire là-bas aurait fait entrer la locale dans la
+   * clé de cache de TOUTES les compétences. On traduit ici, à l'affichage.
+   */
+  proficiency: Record<string, string>;
 }) {
   const [value, setValue] = useState(groups[0]?.slug ?? "");
 
@@ -71,7 +80,7 @@ export function SkillsTabs({
                 key={skill.id}
                 name={skill.name}
                 percent={skill.percent}
-                label={skill.proficiencyLabel}
+                label={proficiency[skill.proficiency] ?? skill.proficiencyLabel}
                 icon={skillIcons[skill.id] ?? null}
                 color={skill.color}
                 highlighted={skill.highlighted}
@@ -139,7 +148,7 @@ function SkillBar({
         aria-label={`${name} — ${label}`}
       >
         <motion.div
-          className="h-full rounded-full"
+          className="h-full origin-[left_center] rounded-full rtl:origin-[right_center]"
           style={{
             background: color
               ? `linear-gradient(90deg, ${color}, color-mix(in oklab, ${color} 55%, var(--accent)))`

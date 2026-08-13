@@ -1,0 +1,245 @@
+{
+  "nav": {
+    "skipToContent": "Aller au contenu principal",
+    "primaryAria": "Navigation principale",
+    "mobileAria": "Navigation mobile",
+    "homeAria": "{name} — accueil",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "cvShort": "CV",
+    "downloadCv": "Télécharger mon CV",
+    "items": {
+      "about": "À propos",
+      "services": "Services",
+      "skills": "Compétences",
+      "experience": "Parcours",
+      "projects": "Projets",
+      "contact": "Contact"
+    }
+  },
+  "locale": {
+    "label": "Langue",
+    "ariaLabel": "Changer de langue",
+    "currentAria": "Langue actuelle : {language}"
+  },
+  "theme": {
+    "toggle": "Changer de thème"
+  },
+  "hero": {
+    "viewProjects": "Voir mes projets",
+    "contactMe": "Me contacter",
+    "scroll": "Défiler",
+    "scrollAria": "Faire défiler vers la section À propos"
+  },
+  "about": {
+    "label": "À propos",
+    "titleBefore": "Le développeur derrière",
+    "titleAccent": "le code",
+    "titleAfter": "",
+    "qualities": "Ce qu'on me reconnaît",
+    "languages": "Langues",
+    "portraitAlt": "Portrait",
+    "photoPlaceholder": "Photo à ajouter depuis le back-office"
+  },
+  "services": {
+    "label": "Services",
+    "title": "Ce que je peux construire pour vous"
+  },
+  "skills": {
+    "label": "Compétences",
+    "titleBefore": "{count} compétences,",
+    "titleAccent": "réparties",
+    "titleAfter": "par domaine",
+    "note": "Les niveaux reflètent un usage réel : « Avancé » signifie utilisé en conditions de production, pas seulement étudié."
+  },
+  "technologies": {
+    "label": "Technologies",
+    "title": "Ma stack au quotidien",
+    "otherCategory": "Autres"
+  },
+  "experience": {
+    "label": "Parcours",
+    "title": "Expérience professionnelle"
+  },
+  "education": {
+    "label": "Formation",
+    "title": "Parcours académique",
+    "mention": "Mention {mention}"
+  },
+  "projects": {
+    "label": "Projets",
+    "titleBefore": "Des projets",
+    "titleAccent": "livrés",
+    "titleAfter": ", pas seulement commencés",
+    "all": "Tous les projets",
+    "viewAll": "Voir les {count} projets",
+    "featuredBadge": "Projet phare",
+    "readCaseStudy": "Lire l'étude de cas",
+    "newWindow": " (nouvelle fenêtre)"
+  },
+  "certifications": {
+    "label": "Certifications",
+    "title": "Certifications et attestations",
+    "issuedIn": "Obtenue en {date}",
+    "reference": "Réf. {id}",
+    "expired": "Expirée",
+    "verify": "Vérifier"
+  },
+  "achievements": {
+    "label": "Réalisations",
+    "title": "Distinctions et accomplissements",
+    "view": "Voir"
+  },
+  "contact": {
+    "label": "Contact",
+    "titleBefore": "Parlons de",
+    "titleAccent": "votre projet",
+    "titleAfter": "",
+    "intro": "Une opportunité, une mission freelance ou simplement une question sur mon parcours ? Écrivez-moi — je réponds à chaque message.",
+    "emailLabel": "Email",
+    "locationLabel": "Localisation"
+  },
+  "contactForm": {
+    "name": "Nom",
+    "namePlaceholder": "Votre nom",
+    "email": "Email",
+    "emailPlaceholder": "vous@entreprise.com",
+    "subject": "Sujet",
+    "subjectPlaceholder": "Opportunité, mission freelance, question…",
+    "message": "Message",
+    "messagePlaceholder": "Décrivez votre projet ou votre besoin…",
+    "submit": "Envoyer le message",
+    "submitting": "Envoi…",
+    "successTitle": "Message envoyé",
+    "successBody": "Merci — votre message a bien été transmis. Je vous réponds au plus vite.",
+    "errorGeneric": "L'envoi a échoué. Vérifiez les champs et réessayez.",
+    "honeypot": "Ne pas remplir"
+  },
+  "footer": {
+    "navigation": "Navigation",
+    "navigationAria": "Navigation du pied de page",
+    "contactHeading": "Me contacter",
+    "rights": "© {year} {name}. Tous droits réservés.",
+    "administration": "Administration"
+  },
+  "projectsPage": {
+    "label": "Réalisations",
+    "title": "Projets",
+    "intro": "Des applications réellement livrées, du projet professionnel mené pour une société de développement local aux expérimentations DevOps. Chaque projet dispose d'une étude de cas détaillant le contexte, les choix techniques et les difficultés rencontrées.",
+    "srTitle": "Liste des projets",
+    "statProjects": "projets",
+    "statTechnologies": "technologies mobilisées",
+    "statCategories": "domaines",
+    "categoriesLabel": "Catégories",
+    "emptyTitle": "Aucun projet publié",
+    "emptyDescription": "{name} n'a pas encore publié de projet.",
+    "ownerFallback": "Le propriétaire du site",
+    "filterAria": "Filtrer les projets par catégorie",
+    "filterAll": "Tous",
+    "filterEmptyTitle": "Aucun projet dans cette catégorie",
+    "filterEmptyDescription": "Choisissez une autre catégorie.",
+    "resultsCount": "{shown} projet(s) affiché(s)",
+    "resultsOutOf": " sur {total}"
+  },
+  "caseStudy": {
+    "backToProjects": "Retour aux projets",
+    "viewDemo": "Voir la démo",
+    "viewCode": "Code source",
+    "documentation": "Documentation",
+    "newWindow": " (nouvelle fenêtre)",
+    "next": "Projet suivant",
+    "previous": "Projet précédent",
+    "ctaTitle": "Un projet en tête ?",
+    "ctaProjects": "Voir tous les projets",
+    "ctaContact": "Discuter d'un projet",
+    "theProblem": "Le problème",
+    "theSolution": "La solution",
+    "meta": {
+      "role": "Rôle",
+      "client": "Client",
+      "team": "Équipe",
+      "teamValue": "{count} personnes",
+      "period": "Période"
+    },
+    "sections": {
+      "overview": "Présentation",
+      "problem": "Problématique",
+      "solution": "Solution apportée",
+      "features": "Fonctionnalités",
+      "stack": "Stack technique",
+      "challenges": "Défis techniques",
+      "architecture": "Architecture technique",
+      "results": "Résultats",
+      "learnings": "Ce que j'en retiens",
+      "gallery": "Captures d'écran"
+    },
+    "notFoundTitle": "Ce projet n'existe pas",
+    "notFoundBody": "L'adresse demandée ne correspond à aucun projet publié. Il a peut-être été renommé, ou n'est plus visible.",
+    "seeAllProjects": "Voir tous les projets",
+    "availableProjects": "Projets disponibles",
+    "backHome": "Retour à l'accueil"
+  },
+  "enums": {
+    "projectStatus": {
+      "COMPLETED": "Terminé",
+      "IN_PROGRESS": "En cours",
+      "MAINTAINED": "Maintenu",
+      "ARCHIVED": "Archivé"
+    },
+    "educationStatus": {
+      "COMPLETED": "Obtenu",
+      "PENDING_DIPLOMA": "Diplôme en attente de délivrance",
+      "ONGOING": "En cours"
+    },
+    "employmentType": {
+      "INTERNSHIP": "Stage",
+      "APPRENTICESHIP": "Alternance",
+      "FULL_TIME": "Temps plein",
+      "PART_TIME": "Temps partiel",
+      "FREELANCE": "Freelance",
+      "PROJECT": "Projet"
+    },
+    "workMode": {
+      "ONSITE": "Sur site",
+      "HYBRID": "Hybride",
+      "REMOTE": "À distance"
+    },
+    "proficiency": {
+      "BASICS": "Bases",
+      "GOOD_KNOWLEDGE": "Bonne maîtrise",
+      "ADVANCED": "Avancé",
+      "EXPERT": "Expert"
+    },
+    "imageKind": {
+      "SCREENSHOT": "Capture d'écran",
+      "DIAGRAM": "Schéma",
+      "MOCKUP": "Maquette",
+      "LOGO": "Logo"
+    }
+  },
+  "dates": {
+    "today": "aujourd'hui",
+    "rangeSeparator": "—"
+  },
+  "errors": {
+    "sectionTitle": "Erreur de chargement",
+    "title": "Le contenu n'a pas pu s'afficher",
+    "description": "Un incident est survenu pendant le chargement du contenu. Réessayez — c'est le plus souvent passager.",
+    "retry": "Réessayer",
+    "retrying": "Nouvelle tentative…",
+    "backHome": "Retour à l'accueil",
+    "reference": "Référence : {digest}",
+    "notFoundTitle": "Page introuvable",
+    "notFoundBody": "Cette adresse ne correspond à aucune page du portfolio. Le lien est peut-être périmé, ou l'adresse mal saisie.",
+    "notFoundHint": "Vous pouvez aussi repartir de l'accueil et naviguer par sections."
+  },
+  "seo": {
+    "projectsTitle": "Projets",
+    "projectsDescription": "{count} projets réalisés par {name} : applications web Java/Spring Boot et React, desktop, DevOps et systèmes embarqués. Études de cas détaillées.",
+    "projectNotFound": "Projet introuvable",
+    "breadcrumbHome": "Accueil",
+    "breadcrumbProjects": "Projets",
+    "caseStudyKeyword": "étude de cas",
+    "projectKeyword": "projet"
+  }
+}

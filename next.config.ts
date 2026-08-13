@@ -28,6 +28,16 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["lucide-react", "motion", "date-fns"],
 
     /**
+     * 404 globale — indispensable avec plusieurs layouts racines.
+     *
+     * Le site public vit sous `(public)/[locale]` et le back-office sous
+     * `(admin)` : chacun rend son propre `<html>`. Next.js n'a donc plus de
+     * layout unique pour composer une 404 « hors route », et c'est ce drapeau
+     * qui active `app/global-not-found.tsx` à la place.
+     */
+    globalNotFound: true,
+
+    /**
      * Un seul processus de prérendu.
      *
      * Par défaut, Next.js répartit la génération statique sur autant de

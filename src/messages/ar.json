@@ -1,0 +1,245 @@
+{
+  "nav": {
+    "skipToContent": "تخطَّ إلى المحتوى الرئيسي",
+    "primaryAria": "التنقل الرئيسي",
+    "mobileAria": "تنقل الهاتف",
+    "homeAria": "{name} — الصفحة الرئيسية",
+    "openMenu": "فتح القائمة",
+    "closeMenu": "إغلاق القائمة",
+    "cvShort": "السيرة",
+    "downloadCv": "تحميل سيرتي الذاتية",
+    "items": {
+      "about": "نبذة عني",
+      "services": "الخدمات",
+      "skills": "المهارات",
+      "experience": "المسار المهني",
+      "projects": "المشاريع",
+      "contact": "اتصل بي"
+    }
+  },
+  "locale": {
+    "label": "اللغة",
+    "ariaLabel": "تغيير اللغة",
+    "currentAria": "اللغة الحالية: {language}"
+  },
+  "theme": {
+    "toggle": "تغيير المظهر"
+  },
+  "hero": {
+    "viewProjects": "استعرض مشاريعي",
+    "contactMe": "تواصل معي",
+    "scroll": "مرِّر",
+    "scrollAria": "التمرير إلى قسم نبذة عني"
+  },
+  "about": {
+    "label": "نبذة عني",
+    "titleBefore": "المطوِّر خلف",
+    "titleAccent": "الشيفرة",
+    "titleAfter": "",
+    "qualities": "ما يميّزني",
+    "languages": "اللغات",
+    "portraitAlt": "صورة شخصية",
+    "photoPlaceholder": "الصورة تُضاف من لوحة التحكم"
+  },
+  "services": {
+    "label": "الخدمات",
+    "title": "ما يمكنني بناؤه لك"
+  },
+  "skills": {
+    "label": "المهارات",
+    "titleBefore": "{count} مهارة،",
+    "titleAccent": "موزَّعة",
+    "titleAfter": "حسب المجال",
+    "note": "المستويات تعكس استخدامًا فعليًا: «متقدّم» تعني مستخدَمة في بيئة إنتاج، لا مجرد دراسة نظرية."
+  },
+  "technologies": {
+    "label": "التقنيات",
+    "title": "أدواتي اليومية",
+    "otherCategory": "أخرى"
+  },
+  "experience": {
+    "label": "المسار المهني",
+    "title": "الخبرة المهنية"
+  },
+  "education": {
+    "label": "التكوين",
+    "title": "المسار الأكاديمي",
+    "mention": "بتقدير {mention}"
+  },
+  "projects": {
+    "label": "المشاريع",
+    "titleBefore": "مشاريع تم",
+    "titleAccent": "تسليمها",
+    "titleAfter": "، لا مجرد بدايات",
+    "all": "كل المشاريع",
+    "viewAll": "عرض المشاريع الـ{count}",
+    "featuredBadge": "مشروع بارز",
+    "readCaseStudy": "اقرأ دراسة الحالة",
+    "newWindow": " (نافذة جديدة)"
+  },
+  "certifications": {
+    "label": "الشهادات",
+    "title": "الشهادات والمؤهلات",
+    "issuedIn": "مُحصَّل عليها في {date}",
+    "reference": "المرجع {id}",
+    "expired": "منتهية",
+    "verify": "تحقَّق"
+  },
+  "achievements": {
+    "label": "الإنجازات",
+    "title": "الجوائز والإنجازات",
+    "view": "عرض"
+  },
+  "contact": {
+    "label": "اتصل بي",
+    "titleBefore": "لنتحدّث عن",
+    "titleAccent": "مشروعك",
+    "titleAfter": "",
+    "intro": "فرصة عمل، مهمة حرة، أو مجرد سؤال عن مساري؟ راسلني — أُجيب على كل رسالة.",
+    "emailLabel": "البريد الإلكتروني",
+    "locationLabel": "الموقع"
+  },
+  "contactForm": {
+    "name": "الاسم",
+    "namePlaceholder": "اسمك",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "you@company.com",
+    "subject": "الموضوع",
+    "subjectPlaceholder": "فرصة عمل، مهمة حرة، سؤال…",
+    "message": "الرسالة",
+    "messagePlaceholder": "صِف مشروعك أو حاجتك…",
+    "submit": "إرسال الرسالة",
+    "submitting": "جارٍ الإرسال…",
+    "successTitle": "تم إرسال الرسالة",
+    "successBody": "شكرًا لك — وصلت رسالتك. سأعود إليك في أقرب وقت.",
+    "errorGeneric": "فشل الإرسال. تحقَّق من الحقول ثم أعد المحاولة.",
+    "honeypot": "لا تملأ هذا الحقل"
+  },
+  "footer": {
+    "navigation": "التنقل",
+    "navigationAria": "تنقل تذييل الصفحة",
+    "contactHeading": "تواصل معي",
+    "rights": "© {year} {name}. جميع الحقوق محفوظة.",
+    "administration": "لوحة التحكم"
+  },
+  "projectsPage": {
+    "label": "الأعمال",
+    "title": "المشاريع",
+    "intro": "تطبيقات سُلِّمت فعليًا، من مشروع مهني أُنجز لشركة تطوير محلية إلى تجارب في DevOps. لكل مشروع دراسة حالة تفصّل السياق والخيارات التقنية والصعوبات التي وُوجهت.",
+    "srTitle": "قائمة المشاريع",
+    "statProjects": "مشاريع",
+    "statTechnologies": "تقنية مستخدمة",
+    "statCategories": "مجالات",
+    "categoriesLabel": "الفئات",
+    "emptyTitle": "لا يوجد مشروع منشور",
+    "emptyDescription": "لم ينشر {name} أي مشروع بعد.",
+    "ownerFallback": "صاحب الموقع",
+    "filterAria": "تصفية المشاريع حسب الفئة",
+    "filterAll": "الكل",
+    "filterEmptyTitle": "لا يوجد مشروع في هذه الفئة",
+    "filterEmptyDescription": "اختر فئة أخرى.",
+    "resultsCount": "{shown} مشروع معروض",
+    "resultsOutOf": " من أصل {total}"
+  },
+  "caseStudy": {
+    "backToProjects": "العودة إلى المشاريع",
+    "viewDemo": "عرض تجريبي",
+    "viewCode": "الشيفرة المصدرية",
+    "documentation": "التوثيق",
+    "newWindow": " (نافذة جديدة)",
+    "next": "المشروع التالي",
+    "previous": "المشروع السابق",
+    "ctaTitle": "لديك مشروع في ذهنك؟",
+    "ctaProjects": "عرض كل المشاريع",
+    "ctaContact": "لنناقش مشروعًا",
+    "theProblem": "المشكلة",
+    "theSolution": "الحل",
+    "meta": {
+      "role": "الدور",
+      "client": "العميل",
+      "team": "الفريق",
+      "teamValue": "{count} أشخاص",
+      "period": "الفترة"
+    },
+    "sections": {
+      "overview": "نظرة عامة",
+      "problem": "الإشكالية",
+      "solution": "الحل المقترح",
+      "features": "الوظائف",
+      "stack": "المكوّنات التقنية",
+      "challenges": "التحديات التقنية",
+      "architecture": "البنية التقنية",
+      "results": "النتائج",
+      "learnings": "ما استخلصته",
+      "gallery": "لقطات الشاشة"
+    },
+    "notFoundTitle": "هذا المشروع غير موجود",
+    "notFoundBody": "العنوان المطلوب لا يطابق أي مشروع منشور. ربما أُعيدت تسميته، أو لم يعد ظاهرًا.",
+    "seeAllProjects": "عرض كل المشاريع",
+    "availableProjects": "المشاريع المتاحة",
+    "backHome": "العودة إلى الصفحة الرئيسية"
+  },
+  "enums": {
+    "projectStatus": {
+      "COMPLETED": "مكتمل",
+      "IN_PROGRESS": "قيد الإنجاز",
+      "MAINTAINED": "قيد الصيانة",
+      "ARCHIVED": "مؤرشف"
+    },
+    "educationStatus": {
+      "COMPLETED": "محصَّل عليه",
+      "PENDING_DIPLOMA": "الشهادة قيد التسليم",
+      "ONGOING": "قيد الدراسة"
+    },
+    "employmentType": {
+      "INTERNSHIP": "تدريب",
+      "APPRENTICESHIP": "تدريب بالتناوب",
+      "FULL_TIME": "دوام كامل",
+      "PART_TIME": "دوام جزئي",
+      "FREELANCE": "عمل حر",
+      "PROJECT": "مشروع"
+    },
+    "workMode": {
+      "ONSITE": "حضوري",
+      "HYBRID": "مختلط",
+      "REMOTE": "عن بُعد"
+    },
+    "proficiency": {
+      "BASICS": "أساسيات",
+      "GOOD_KNOWLEDGE": "إتقان جيد",
+      "ADVANCED": "متقدّم",
+      "EXPERT": "خبير"
+    },
+    "imageKind": {
+      "SCREENSHOT": "لقطة شاشة",
+      "DIAGRAM": "مخطَّط",
+      "MOCKUP": "نموذج أوّلي",
+      "LOGO": "شعار"
+    }
+  },
+  "dates": {
+    "today": "الآن",
+    "rangeSeparator": "—"
+  },
+  "errors": {
+    "sectionTitle": "خطأ في التحميل",
+    "title": "تعذَّر عرض المحتوى",
+    "description": "حدث خلل أثناء تحميل المحتوى. أعد المحاولة — غالبًا ما يكون عارضًا.",
+    "retry": "أعد المحاولة",
+    "retrying": "جارٍ إعادة المحاولة…",
+    "backHome": "العودة إلى الصفحة الرئيسية",
+    "reference": "المرجع: {digest}",
+    "notFoundTitle": "الصفحة غير موجودة",
+    "notFoundBody": "هذا العنوان لا يطابق أي صفحة في الموقع. قد يكون الرابط قديمًا أو العنوان مكتوبًا بشكل خاطئ.",
+    "notFoundHint": "يمكنك أيضًا الانطلاق من الصفحة الرئيسية والتنقل بين الأقسام."
+  },
+  "seo": {
+    "projectsTitle": "المشاريع",
+    "projectsDescription": "{count} مشاريع أنجزها {name}: تطبيقات ويب بـJava/Spring Boot وReact، وتطبيقات مكتبية، وDevOps وأنظمة مدمجة. دراسات حالة مفصّلة.",
+    "projectNotFound": "المشروع غير موجود",
+    "breadcrumbHome": "الرئيسية",
+    "breadcrumbProjects": "المشاريع",
+    "caseStudyKeyword": "دراسة حالة",
+    "projectKeyword": "مشروع"
+  }
+}

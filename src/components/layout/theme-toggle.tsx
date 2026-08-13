@@ -14,14 +14,24 @@ import { cn } from "@/lib/utils";
  *  • l'icône correcte est visible dès le premier rendu, avant l'hydratation,
  *    puisque next-themes pose la classe sur <html> avant la peinture.
  */
-export function ThemeToggle({ className }: { className?: string }) {
+export function ThemeToggle({
+  className,
+  /**
+   * Libellé accessible. Fourni par le dictionnaire côté site public ; la valeur
+   * par défaut sert au back-office, qui reste francophone.
+   */
+  label = "Changer de thème",
+}: {
+  className?: string;
+  label?: string;
+}) {
   const { resolvedTheme, setTheme } = useTheme();
 
   return (
     <button
       type="button"
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-      aria-label="Changer de thème"
+      aria-label={label}
       className={cn(
         "border-border text-muted hover:text-foreground hover:border-border-strong",
         "relative grid size-10 shrink-0 place-items-center overflow-hidden rounded-full border",

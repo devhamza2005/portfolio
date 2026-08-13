@@ -3,9 +3,12 @@ import Link from "next/link";
 
 import { Icon } from "@/components/admin/icon";
 import { BrandMark } from "@/components/brand/monogram";
-import { SECTION_NAV } from "@/config/nav";
+import { SECTION_NAV, navHref, type NavId } from "@/config/nav";
+import type { Locale } from "@/lib/i18n/config";
+import { interpolate } from "@/lib/i18n/format";
 
 type Props = {
+  locale: Locale;
   name: string;
   headline: string;
   location: string | null;
@@ -13,13 +16,34 @@ type Props = {
   socialLinks: { id: string; label: string; url: string; iconKey: string | null }[];
   /** Année du copyright — fournie par le layout, calculée dans un cache. */
   year: number;
+  t: {
+    navigation: string;
+    navigationAria: string;
+    contactHeading: string;
+    rights: string;
+    administration: string;
+  };
+  navItems: Record<NavId, string>;
 };
 
 /**
  * Pied de page — entièrement alimenté par la base : nom, titre, localisation,
  * email et liens sociaux viennent du profil et de la table SocialLink.
+ *
+ * Le lien « Administration » n'est PAS localisé : il mène au back-office, qui
+ * reste francophone et vit hors du segment `[locale]`.
  */
-export function Footer({ name, headline, location, email, socialLinks, year }: Props) {
+export function Footer({
+  locale,
+  name,
+  headline,
+  location,
+  email,
+  socialLinks,
+  year,
+  t,
+  navItems,
+}: Props) {
   return (
     <footer className="border-border relative border-t">
       <div className="container-content py-14">
@@ -35,18 +59,18 @@ export function Footer({ name, headline, location, email, socialLinks, year }: P
             ) : null}
           </div>
 
-          <nav aria-label="Navigation du pied de page">
+          <nav aria-label={t.navigationAria}>
             <h2 className="text-subtle mb-4 font-mono text-[0.6875rem] tracking-[0.18em] uppercase">
-              Navigation
+              {t.navigation}
             </h2>
             <ul className="space-y-2.5">
               {SECTION_NAV.map((item) => (
                 <li key={item.id}>
                   <a
-                    href={item.href}
+                    href={navHref(locale, item.path)}
                     className="text-muted hover:text-foreground text-sm transition-colors"
                   >
-                    {item.label}
+                    {navItems[item.id]}
                   </a>
                 </li>
               ))}
@@ -55,7 +79,7 @@ export function Footer({ name, headline, location, email, socialLinks, year }: P
 
           <div>
             <h2 className="text-subtle mb-4 font-mono text-[0.6875rem] tracking-[0.18em] uppercase">
-              Me contacter
+              {t.contactHeading}
             </h2>
             <a
               href={`mailto:${email}`}
@@ -86,17 +110,19 @@ export function Footer({ name, headline, location, email, socialLinks, year }: P
 
         <div className="border-border mt-12 flex flex-col items-center justify-between gap-4 border-t pt-6 sm:flex-row">
           <p className="text-subtle text-xs">
-            © {year} {name}. Tous droits réservés.
+            {interpolate(t.rights, { year, name })}
           </p>
 
           <div className="text-subtle flex items-center gap-4 text-xs">
-            <span className="font-mono">Next.js · Spring Boot state of mind</span>
+            <span className="font-mono" dir="ltr">
+              Next.js · Spring Boot state of mind
+            </span>
             <Link
               href="/admin"
               className="hover:text-muted flex items-center gap-1 transition-colors"
             >
-              Administration
-              <ArrowUpRight className="size-3" />
+              {t.administration}
+              <ArrowUpRight className="size-3 rtl:-scale-x-100" />
             </Link>
           </div>
         </div>

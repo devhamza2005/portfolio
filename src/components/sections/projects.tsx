@@ -6,6 +6,8 @@ import { SectionLabel } from "@/components/motion/text-reveal";
 import { FeaturedProjectCard } from "@/components/projects/featured-project-card";
 import { ProjectCard } from "@/components/projects/project-card";
 import { Button } from "@/components/ui/button";
+import { localizedPath, type Locale } from "@/lib/i18n/config";
+import { interpolate } from "@/lib/i18n/format";
 import type { ProjectCard as ProjectCardData } from "@/server/queries/portfolio";
 
 /**
@@ -15,7 +17,27 @@ import type { ProjectCard as ProjectCardData } from "@/server/queries/portfolio"
  * s'affichent en grille. Au-delà de six, un lien renvoie vers /projects plutôt
  * que d'allonger indéfiniment la page d'accueil.
  */
-export function Projects({ projects }: { projects: ProjectCardData[] }) {
+export function Projects({
+  projects,
+  locale,
+  t,
+  status,
+}: {
+  projects: ProjectCardData[];
+  locale: Locale;
+  t: {
+    label: string;
+    titleBefore: string;
+    titleAccent: string;
+    titleAfter: string;
+    all: string;
+    viewAll: string;
+    readCaseStudy: string;
+    newWindow: string;
+    featuredBadge: string;
+  };
+  status: Record<string, string>;
+}) {
   if (projects.length === 0) return null;
 
   const featured = projects.find((project) => project.featured) ?? null;
@@ -27,24 +49,30 @@ export function Projects({ projects }: { projects: ProjectCardData[] }) {
       <div className="container-content">
         <Reveal className="mb-10 flex flex-wrap items-end justify-between gap-6">
           <div className="max-w-2xl">
-            <SectionLabel index="07">Projets</SectionLabel>
+            <SectionLabel index="07">{t.label}</SectionLabel>
             <h2 className="text-display-md font-display">
-              Des projets <span className="text-gradient-brand">livrés</span>, pas seulement
-              commencés
+              {t.titleBefore} <span className="text-gradient-brand">{t.titleAccent}</span>
+              {t.titleAfter}
             </h2>
           </div>
 
           <Button asChild variant="ghost" size="md" className="shrink-0">
-            <Link href="/projects">
-              Tous les projets
-              <ArrowRight />
+            <Link href={localizedPath(locale, "/projects")}>
+              {t.all}
+              <ArrowRight className="rtl:-scale-x-100" />
             </Link>
           </Button>
         </Reveal>
 
         {featured ? (
           <Reveal className="mb-6">
-            <FeaturedProjectCard project={featured} />
+            <FeaturedProjectCard
+              project={featured}
+              locale={locale}
+              readCaseStudy={t.readCaseStudy}
+              newWindow={t.newWindow}
+              featuredBadge={t.featuredBadge}
+            />
           </Reveal>
         ) : null}
 
@@ -52,7 +80,7 @@ export function Projects({ projects }: { projects: ProjectCardData[] }) {
           <StaggerGroup className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {others.map((project) => (
               <StaggerItem key={project.id} className="h-full">
-                <ProjectCard project={project} />
+                <ProjectCard project={project} locale={locale} status={status} />
               </StaggerItem>
             ))}
           </StaggerGroup>
@@ -61,9 +89,9 @@ export function Projects({ projects }: { projects: ProjectCardData[] }) {
         {hasMore ? (
           <Reveal className="mt-10 text-center">
             <Button asChild variant="secondary" size="lg">
-              <Link href="/projects">
-                Voir les {projects.length} projets
-                <ArrowRight />
+              <Link href={localizedPath(locale, "/projects")}>
+                {interpolate(t.viewAll, { count: projects.length })}
+                <ArrowRight className="rtl:-scale-x-100" />
               </Link>
             </Button>
           </Reveal>

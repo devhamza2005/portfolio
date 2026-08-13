@@ -231,10 +231,17 @@
   --color-hf-800: var(--hf-brand-800);
   --color-hf-900: var(--hf-brand-900);
 
-  /* Typographie — les variables --font-* sont injectées par next/font */
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: var(--font-space-grotesk), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  /* Typographie — les variables --font-* sont injectées par next/font.
+     `--font-noto-arabic` n'est définie que sur les pages arabes ; la valeur de
+     repli du `var()` évite de rendre toute la déclaration invalide ailleurs.
+     Le latin reste donc sur Inter / Space Grotesk, et seuls les glyphes arabes
+     — absents de ces polices — basculent sur Noto. */
+  --font-sans: var(--font-inter), var(--font-noto-arabic, "Noto Sans Arabic"), ui-sans-serif,
+    system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-space-grotesk), var(--font-inter),
+    var(--font-noto-arabic, "Noto Sans Arabic"), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), var(--font-noto-arabic, "Noto Sans Arabic"),
+    ui-monospace, "SF Mono", Menlo, monospace;
 
   /* Échelle typographique fluide */
   --text-display-xl: clamp(2.75rem, 1.2rem + 6.4vw, 6rem);

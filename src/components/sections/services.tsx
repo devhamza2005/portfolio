@@ -15,15 +15,21 @@ type Service = {
 };
 
 /** Section 04 — « What I do ». */
-export function Services({ services }: { services: Service[] }) {
+export function Services({
+  services,
+  t,
+}: {
+  services: Service[];
+  t: { label: string; title: string };
+}) {
   if (services.length === 0) return null;
 
   return (
     <Section id="services" className="bg-sunken/40">
       <div className="container-content">
         <Reveal className="mb-12 max-w-2xl">
-          <SectionLabel index="02">Services</SectionLabel>
-          <h2 className="text-display-md font-display">Ce que je peux construire pour vous</h2>
+          <SectionLabel index="02">{t.label}</SectionLabel>
+          <h2 className="text-display-md font-display">{t.title}</h2>
         </Reveal>
 
         <StaggerGroup className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

@@ -6,10 +6,32 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Monogram } from "@/components/brand/monogram";
+import { LocaleSwitcher } from "@/components/layout/locale-switcher";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { Button } from "@/components/ui/button";
-import { SECTION_NAV, OBSERVED_SECTIONS } from "@/config/nav";
+import { SECTION_NAV, OBSERVED_SECTIONS, navHref, type NavId } from "@/config/nav";
+import { localizedPath, type Locale } from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
+
+type Props = {
+  locale: Locale;
+  name: string;
+  cvUrl: string | null;
+  /** Tranche `nav` du dictionnaire — résolue côté serveur. */
+  t: {
+    skipToContent: string;
+    primaryAria: string;
+    mobileAria: string;
+    homeAria: string;
+    openMenu: string;
+    closeMenu: string;
+    cvShort: string;
+    downloadCv: string;
+  };
+  navItems: Record<NavId, string>;
+  localeStrings: { label: string; ariaLabel: string; currentAria: string };
+  themeLabel: string;
+};
 
 /**
  * Navigation principale — collante, avec verre dépoli au défilement et
@@ -18,23 +40,42 @@ import { cn } from "@/lib/utils";
  * La section courante est détectée par IntersectionObserver plutôt qu'en
  * écoutant l'événement `scroll` : le navigateur fait le calcul lui-même, hors
  * du fil principal, et aucune position n'est recalculée à chaque pixel.
+ *
+ * ── i18n ──────────────────────────────────────────────────────────────────
+ *
+ * Ce composant est client : il ne peut pas lire `next/root-params`. Les textes
+ * lui arrivent donc en props depuis le layout racine, déjà résolus. Seules les
+ * chaînes dont il a besoin sont transmises — le dictionnaire complet ne part
+ * jamais dans le bundle.
  */
-export function Navbar({ name, cvUrl }: { name: string; cvUrl: string | null }) {
+export function Navbar({
+  locale,
+  name,
+  cvUrl,
+  t,
+  navItems,
+  localeStrings,
+  themeLabel,
+}: Props) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string | null>(null);
   const pathname = usePathname();
 
-  const isHome = pathname === "/";
+  const home = localizedPath(locale, "/");
+
+  /**
+   * L'accueil est désormais `/fr`, `/en` ou `/ar` — et non plus `/`. La barre
+   * oblique finale est tolérée : Next peut servir les deux formes.
+   */
+  const isHome = pathname === home || pathname === `${home}/`;
 
   /**
    * Une entrée est active soit parce qu'on se trouve sur sa page, soit — sur
    * l'accueil uniquement — parce que sa section est à l'écran.
    */
-  const isActive = (item: { id: string; isPage?: boolean }) =>
-    item.isPage
-      ? pathname.startsWith(`/${item.id}`)
-      : isHome && active === item.id;
+  const isActive = (item: { id: NavId; isPage?: boolean }) =>
+    item.isPage ? pathname.startsWith(localizedPath(locale, `/${item.id}`)) : isHome && active === item.id;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -76,9 +117,9 @@ export function Navbar({ name, cvUrl }: { name: string; cvUrl: string | null }) 
     <>
       <a
         href="#main"
-        className="bg-brand-solid text-brand-contrast focus:ring-ring sr-only rounded-[var(--radius-md)] px-4 py-2 text-sm font-medium focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[70] focus:ring-2"
+        className="bg-brand-solid text-brand-contrast focus:ring-ring sr-only rounded-[var(--radius-md)] px-4 py-2 text-sm font-medium focus:not-sr-only focus:fixed focus:top-4 focus:start-4 focus:z-[70] focus:ring-2"
       >
-        Aller au contenu principal
+        {t.skipToContent}
       </a>
 
       <header
@@ -89,7 +130,7 @@ export function Navbar({ name, cvUrl }: { name: string; cvUrl: string | null }) 
       >
         <div className="container-content">
           <nav
-            aria-label="Navigation principale"
+            aria-label={t.primaryAria}
             className={cn(
               "flex items-center gap-3 rounded-full transition-all duration-300 ease-[var(--ease-signature)]",
               scrolled
@@ -98,9 +139,9 @@ export function Navbar({ name, cvUrl }: { name: string; cvUrl: string | null }) 
             )}
           >
             <Link
-              href="/"
+              href={home}
               className="flex shrink-0 items-center gap-2.5 rounded-full px-1"
-              aria-label={`${name} — accueil`}
+              aria-label={t.homeAria.replace("{name}", name)}
             >
               <Monogram className="size-8" title={name} />
               <span className="font-display hidden text-sm font-semibold tracking-tight sm:block">
@@ -114,7 +155,7 @@ export function Navbar({ name, cvUrl }: { name: string; cvUrl: string | null }) 
                 return (
                   <li key={item.id}>
                     <Link
-                      href={item.href}
+                      href={navHref(locale, item.path)}
                       aria-current={current ? "page" : undefined}
                       className={cn(
                         "relative rounded-full px-3.5 py-2 text-sm transition-colors duration-200",
@@ -129,20 +170,27 @@ export function Navbar({ name, cvUrl }: { name: string; cvUrl: string | null }) 
                           aria-hidden
                         />
                       ) : null}
-                      {item.label}
+                      {navItems[item.id]}
                     </Link>
                   </li>
                 );
               })}
             </ul>
 
-            <div className="ml-auto flex shrink-0 items-center gap-2 lg:ml-0">
-              <ThemeToggle className="size-9" />
+            <div className="ms-auto flex shrink-0 items-center gap-2 lg:ms-0">
+              <LocaleSwitcher
+                locale={locale}
+                label={localeStrings.label}
+                ariaLabel={localeStrings.ariaLabel}
+                currentAria={localeStrings.currentAria}
+              />
+
+              <ThemeToggle className="size-9" label={themeLabel} />
 
               {cvUrl ? (
                 <Button asChild size="sm" className="hidden sm:inline-flex">
                   <a href={cvUrl} download>
-                    CV
+                    {t.cvShort}
                   </a>
                 </Button>
               ) : null}
@@ -150,7 +198,7 @@ export function Navbar({ name, cvUrl }: { name: string; cvUrl: string | null }) 
               <button
                 type="button"
                 onClick={() => setOpen((value) => !value)}
-                aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
+                aria-label={open ? t.closeMenu : t.openMenu}
                 aria-expanded={open}
                 aria-controls="menu-mobile"
                 className="border-border text-muted hover:text-foreground grid size-9 place-items-center rounded-full border transition-colors lg:hidden"
@@ -180,14 +228,14 @@ export function Navbar({ name, cvUrl }: { name: string; cvUrl: string | null }) 
         />
 
         <nav
-          aria-label="Navigation mobile"
+          aria-label={t.mobileAria}
           className="relative flex h-full flex-col justify-center px-8"
         >
           <ul className="space-y-1">
             {SECTION_NAV.map((item, index) => (
               <li key={item.id}>
                 <Link
-                  href={item.href}
+                  href={navHref(locale, item.path)}
                   onClick={() => setOpen(false)}
                   tabIndex={open ? 0 : -1}
                   aria-current={isActive(item) ? "page" : undefined}
@@ -198,8 +246,8 @@ export function Navbar({ name, cvUrl }: { name: string; cvUrl: string | null }) 
                     isActive(item) ? "text-brand" : "text-foreground",
                   )}
                 >
-                  <span className="text-subtle mr-3 font-mono text-sm">0{index + 1}</span>
-                  {item.label}
+                  <span className="text-subtle me-3 font-mono text-sm">0{index + 1}</span>
+                  {navItems[item.id]}
                 </Link>
               </li>
             ))}
@@ -215,7 +263,7 @@ export function Navbar({ name, cvUrl }: { name: string; cvUrl: string | null }) 
             >
               <Button asChild size="lg" tabIndex={open ? 0 : -1}>
                 <a href={cvUrl} download onClick={() => setOpen(false)}>
-                  Télécharger mon CV
+                  {t.downloadCv}
                 </a>
               </Button>
             </div>

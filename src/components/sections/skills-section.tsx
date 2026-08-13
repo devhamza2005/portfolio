@@ -2,6 +2,7 @@ import { Icon } from "@/components/admin/icon";
 import { Reveal, Section } from "@/components/motion/reveal";
 import { SectionLabel } from "@/components/motion/text-reveal";
 import { SkillsTabs } from "@/components/sections/skills";
+import { interpolate } from "@/lib/i18n/format";
 import type { SkillGroup } from "@/server/queries/portfolio";
 
 /**
@@ -22,7 +23,16 @@ import type { SkillGroup } from "@/server/queries/portfolio";
  * arrivent déjà rendues : le client n'a plus besoin de Lucide, et le choix de
  * l'icône reste entièrement piloté depuis /admin (§12).
  */
-export function SkillsSection({ groups }: { groups: SkillGroup[] }) {
+export function SkillsSection({
+  groups,
+  t,
+  proficiency,
+}: {
+  groups: SkillGroup[];
+  t: { label: string; titleBefore: string; titleAccent: string; titleAfter: string; note: string };
+  /** Libellés des niveaux, indexés par valeur d'énumération Prisma. */
+  proficiency: Record<string, string>;
+}) {
   if (groups.length === 0) return null;
 
   const total = groups.reduce((sum, group) => sum + group.skills.length, 0);
@@ -51,18 +61,21 @@ export function SkillsSection({ groups }: { groups: SkillGroup[] }) {
     <Section id="skills">
       <div className="container-content">
         <Reveal className="mb-10 max-w-2xl">
-          <SectionLabel index="03">Compétences</SectionLabel>
+          <SectionLabel index="03">{t.label}</SectionLabel>
           <h2 className="text-display-md font-display">
-            {total} compétences, <span className="text-gradient-brand">réparties</span> par domaine
+            {interpolate(t.titleBefore, { count: total })}{" "}
+            <span className="text-gradient-brand">{t.titleAccent}</span> {t.titleAfter}
           </h2>
-          <p className="text-muted mt-4">
-            Les niveaux reflètent un usage réel : « Avancé » signifie utilisé en conditions de
-            production, pas seulement étudié.
-          </p>
+          <p className="text-muted mt-4">{t.note}</p>
         </Reveal>
 
         <Reveal delay={0.1}>
-          <SkillsTabs groups={groups} groupIcons={groupIcons} skillIcons={skillIcons} />
+          <SkillsTabs
+            groups={groups}
+            groupIcons={groupIcons}
+            skillIcons={skillIcons}
+            proficiency={proficiency}
+          />
         </Reveal>
       </div>
     </Section>

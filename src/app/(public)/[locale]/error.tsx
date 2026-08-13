@@ -7,6 +7,22 @@ import { useEffect, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
 import { ErrorState } from "@/components/ui/skeleton";
+import { localizedPath } from "@/lib/i18n/config";
+import { interpolate } from "@/lib/i18n/format";
+import { useLocale } from "@/lib/i18n/use-locale";
+import ar from "@/messages/ar.json";
+import en from "@/messages/en.json";
+import fr from "@/messages/fr.json";
+
+/**
+ * Les trois dictionnaires sont importés statiquement — ici seulement.
+ *
+ * `error.tsx` est un composant client : il ne peut ni lire `next/root-params`,
+ * ni recevoir de props depuis le serveur. Seule la tranche `errors` est
+ * retenue, soit une quinzaine de chaînes ; le reste est éliminé au bundling.
+ * C'est le prix, minime, d'un écran d'erreur traduit.
+ */
+const ERRORS = { fr: fr.errors, en: en.errors, ar: ar.errors };
 
 /**
  * Limite d'erreur du site public.
@@ -41,6 +57,8 @@ export default function SiteError({
   reset: () => void;
 }) {
   const router = useRouter();
+  const locale = useLocale();
+  const t = ERRORS[locale];
   const [isRetrying, startRetry] = useTransition();
 
   useEffect(() => {
@@ -65,22 +83,22 @@ export default function SiteError({
             l'écran — `ErrorState` affiche déjà son propre intitulé — mais
             rétablit la structure pour les lecteurs d'écran.
           */}
-          <h1 className="sr-only">Erreur de chargement</h1>
+          <h1 className="sr-only">{t.sectionTitle}</h1>
 
           <ErrorState
             icon={<TriangleAlert />}
-            title="Cette page n'a pas pu s'afficher"
-            description="Un incident est survenu pendant le chargement du contenu. Réessayez — c'est le plus souvent passager."
+            title={t.title}
+            description={t.description}
             action={
               <div className="flex flex-wrap items-center justify-center gap-2">
                 <Button size="sm" onClick={retry} disabled={isRetrying}>
                   <RotateCw className={isRetrying ? "animate-spin" : undefined} />
-                  {isRetrying ? "Nouvelle tentative…" : "Réessayer"}
+                  {isRetrying ? t.retrying : t.retry}
                 </Button>
                 <Button asChild size="sm" variant="secondary">
-                  <Link href="/">
+                  <Link href={localizedPath(locale, "/")}>
                     <House />
-                    Retour à l&apos;accueil
+                    {t.backHome}
                   </Link>
                 </Button>
               </div>
@@ -89,7 +107,7 @@ export default function SiteError({
 
           {error.digest ? (
             <p className="text-subtle mt-4 text-center font-mono text-xs">
-              Référence : {error.digest}
+              {interpolate(t.reference, { digest: error.digest })}
             </p>
           ) : null}
         </div>

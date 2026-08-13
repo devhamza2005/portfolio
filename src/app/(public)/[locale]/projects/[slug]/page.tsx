@@ -17,7 +17,9 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { siteConfig } from "@/config/site";
-import { openGraph, truncate, twitterCard } from "@/lib/seo";
+import { localizedPath, type Locale } from "@/lib/i18n/config";
+import { getDictionary, requireLocale } from "@/lib/i18n/dictionaries";
+import { alternatesFor, openGraph, robotsFor, truncate, twitterCard } from "@/lib/seo";
 import { breadcrumbJsonLd, projectJsonLd } from "@/lib/structured-data";
 import {
   getAdjacentProjects,
@@ -44,12 +46,19 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const [project, profile] = await Promise.all([getProjectBySlug(slug), getProfile()]);
+  const { locale: raw, slug } = await params;
+  const locale: Locale = requireLocale(raw);
+  const [t, project, profile] = await Promise.all([
+    getDictionary(locale),
+    getProjectBySlug(slug),
+    getProfile(),
+  ]);
 
-  if (!project) return { title: "Projet introuvable", robots: { index: false, follow: false } };
+  if (!project) {
+    return { title: t.seo.projectNotFound, robots: { index: false, follow: false } };
+  }
 
   const name = profile?.fullName ?? siteConfig.fallback.name;
   const description = truncate(project.summary);
@@ -63,8 +72,15 @@ export async function generateMetadata({
   return {
     title: project.title,
     description,
-    keywords: [project.title, ...technologies, name, "étude de cas", "projet"],
-    alternates: { canonical: `/projects/${project.slug}` },
+    keywords: [
+      project.title,
+      ...technologies,
+      name,
+      t.seo.caseStudyKeyword,
+      t.seo.projectKeyword,
+    ],
+    alternates: alternatesFor(locale, `/projects/${project.slug}`),
+    robots: robotsFor(locale),
     openGraph: openGraph({
       title,
       description,
@@ -72,6 +88,7 @@ export async function generateMetadata({
       siteName: `${name} — Portfolio`,
       type: "article",
       image,
+      locale,
     }),
     twitter: twitterCard({ title, description, image }),
   };
@@ -80,9 +97,11 @@ export async function generateMetadata({
 export default async function ProjectCaseStudyPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }) {
-  const { slug } = await params;
+  const { locale: raw, slug } = await params;
+  const locale = requireLocale(raw);
+  const t = await getDictionary(locale);
   const project = await getProjectBySlug(slug);
 
   // Slug inconnu ou projet dépublié → 404 propre.
@@ -112,26 +131,36 @@ export default async function ProjectCaseStudyPage({
       demoUrl: project.demoUrl,
       category: project.category,
       technologies: project.technologies.map((link) => link.technology.name),
+      locale,
     }),
-    breadcrumbJsonLd([
-      { name: "Accueil", path: "/" },
-      { name: "Projets", path: "/projects" },
-      { name: project.title, path: `/projects/${project.slug}` },
-    ]),
+    breadcrumbJsonLd(
+      [
+        { name: t.seo.breadcrumbHome, path: "/" },
+        { name: t.seo.breadcrumbProjects, path: "/projects" },
+        { name: project.title, path: `/projects/${project.slug}` },
+      ],
+      locale,
+    ),
   ];
 
   return (
     <article>
       <JsonLd data={jsonLd} />
 
-      <CaseStudyHero project={project} />
+      <CaseStudyHero
+        project={project}
+        locale={locale}
+        t={t.caseStudy}
+        status={t.enums.projectStatus}
+        todayLabel={t.dates.today}
+      />
 
       <div className="container-content">
         <div className="mx-auto max-w-3xl space-y-14 py-10 sm:py-14">
           <CaseStudySection
             id="apercu"
             index="01"
-            title="Présentation"
+            title={t.caseStudy.sections.overview}
             iconKey="FileText"
             text={project.overview}
           />
@@ -139,7 +168,7 @@ export default async function ProjectCaseStudyPage({
           <CaseStudySection
             id="problematique"
             index="02"
-            title="Problématique"
+            title={t.caseStudy.sections.problem}
             iconKey="TriangleAlert"
             text={project.problem}
           />
@@ -147,7 +176,7 @@ export default async function ProjectCaseStudyPage({
           <CaseStudySection
             id="solution"
             index="03"
-            title="Solution apportée"
+            title={t.caseStudy.sections.solution}
             iconKey="Lightbulb"
             text={project.solution}
           />
@@ -161,7 +190,7 @@ export default async function ProjectCaseStudyPage({
           <CaseStudySection
             id="fonctionnalites"
             index="04"
-            title={`Fonctionnalités${project.features.length ? ` (${project.features.length})` : ""}`}
+            title={`${t.caseStudy.sections.features}${project.features.length ? ` (${project.features.length})` : ""}`}
             iconKey="Blocks"
           >
             {project.features.length > 0 ? <FeatureGrid features={project.features} /> : null}
@@ -170,27 +199,44 @@ export default async function ProjectCaseStudyPage({
           <CaseStudySection
             id="architecture"
             index="05"
-            title="Architecture technique"
+            title={t.caseStudy.sections.architecture}
             iconKey="Network"
             text={project.architecture}
           />
 
-          <CaseStudySection id="technologies" index="06" title="Technologies" iconKey="Boxes">
+          <CaseStudySection
+            id="technologies"
+            index="06"
+            title={t.caseStudy.sections.stack}
+            iconKey="Boxes"
+          >
             {project.technologies.length > 0 ? (
-              <TechnologyBreakdown technologies={project.technologies} />
+              <TechnologyBreakdown
+                technologies={project.technologies}
+                otherCategory={t.technologies.otherCategory}
+              />
             ) : null}
           </CaseStudySection>
 
-          <CaseStudySection id="defis" index="07" title="Défis techniques" iconKey="Puzzle">
+          <CaseStudySection
+            id="defis"
+            index="07"
+            title={t.caseStudy.sections.challenges}
+            iconKey="Puzzle"
+          >
             {project.challenges.length > 0 ? (
-              <ChallengeList challenges={project.challenges} />
+              <ChallengeList
+                challenges={project.challenges}
+                problemLabel={t.caseStudy.theProblem}
+                solutionLabel={t.caseStudy.theSolution}
+              />
             ) : null}
           </CaseStudySection>
 
           <CaseStudySection
             id="resultats"
             index="08"
-            title="Résultats"
+            title={t.caseStudy.sections.results}
             iconKey="Trophy"
             text={project.results}
           >
@@ -200,13 +246,20 @@ export default async function ProjectCaseStudyPage({
           <CaseStudySection
             id="apprentissages"
             index="09"
-            title="Ce que j'en retiens"
+            title={t.caseStudy.sections.learnings}
             iconKey="GraduationCap"
             text={project.learnings}
           />
 
-          <CaseStudySection id="galerie" index="10" title="Captures d'écran" iconKey="Images">
-            {project.images.length > 0 ? <ProjectGallery images={project.images} /> : null}
+          <CaseStudySection
+            id="galerie"
+            index="10"
+            title={t.caseStudy.sections.gallery}
+            iconKey="Images"
+          >
+            {project.images.length > 0 ? (
+              <ProjectGallery images={project.images} kinds={t.enums.imageKind} />
+            ) : null}
           </CaseStudySection>
         </div>
       </div>
@@ -221,12 +274,20 @@ export default async function ProjectCaseStudyPage({
                   direction="previous"
                   slug={adjacent.previous.slug}
                   title={adjacent.previous.title}
+                  locale={locale}
+                  label={t.caseStudy.previous}
                 />
               ) : (
                 <span className="hidden sm:block" />
               )}
               {adjacent.next ? (
-                <NavCard direction="next" slug={adjacent.next.slug} title={adjacent.next.title} />
+                <NavCard
+                  direction="next"
+                  slug={adjacent.next.slug}
+                  title={adjacent.next.title}
+                  locale={locale}
+                  label={t.caseStudy.next}
+                />
               ) : null}
             </div>
           </Reveal>
@@ -234,15 +295,15 @@ export default async function ProjectCaseStudyPage({
           <Reveal delay={0.1}>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
               <Button asChild variant="secondary" size="md">
-                <Link href="/projects">
-                  <ArrowLeft />
-                  Tous les projets
+                <Link href={localizedPath(locale, "/projects")}>
+                  <ArrowLeft className="rtl:-scale-x-100" />
+                  {t.caseStudy.ctaProjects}
                 </Link>
               </Button>
               <Button asChild size="md">
-                <Link href="/#contact">
+                <Link href={`${localizedPath(locale, "/")}#contact`}>
                   <Mail />
-                  Discuter d&apos;un projet
+                  {t.caseStudy.ctaContact}
                 </Link>
               </Button>
             </div>
@@ -257,28 +318,32 @@ function NavCard({
   direction,
   slug,
   title,
+  locale,
+  label,
 }: {
   direction: "previous" | "next";
   slug: string;
   title: string;
+  locale: Locale;
+  label: string;
 }) {
   const isNext = direction === "next";
 
   return (
-    <Link href={`/projects/${slug}`} className="group">
+    <Link href={localizedPath(locale, `/projects/${slug}`)} className="group">
       <Card
         variant="default"
         interactive
-        className={`h-full p-5 ${isNext ? "sm:text-right" : ""}`}
+        className={`h-full p-5 ${isNext ? "sm:text-end" : ""}`}
       >
         <p
           className={`text-subtle flex items-center gap-1.5 font-mono text-[0.6875rem] tracking-wider uppercase ${
             isNext ? "sm:justify-end" : ""
           }`}
         >
-          {isNext ? null : <ArrowLeft className="size-3" />}
-          {isNext ? "Projet suivant" : "Projet précédent"}
-          {isNext ? <ArrowRight className="size-3" /> : null}
+          {isNext ? null : <ArrowLeft className="size-3 rtl:-scale-x-100" />}
+          {label}
+          {isNext ? <ArrowRight className="size-3 rtl:-scale-x-100" /> : null}
         </p>
         <p className="font-display group-hover:text-brand mt-1.5 font-semibold transition-colors">
           {title}

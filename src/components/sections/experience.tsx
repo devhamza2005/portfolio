@@ -6,21 +6,7 @@ import { SectionLabel } from "@/components/motion/text-reveal";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { formatPeriod } from "@/lib/dates";
-
-const EMPLOYMENT_LABEL: Record<string, string> = {
-  INTERNSHIP: "Stage",
-  APPRENTICESHIP: "Alternance",
-  FULL_TIME: "Temps plein",
-  PART_TIME: "Temps partiel",
-  FREELANCE: "Freelance",
-  PROJECT: "Projet",
-};
-
-const WORK_MODE_LABEL: Record<string, string> = {
-  ONSITE: "Sur site",
-  HYBRID: "Hybride",
-  REMOTE: "À distance",
-};
+import type { Locale } from "@/lib/i18n/config";
 
 type Experience = {
   id: string;
@@ -46,30 +32,44 @@ type Experience = {
  * un `<li>` dans une liste ordonnée : la chronologie est portée par le HTML,
  * pas seulement par la mise en page (§20).
  */
-export function ExperienceSection({ experiences }: { experiences: Experience[] }) {
+export function ExperienceSection({
+  experiences,
+  locale,
+  t,
+  employmentType: EMPLOYMENT_LABEL,
+  workMode: WORK_MODE_LABEL,
+  todayLabel,
+}: {
+  experiences: Experience[];
+  locale: Locale;
+  t: { label: string; title: string };
+  employmentType: Record<string, string>;
+  workMode: Record<string, string>;
+  todayLabel: string;
+}) {
   if (experiences.length === 0) return null;
 
   return (
     <Section id="experience">
       <div className="container-content">
         <Reveal className="mb-12 max-w-2xl">
-          <SectionLabel index="05">Parcours</SectionLabel>
-          <h2 className="text-display-md font-display">Expérience professionnelle</h2>
+          <SectionLabel index="05">{t.label}</SectionLabel>
+          <h2 className="text-display-md font-display">{t.title}</h2>
         </Reveal>
 
         <ol className="relative">
           {/* Trait de la frise */}
           <span
-            className="bg-border absolute top-2 bottom-2 left-[7px] w-px sm:left-[11px]"
+            className="bg-border absolute top-2 bottom-2 start-[7px] w-px sm:start-[11px]"
             aria-hidden
           />
 
           {experiences.map((experience, index) => (
-            <li key={experience.id} className="relative pb-10 pl-8 last:pb-0 sm:pl-12">
+            <li key={experience.id} className="relative pb-10 ps-8 last:pb-0 sm:ps-12">
               {/* Pastille */}
               <span
                 className={
-                  "bg-background absolute top-1.5 left-0 grid size-4 place-items-center rounded-full " +
+                  "bg-background absolute top-1.5 start-0 grid size-4 place-items-center rounded-full " +
                   "ring-4 ring-[var(--background)] sm:size-6"
                 }
                 aria-hidden
@@ -133,7 +133,13 @@ export function ExperienceSection({ experiences }: { experiences: Experience[] }
                   <div className="text-subtle mb-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
                     <span className="flex items-center gap-1.5">
                       <Icon name="CalendarDays" className="size-3.5" />
-                      {formatPeriod(experience.startDate, experience.endDate, experience.current)}
+                      {formatPeriod(
+                        experience.startDate,
+                        experience.endDate,
+                        experience.current,
+                        locale,
+                        todayLabel,
+                      )}
                     </span>
                     {experience.location ? (
                       <span className="flex items-center gap-1.5">

@@ -9,7 +9,35 @@ import { type ContactState, sendContactMessage } from "@/server/actions/contact.
 
 const INITIAL: ContactState = { status: "idle" };
 
-export function ContactForm() {
+export type ContactFormMessages = {
+  name: string;
+  namePlaceholder: string;
+  email: string;
+  emailPlaceholder: string;
+  subject: string;
+  subjectPlaceholder: string;
+  message: string;
+  messagePlaceholder: string;
+  submit: string;
+  submitting: string;
+  successTitle: string;
+  successBody: string;
+  errorGeneric: string;
+  honeypot: string;
+};
+
+/**
+ * Formulaire de contact.
+ *
+ * ── Limite connue, assumée en phase A ────────────────────────────────────
+ *
+ * Les messages de confirmation et les erreurs de champ sont produits par la
+ * Server Action `sendContactMessage`, qui reste EN FRANÇAIS — la consigne est
+ * de ne pas toucher aux Server Actions. Le composant affiche donc ses propres
+ * libellés traduits pour le succès et l'erreur générale ; seules les erreurs
+ * de validation champ par champ restent francophones.
+ */
+export function ContactForm({ t }: { t: ContactFormMessages }) {
   const [state, formAction, isPending] = useActionState(sendContactMessage, INITIAL);
 
   if (state.status === "success") {
@@ -19,32 +47,32 @@ export function ContactForm() {
         className="border-success/30 bg-success/10 flex flex-col items-center gap-3 rounded-[var(--radius-lg)] border px-6 py-12 text-center"
       >
         <CheckCircle2 className="text-success size-8" />
-        <p className="font-display text-base font-semibold">Message envoyé</p>
-        <p className="text-muted max-w-sm text-sm">{state.message}</p>
+        <p className="font-display text-base font-semibold">{t.successTitle}</p>
+        <p className="text-muted max-w-sm text-sm">{t.successBody}</p>
       </div>
     );
   }
 
   return (
     <form action={formAction} className="grid gap-5" noValidate>
-      {state.status === "error" && state.message ? (
+      {state.status === "error" ? (
         <div
           role="alert"
           className="border-danger/30 bg-danger/10 text-danger flex items-start gap-2.5 rounded-[var(--radius-md)] border px-4 py-3 text-sm"
         >
           <AlertCircle className="mt-0.5 size-4 shrink-0" />
-          <span>{state.message}</span>
+          <span>{t.errorGeneric}</span>
         </div>
       ) : null}
 
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="grid gap-2">
-          <Label htmlFor="contact-name">Nom</Label>
+          <Label htmlFor="contact-name">{t.name}</Label>
           <Input
             id="contact-name"
             name="name"
             autoComplete="name"
-            placeholder="Votre nom"
+            placeholder={t.namePlaceholder}
             required
             aria-invalid={Boolean(state.fieldErrors?.["name"])}
             aria-describedby={state.fieldErrors?.["name"] ? "contact-name-error" : undefined}
@@ -53,13 +81,13 @@ export function ContactForm() {
         </div>
 
         <div className="grid gap-2">
-          <Label htmlFor="contact-email">Email</Label>
+          <Label htmlFor="contact-email">{t.email}</Label>
           <Input
             id="contact-email"
             name="email"
             type="email"
             autoComplete="email"
-            placeholder="vous@entreprise.com"
+            placeholder={t.emailPlaceholder}
             required
             aria-invalid={Boolean(state.fieldErrors?.["email"])}
             aria-describedby={state.fieldErrors?.["email"] ? "contact-email-error" : undefined}
@@ -69,11 +97,11 @@ export function ContactForm() {
       </div>
 
       <div className="grid gap-2">
-        <Label htmlFor="contact-subject">Sujet</Label>
+        <Label htmlFor="contact-subject">{t.subject}</Label>
         <Input
           id="contact-subject"
           name="subject"
-          placeholder="Opportunité, mission freelance, question…"
+          placeholder={t.subjectPlaceholder}
           aria-invalid={Boolean(state.fieldErrors?.["subject"])}
           aria-describedby={state.fieldErrors?.["subject"] ? "contact-subject-error" : undefined}
         />
@@ -81,12 +109,12 @@ export function ContactForm() {
       </div>
 
       <div className="grid gap-2">
-        <Label htmlFor="contact-message">Message</Label>
+        <Label htmlFor="contact-message">{t.message}</Label>
         <Textarea
           id="contact-message"
           name="message"
           rows={5}
-          placeholder="Décrivez votre projet ou votre besoin…"
+          placeholder={t.messagePlaceholder}
           required
           aria-invalid={Boolean(state.fieldErrors?.["message"])}
           aria-describedby={state.fieldErrors?.["message"] ? "contact-message-error" : undefined}
@@ -98,19 +126,19 @@ export function ContactForm() {
         Champ piège : invisible et hors du parcours de tabulation pour un
         humain, mais rempli par la plupart des robots à formulaire.
       */}
-      <div aria-hidden className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
-        <label htmlFor="contact-website">Ne pas remplir</label>
+      <div aria-hidden className="absolute -start-[9999px] h-0 w-0 overflow-hidden">
+        <label htmlFor="contact-website">{t.honeypot}</label>
         <input id="contact-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
       <Button type="submit" size="lg" disabled={isPending} className="justify-self-start">
         {isPending ? (
           <>
-            <Loader2 className="animate-spin" /> Envoi…
+            <Loader2 className="animate-spin" /> {t.submitting}
           </>
         ) : (
           <>
-            <Send /> Envoyer le message
+            <Send /> {t.submit}
           </>
         )}
       </Button>

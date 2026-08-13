@@ -7,6 +7,7 @@ import { SectionLabel } from "@/components/motion/text-reveal";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { formatYear } from "@/lib/dates";
+import type { Locale } from "@/lib/i18n/config";
 
 type Achievement = {
   id: string;
@@ -22,20 +23,28 @@ type Achievement = {
 };
 
 /** Section 11 — Réalisations et distinctions. */
-export function Achievements({ achievements }: { achievements: Achievement[] }) {
+export function Achievements({
+  achievements,
+  locale,
+  t,
+}: {
+  achievements: Achievement[];
+  locale: Locale;
+  t: { label: string; title: string; view: string };
+}) {
   if (achievements.length === 0) return null;
 
   return (
     <Section id="achievements" className="bg-sunken/40">
       <div className="container-content">
         <Reveal className="mb-10 max-w-2xl">
-          <SectionLabel index="09">Réalisations</SectionLabel>
-          <h2 className="text-display-md font-display">Distinctions et accomplissements</h2>
+          <SectionLabel index="09">{t.label}</SectionLabel>
+          <h2 className="text-display-md font-display">{t.title}</h2>
         </Reveal>
 
         <StaggerGroup className="grid gap-4 md:grid-cols-3">
           {achievements.map((achievement) => {
-            const year = achievement.year ?? (achievement.date ? formatYear(achievement.date) : null);
+            const year = achievement.year ?? (achievement.date ? formatYear(achievement.date, locale) : null);
 
             return (
               <StaggerItem key={achievement.id} as="article" className="h-full">
@@ -80,9 +89,9 @@ export function Achievements({ achievements }: { achievements: Achievement[] }) 
                           href={achievement.url}
                           target="_blank"
                           rel="noreferrer noopener"
-                          className="text-brand ml-auto flex items-center gap-1 text-xs font-medium hover:underline"
+                          className="text-brand ms-auto flex items-center gap-1 text-xs font-medium hover:underline"
                         >
-                          Voir
+                          {t.view}
                           <ExternalLink className="size-3" />
                         </a>
                       ) : null}

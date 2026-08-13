@@ -10,13 +10,25 @@ import { TextReveal } from "@/components/motion/text-reveal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatYearRange } from "@/lib/dates";
+import { localizedPath, type Locale } from "@/lib/i18n/config";
+import { interpolate } from "@/lib/i18n/format";
 import type { ProjectDetail } from "@/server/queries/portfolio";
 
-const STATUS: Record<string, { label: string; variant: "success" | "warning" | "brand" | "default" }> = {
-  COMPLETED: { label: "Terminé", variant: "success" },
-  IN_PROGRESS: { label: "En cours", variant: "warning" },
-  MAINTAINED: { label: "Maintenu", variant: "brand" },
-  ARCHIVED: { label: "Archivé", variant: "default" },
+/** La couleur du badge est une décision de design : elle ne se traduit pas. */
+const STATUS_VARIANT: Record<string, "success" | "warning" | "brand" | "default"> = {
+  COMPLETED: "success",
+  IN_PROGRESS: "warning",
+  MAINTAINED: "brand",
+  ARCHIVED: "default",
+};
+
+type CaseStudyMessages = {
+  backToProjects: string;
+  viewDemo: string;
+  viewCode: string;
+  newWindow: string;
+  documentation: string;
+  meta: { role: string; client: string; team: string; teamValue: string; period: string };
 };
 
 /**
@@ -26,20 +38,34 @@ const STATUS: Record<string, { label: string; variant: "success" | "warning" | "
  * si elles existent : sur les sept projets du portfolio, aucune ne les a
  * toutes. La grille s'adapte au nombre réel d'entrées.
  */
-export function CaseStudyHero({ project }: { project: ProjectDetail }) {
-  const status = STATUS[project.status];
-  const period = formatYearRange(project.startDate, project.endDate);
+export function CaseStudyHero({
+  project,
+  locale,
+  t,
+  status: STATUS_LABEL,
+}: {
+  project: ProjectDetail;
+  locale: Locale;
+  t: CaseStudyMessages;
+  /** Libellés de ProjectStatus, indexés par valeur d'énumération Prisma. */
+  status: Record<string, string>;
+  /** Accepté pour l'homogénéité des appels ; la période est ici annuelle. */
+  todayLabel?: string;
+}) {
+  const statusLabel = STATUS_LABEL[project.status];
+  const statusVariant = STATUS_VARIANT[project.status];
+  const period = formatYearRange(project.startDate, project.endDate, locale);
 
   const meta = [
-    project.role && { label: "Rôle", value: project.role, icon: "UserRound" },
-    project.client && { label: "Client", value: project.client, icon: "Building2" },
+    project.role && { label: t.meta.role, value: project.role, icon: "UserRound" },
+    project.client && { label: t.meta.client, value: project.client, icon: "Building2" },
     project.teamSize && {
-      label: "Équipe",
-      value: `${project.teamSize} personne${project.teamSize > 1 ? "s" : ""}`,
+      label: t.meta.team,
+      value: interpolate(t.meta.teamValue, { count: project.teamSize }),
       icon: "Users",
     },
     (period || project.year) && {
-      label: "Période",
+      label: t.meta.period,
       value: period || String(project.year),
       icon: "CalendarDays",
     },
@@ -54,11 +80,11 @@ export function CaseStudyHero({ project }: { project: ProjectDetail }) {
       <div className="container-content relative">
         <Reveal>
           <Link
-            href="/projects"
+            href={localizedPath(locale, "/projects")}
             className="text-muted hover:text-foreground mb-8 inline-flex items-center gap-2 text-sm transition-colors"
           >
-            <ArrowLeft className="size-4" />
-            Tous les projets
+            <ArrowLeft className="size-4 rtl:-scale-x-100" />
+            {t.backToProjects}
           </Link>
         </Reveal>
 
@@ -71,9 +97,9 @@ export function CaseStudyHero({ project }: { project: ProjectDetail }) {
                   {project.category.name}
                 </Badge>
               ) : null}
-              {status ? (
-                <Badge variant={status.variant} size="md">
-                  {status.label}
+              {statusLabel ? (
+                <Badge variant={statusVariant} size="md">
+                  {statusLabel}
                 </Badge>
               ) : null}
               {project.context ? (
@@ -110,8 +136,8 @@ export function CaseStudyHero({ project }: { project: ProjectDetail }) {
                   <Button asChild size="md">
                     <a href={project.demoUrl} target="_blank" rel="noreferrer noopener">
                       <ExternalLink />
-                      Voir la démo
-                      <span className="sr-only"> (nouvelle fenêtre)</span>
+                      {t.viewDemo}
+                      <span className="sr-only">{t.newWindow}</span>
                     </a>
                   </Button>
                 ) : null}
@@ -119,8 +145,8 @@ export function CaseStudyHero({ project }: { project: ProjectDetail }) {
                   <Button asChild size="md" variant="secondary">
                     <a href={project.repoUrl} target="_blank" rel="noreferrer noopener">
                       <GithubIcon className="size-4" />
-                      Code source
-                      <span className="sr-only"> (nouvelle fenêtre)</span>
+                      {t.viewCode}
+                      <span className="sr-only">{t.newWindow}</span>
                     </a>
                   </Button>
                 ) : null}
@@ -128,8 +154,8 @@ export function CaseStudyHero({ project }: { project: ProjectDetail }) {
                   <Button asChild size="md" variant="ghost">
                     <a href={project.docUrl} target="_blank" rel="noreferrer noopener">
                       <FileText />
-                      Documentation
-                      <span className="sr-only"> (nouvelle fenêtre)</span>
+                      {t.documentation}
+                      <span className="sr-only">{t.newWindow}</span>
                     </a>
                   </Button>
                 ) : null}

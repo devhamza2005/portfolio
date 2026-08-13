@@ -19,6 +19,9 @@ type Props = {
   cvUrl: string | null;
   cvLabel: string | null;
   socialLinks: { id: string; label: string; url: string; iconKey: string | null }[];
+  t: { viewProjects: string; contactMe: string; scroll: string; scrollAria: string };
+  /** Repli quand `Profile.cvLabel` n'est pas renseigné — il vient du dictionnaire. */
+  downloadCvLabel: string;
 };
 
 /**
@@ -39,6 +42,8 @@ export function Hero({
   cvUrl,
   cvLabel,
   socialLinks,
+  t,
+  downloadCvLabel,
 }: Props) {
   return (
     <section className="relative flex min-h-[100svh] items-center overflow-hidden pt-28 pb-16">
@@ -84,7 +89,7 @@ export function Hero({
             <Reveal delay={0.65} className="mt-8 flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
                 <a href="#projects">
-                  Voir mes projets
+                  {t.viewProjects}
                   <ArrowDown className="transition-transform group-hover:translate-y-0.5" />
                 </a>
               </Button>
@@ -93,7 +98,7 @@ export function Hero({
                 <Button asChild size="lg" variant="secondary">
                   <a href={cvUrl} download>
                     <Download />
-                    {cvLabel ?? "Télécharger mon CV"}
+                    {cvLabel ?? downloadCvLabel}
                   </a>
                 </Button>
               ) : null}
@@ -101,7 +106,7 @@ export function Hero({
               <Button asChild size="lg" variant="ghost">
                 <a href="#contact">
                   <Mail />
-                  Me contacter
+                  {t.contactMe}
                 </a>
               </Button>
             </Reveal>
@@ -142,10 +147,10 @@ export function Hero({
       {/* Invitation à faire défiler */}
       <a
         href="#about"
-        aria-label="Faire défiler vers la section À propos"
+        aria-label={t.scrollAria}
         className="text-subtle hover:text-foreground absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 transition-colors md:flex"
       >
-        <span className="font-mono text-[0.625rem] tracking-[0.2em] uppercase">Défiler</span>
+        <span className="font-mono text-[0.625rem] tracking-[0.2em] uppercase">{t.scroll}</span>
         <span className="border-border flex h-9 w-5 items-start justify-center rounded-full border p-1">
           <span className="bg-brand animate-float size-1 rounded-full" />
         </span>

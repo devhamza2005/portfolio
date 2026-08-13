@@ -15,6 +15,17 @@ type Props = {
   isAvailable: boolean;
   cvUrl: string | null;
   socialLinks: { id: string; label: string; url: string; iconKey: string | null }[];
+  t: {
+    label: string;
+    titleBefore: string;
+    titleAccent: string;
+    titleAfter: string;
+    intro: string;
+    emailLabel: string;
+    locationLabel: string;
+  };
+  form: React.ComponentProps<typeof ContactForm>["t"];
+  downloadCvLabel: string;
 };
 
 /** Section 12 — Contact. */
@@ -25,20 +36,21 @@ export function Contact({
   isAvailable,
   cvUrl,
   socialLinks,
+  t,
+  form,
+  downloadCvLabel,
 }: Props) {
   return (
     <Section id="contact">
       <div className="container-content">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
           <Reveal>
-            <SectionLabel index="10">Contact</SectionLabel>
+            <SectionLabel index="10">{t.label}</SectionLabel>
             <h2 className="text-display-md font-display mb-5">
-              Parlons de <span className="text-gradient-brand">votre projet</span>
+              {t.titleBefore} <span className="text-gradient-brand">{t.titleAccent}</span>
+              {t.titleAfter}
             </h2>
-            <p className="text-muted mb-8 leading-relaxed">
-              Une opportunité, une mission freelance ou simplement une question sur mon parcours ?
-              Écrivez-moi — je réponds à chaque message.
-            </p>
+            <p className="text-muted mb-8 leading-relaxed">{t.intro}</p>
 
             {isAvailable && availabilityLabel ? (
               <Badge variant="success" size="lg" className="mb-8">
@@ -53,7 +65,7 @@ export function Contact({
                   <Mail className="size-4" />
                 </span>
                 <div className="min-w-0">
-                  <p className="text-subtle text-xs">Email</p>
+                  <p className="text-subtle text-xs">{t.emailLabel}</p>
                   <a
                     href={`mailto:${email}`}
                     className="hover:text-brand text-sm font-medium break-all transition-colors"
@@ -69,7 +81,7 @@ export function Contact({
                     <MapPin className="size-4" />
                   </span>
                   <div>
-                    <p className="text-subtle text-xs">Localisation</p>
+                    <p className="text-subtle text-xs">{t.locationLabel}</p>
                     <p className="text-sm font-medium">{location}</p>
                   </div>
                 </Card>
@@ -81,7 +93,7 @@ export function Contact({
                 <Button asChild variant="secondary" size="md">
                   <a href={cvUrl} download>
                     <Download />
-                    Télécharger mon CV
+                    {downloadCvLabel}
                   </a>
                 </Button>
               ) : null}
@@ -108,7 +120,7 @@ export function Contact({
 
           <Reveal delay={0.1}>
             <Card variant="glass" className="p-6 sm:p-8">
-              <ContactForm />
+              <ContactForm t={form} />
             </Card>
           </Reveal>
         </div>

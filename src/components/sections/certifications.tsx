@@ -7,6 +7,8 @@ import { SectionLabel } from "@/components/motion/text-reveal";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { formatMonthYear } from "@/lib/dates";
+import type { Locale } from "@/lib/i18n/config";
+import { interpolate } from "@/lib/i18n/format";
 
 type Certification = {
   id: string;
@@ -33,15 +35,23 @@ type Certification = {
  * La section disparaît entièrement tant qu'aucune certification n'est saisie :
  * une rubrique vide fait plus de mal que son absence.
  */
-export function Certifications({ certifications }: { certifications: Certification[] }) {
+export function Certifications({
+  certifications,
+  locale,
+  t,
+}: {
+  certifications: Certification[];
+  locale: Locale;
+  t: { label: string; title: string; issuedIn: string; reference: string; expired: string; verify: string };
+}) {
   if (certifications.length === 0) return null;
 
   return (
     <Section id="certifications">
       <div className="container-content">
         <Reveal className="mb-10 max-w-2xl">
-          <SectionLabel index="08">Certifications</SectionLabel>
-          <h2 className="text-display-md font-display">Certifications et attestations</h2>
+          <SectionLabel index="08">{t.label}</SectionLabel>
+          <h2 className="text-display-md font-display">{t.title}</h2>
         </Reveal>
 
         <StaggerGroup className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -84,9 +94,11 @@ export function Certifications({ certifications }: { certifications: Certificati
 
                   <div className="text-subtle mb-4 space-y-1 font-mono text-[0.6875rem]">
                     {certification.issueDate ? (
-                      <p>Obtenue en {formatMonthYear(certification.issueDate)}</p>
+                      <p>{interpolate(t.issuedIn, { date: formatMonthYear(certification.issueDate, locale) })}</p>
                     ) : null}
-                    {certification.credentialId ? <p>Réf. {certification.credentialId}</p> : null}
+                    {certification.credentialId ? (
+                      <p>{interpolate(t.reference, { id: certification.credentialId })}</p>
+                    ) : null}
                   </div>
 
                   <div className="mt-auto flex flex-wrap items-center gap-2">
@@ -97,7 +109,7 @@ export function Certifications({ certifications }: { certifications: Certificati
                     ) : null}
                     {expired ? (
                       <Badge variant="warning" size="sm">
-                        Expirée
+                        {t.expired}
                       </Badge>
                     ) : null}
 
@@ -106,9 +118,9 @@ export function Certifications({ certifications }: { certifications: Certificati
                         href={certification.credentialUrl}
                         target="_blank"
                         rel="noreferrer noopener"
-                        className="text-brand ml-auto flex items-center gap-1 text-xs font-medium hover:underline"
+                        className="text-brand ms-auto flex items-center gap-1 text-xs font-medium hover:underline"
                       >
-                        Vérifier
+                        {t.verify}
                         <ExternalLink className="size-3" />
                       </a>
                     ) : null}

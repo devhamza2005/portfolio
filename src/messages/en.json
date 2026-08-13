@@ -1,0 +1,245 @@
+{
+  "nav": {
+    "skipToContent": "Skip to main content",
+    "primaryAria": "Main navigation",
+    "mobileAria": "Mobile navigation",
+    "homeAria": "{name} — home",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "cvShort": "CV",
+    "downloadCv": "Download my CV",
+    "items": {
+      "about": "About",
+      "services": "Services",
+      "skills": "Skills",
+      "experience": "Experience",
+      "projects": "Projects",
+      "contact": "Contact"
+    }
+  },
+  "locale": {
+    "label": "Language",
+    "ariaLabel": "Change language",
+    "currentAria": "Current language: {language}"
+  },
+  "theme": {
+    "toggle": "Toggle theme"
+  },
+  "hero": {
+    "viewProjects": "View my projects",
+    "contactMe": "Get in touch",
+    "scroll": "Scroll",
+    "scrollAria": "Scroll to the About section"
+  },
+  "about": {
+    "label": "About",
+    "titleBefore": "The developer behind",
+    "titleAccent": "the code",
+    "titleAfter": "",
+    "qualities": "What people notice",
+    "languages": "Languages",
+    "portraitAlt": "Portrait",
+    "photoPlaceholder": "Photo to be added from the back office"
+  },
+  "services": {
+    "label": "Services",
+    "title": "What I can build for you"
+  },
+  "skills": {
+    "label": "Skills",
+    "titleBefore": "{count} skills,",
+    "titleAccent": "grouped",
+    "titleAfter": "by domain",
+    "note": "Levels reflect real use: “Advanced” means used in production conditions, not merely studied."
+  },
+  "technologies": {
+    "label": "Technologies",
+    "title": "My everyday stack",
+    "otherCategory": "Other"
+  },
+  "experience": {
+    "label": "Experience",
+    "title": "Professional experience"
+  },
+  "education": {
+    "label": "Education",
+    "title": "Academic background",
+    "mention": "Honours: {mention}"
+  },
+  "projects": {
+    "label": "Projects",
+    "titleBefore": "Projects that were",
+    "titleAccent": "shipped",
+    "titleAfter": ", not merely started",
+    "all": "All projects",
+    "viewAll": "View all {count} projects",
+    "featuredBadge": "Flagship project",
+    "readCaseStudy": "Read the case study",
+    "newWindow": " (opens in a new window)"
+  },
+  "certifications": {
+    "label": "Certifications",
+    "title": "Certifications and credentials",
+    "issuedIn": "Issued in {date}",
+    "reference": "Ref. {id}",
+    "expired": "Expired",
+    "verify": "Verify"
+  },
+  "achievements": {
+    "label": "Achievements",
+    "title": "Awards and accomplishments",
+    "view": "View"
+  },
+  "contact": {
+    "label": "Contact",
+    "titleBefore": "Let's talk about",
+    "titleAccent": "your project",
+    "titleAfter": "",
+    "intro": "An opportunity, a freelance assignment, or simply a question about my background? Write to me — I answer every message.",
+    "emailLabel": "Email",
+    "locationLabel": "Location"
+  },
+  "contactForm": {
+    "name": "Name",
+    "namePlaceholder": "Your name",
+    "email": "Email",
+    "emailPlaceholder": "you@company.com",
+    "subject": "Subject",
+    "subjectPlaceholder": "Opportunity, freelance assignment, question…",
+    "message": "Message",
+    "messagePlaceholder": "Describe your project or your needs…",
+    "submit": "Send message",
+    "submitting": "Sending…",
+    "successTitle": "Message sent",
+    "successBody": "Thank you — your message has been delivered. I will get back to you shortly.",
+    "errorGeneric": "Sending failed. Please check the fields and try again.",
+    "honeypot": "Do not fill in"
+  },
+  "footer": {
+    "navigation": "Navigation",
+    "navigationAria": "Footer navigation",
+    "contactHeading": "Contact me",
+    "rights": "© {year} {name}. All rights reserved.",
+    "administration": "Administration"
+  },
+  "projectsPage": {
+    "label": "Work",
+    "title": "Projects",
+    "intro": "Applications that actually shipped — from professional work delivered for a local software company to DevOps experiments. Each project comes with a case study covering the context, the technical choices and the difficulties encountered.",
+    "srTitle": "Project list",
+    "statProjects": "projects",
+    "statTechnologies": "technologies used",
+    "statCategories": "domains",
+    "categoriesLabel": "Categories",
+    "emptyTitle": "No published project",
+    "emptyDescription": "{name} has not published a project yet.",
+    "ownerFallback": "The site owner",
+    "filterAria": "Filter projects by category",
+    "filterAll": "All",
+    "filterEmptyTitle": "No project in this category",
+    "filterEmptyDescription": "Pick another category.",
+    "resultsCount": "{shown} project(s) shown",
+    "resultsOutOf": " of {total}"
+  },
+  "caseStudy": {
+    "backToProjects": "Back to projects",
+    "viewDemo": "View demo",
+    "viewCode": "Source code",
+    "documentation": "Documentation",
+    "newWindow": " (opens in a new window)",
+    "next": "Next project",
+    "previous": "Previous project",
+    "ctaTitle": "Got a project in mind?",
+    "ctaProjects": "View all projects",
+    "ctaContact": "Discuss a project",
+    "theProblem": "The problem",
+    "theSolution": "The solution",
+    "meta": {
+      "role": "Role",
+      "client": "Client",
+      "team": "Team",
+      "teamValue": "{count} people",
+      "period": "Period"
+    },
+    "sections": {
+      "overview": "Overview",
+      "problem": "Problem",
+      "solution": "Solution",
+      "features": "Features",
+      "stack": "Technical stack",
+      "challenges": "Technical challenges",
+      "architecture": "Technical architecture",
+      "results": "Results",
+      "learnings": "What I took away",
+      "gallery": "Screenshots"
+    },
+    "notFoundTitle": "This project does not exist",
+    "notFoundBody": "The requested address does not match any published project. It may have been renamed, or is no longer visible.",
+    "seeAllProjects": "View all projects",
+    "availableProjects": "Available projects",
+    "backHome": "Back to home"
+  },
+  "enums": {
+    "projectStatus": {
+      "COMPLETED": "Completed",
+      "IN_PROGRESS": "In progress",
+      "MAINTAINED": "Maintained",
+      "ARCHIVED": "Archived"
+    },
+    "educationStatus": {
+      "COMPLETED": "Awarded",
+      "PENDING_DIPLOMA": "Diploma pending issuance",
+      "ONGOING": "In progress"
+    },
+    "employmentType": {
+      "INTERNSHIP": "Internship",
+      "APPRENTICESHIP": "Apprenticeship",
+      "FULL_TIME": "Full time",
+      "PART_TIME": "Part time",
+      "FREELANCE": "Freelance",
+      "PROJECT": "Project"
+    },
+    "workMode": {
+      "ONSITE": "On site",
+      "HYBRID": "Hybrid",
+      "REMOTE": "Remote"
+    },
+    "proficiency": {
+      "BASICS": "Basics",
+      "GOOD_KNOWLEDGE": "Good command",
+      "ADVANCED": "Advanced",
+      "EXPERT": "Expert"
+    },
+    "imageKind": {
+      "SCREENSHOT": "Screenshot",
+      "DIAGRAM": "Diagram",
+      "MOCKUP": "Mockup",
+      "LOGO": "Logo"
+    }
+  },
+  "dates": {
+    "today": "present",
+    "rangeSeparator": "—"
+  },
+  "errors": {
+    "sectionTitle": "Loading error",
+    "title": "The content could not be displayed",
+    "description": "Something went wrong while loading the content. Try again — it is usually temporary.",
+    "retry": "Try again",
+    "retrying": "Retrying…",
+    "backHome": "Back to home",
+    "reference": "Reference: {digest}",
+    "notFoundTitle": "Page not found",
+    "notFoundBody": "This address does not match any page of the portfolio. The link may be outdated, or the address mistyped.",
+    "notFoundHint": "You can also start again from the home page and browse by section."
+  },
+  "seo": {
+    "projectsTitle": "Projects",
+    "projectsDescription": "{count} projects delivered by {name}: Java/Spring Boot and React web applications, desktop software, DevOps and embedded systems. Detailed case studies.",
+    "projectNotFound": "Project not found",
+    "breadcrumbHome": "Home",
+    "breadcrumbProjects": "Projects",
+    "caseStudyKeyword": "case study",
+    "projectKeyword": "project"
+  }
+}

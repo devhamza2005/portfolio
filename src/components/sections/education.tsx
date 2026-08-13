@@ -6,11 +6,14 @@ import { SectionLabel } from "@/components/motion/text-reveal";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { formatYearRange } from "@/lib/dates";
+import type { Locale } from "@/lib/i18n/config";
+import { interpolate } from "@/lib/i18n/format";
 
-const STATUS_LABEL: Record<string, { label: string; variant: "success" | "warning" | "brand" }> = {
-  COMPLETED: { label: "Obtenu", variant: "success" },
-  PENDING_DIPLOMA: { label: "Diplôme en attente de délivrance", variant: "warning" },
-  ONGOING: { label: "En cours", variant: "brand" },
+/** La couleur du badge est une décision de design, elle ne se traduit pas. */
+const STATUS_VARIANT: Record<string, "success" | "warning" | "brand"> = {
+  COMPLETED: "success",
+  PENDING_DIPLOMA: "warning",
+  ONGOING: "brand",
 };
 
 type Education = {
@@ -37,20 +40,31 @@ type Education = {
  * exactement le genre de détail qu'un recruteur cherche du regard, il ne doit
  * pas être noyé dans le texte.
  */
-export function EducationSection({ education }: { education: Education[] }) {
+export function EducationSection({
+  education,
+  locale,
+  t,
+  status: STATUS_LABEL,
+}: {
+  education: Education[];
+  locale: Locale;
+  t: { label: string; title: string; mention: string };
+  status: Record<string, string>;
+}) {
   if (education.length === 0) return null;
 
   return (
     <Section id="education" className="bg-sunken/40">
       <div className="container-content">
         <Reveal className="mb-12 max-w-2xl">
-          <SectionLabel index="06">Formation</SectionLabel>
-          <h2 className="text-display-md font-display">Parcours académique</h2>
+          <SectionLabel index="06">{t.label}</SectionLabel>
+          <h2 className="text-display-md font-display">{t.title}</h2>
         </Reveal>
 
         <div className="grid gap-4 lg:grid-cols-3">
           {education.map((item, index) => {
-            const status = STATUS_LABEL[item.status];
+            const statusLabel = STATUS_LABEL[item.status];
+            const statusVariant = STATUS_VARIANT[item.status];
 
             return (
               <Reveal key={item.id} delay={index * 0.07}>
@@ -74,7 +88,7 @@ export function EducationSection({ education }: { education: Education[] }) {
 
                     <div className="min-w-0">
                       <p className="text-subtle font-mono text-[0.6875rem]">
-                        {formatYearRange(item.startDate, item.endDate)}
+                        {formatYearRange(item.startDate, item.endDate, locale)}
                       </p>
                       <h3 className="font-display mt-0.5 text-sm leading-snug font-semibold">
                         {item.degree}
@@ -99,7 +113,7 @@ export function EducationSection({ education }: { education: Education[] }) {
                     <div className="border-ember/25 bg-ember-soft mb-3 flex flex-wrap items-center gap-2 rounded-[var(--radius-md)] border px-3 py-2">
                       <Icon name="Award" className="text-ember size-4 shrink-0" />
                       <span className="text-ember text-sm font-semibold">
-                        {[item.grade, item.mention && `Mention ${item.mention}`]
+                        {[item.grade, item.mention && interpolate(t.mention, { mention: item.mention })]
                           .filter(Boolean)
                           .join(" · ")}
                       </span>
@@ -115,9 +129,9 @@ export function EducationSection({ education }: { education: Education[] }) {
                   ) : null}
 
                   <div className="mt-auto flex flex-wrap items-center gap-2 pt-2">
-                    {status ? (
-                      <Badge variant={status.variant} size="sm">
-                        {status.label}
+                    {statusLabel ? (
+                      <Badge variant={statusVariant} size="sm">
+                        {statusLabel}
                       </Badge>
                     ) : null}
                     {item.location ? (

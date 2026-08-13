@@ -14,6 +14,16 @@ type Props = {
   avatar: { url: string; alt: string } | null;
   qualities: { id: string; label: string; iconKey: string | null }[];
   languages: { id: string; name: string; level: string | null; percent: number | null }[];
+  t: {
+    label: string;
+    titleBefore: string;
+    titleAccent: string;
+    titleAfter: string;
+    qualities: string;
+    languages: string;
+    portraitAlt: string;
+    photoPlaceholder: string;
+  };
 };
 
 /**
@@ -23,7 +33,7 @@ type Props = {
  * office de séparateurs de paragraphes, ce qui évite d'imposer un éditeur
  * riche dans le back-office tout en gardant une mise en forme correcte.
  */
-export function About({ bioShort, bioLong, location, avatar, qualities, languages }: Props) {
+export function About({ bioShort, bioLong, location, avatar, qualities, languages, t }: Props) {
   const paragraphs = (bioLong ?? bioShort ?? "").split(/\n\s*\n/).filter(Boolean);
 
   return (
@@ -37,7 +47,7 @@ export function About({ bioShort, bioLong, location, avatar, qualities, language
                 {avatar ? (
                   <Image
                     src={avatar.url}
-                    alt={avatar.alt || "Portrait"}
+                    alt={avatar.alt || t.portraitAlt}
                     fill
                     sizes="(max-width: 1024px) 100vw, 384px"
                     className="object-cover"
@@ -48,15 +58,13 @@ export function About({ bioShort, bioLong, location, avatar, qualities, language
                   // vaut mieux qu'un bloc vide ou une silhouette générique.
                   <div className="bg-grid flex h-full flex-col items-center justify-center gap-4">
                     <Monogram className="size-24" />
-                    <p className="text-subtle px-6 text-center text-xs">
-                      Photo à ajouter depuis le back-office
-                    </p>
+                    <p className="text-subtle px-6 text-center text-xs">{t.photoPlaceholder}</p>
                   </div>
                 )}
               </div>
 
               {location ? (
-                <div className="glass absolute -right-3 -bottom-3 flex items-center gap-2 rounded-full px-4 py-2.5 shadow-[var(--shadow-md)]">
+                <div className="glass absolute -end-3 -bottom-3 flex items-center gap-2 rounded-full px-4 py-2.5 shadow-[var(--shadow-md)]">
                   <Icon name="MapPin" className="text-brand size-3.5" />
                   <span className="text-xs font-medium">{location}</span>
                 </div>
@@ -67,9 +75,10 @@ export function About({ bioShort, bioLong, location, avatar, qualities, language
           {/* Texte */}
           <div>
             <Reveal>
-              <SectionLabel index="01">À propos</SectionLabel>
+              <SectionLabel index="01">{t.label}</SectionLabel>
               <h2 className="text-display-md font-display mb-6">
-                Le développeur derrière <span className="text-gradient-brand">le code</span>
+                {t.titleBefore} <span className="text-gradient-brand">{t.titleAccent}</span>
+                {t.titleAfter}
               </h2>
             </Reveal>
 
@@ -86,7 +95,7 @@ export function About({ bioShort, bioLong, location, avatar, qualities, language
             {qualities.length > 0 ? (
               <Reveal delay={0.2} className="mt-8">
                 <h3 className="text-subtle mb-3 font-mono text-[0.6875rem] tracking-[0.18em] uppercase">
-                  Ce qu&apos;on me reconnaît
+                  {t.qualities}
                 </h3>
                 <StaggerGroup className="flex flex-wrap gap-2">
                   {qualities.map((quality) => (
@@ -104,7 +113,7 @@ export function About({ bioShort, bioLong, location, avatar, qualities, language
             {languages.length > 0 ? (
               <Reveal delay={0.3} className="mt-8">
                 <h3 className="text-subtle mb-3 font-mono text-[0.6875rem] tracking-[0.18em] uppercase">
-                  Langues
+                  {t.languages}
                 </h3>
                 <div className="grid gap-3 sm:grid-cols-3">
                   {languages.map((language) => (

@@ -25,7 +25,13 @@ type Technology = {
  * viennent de la même table : cocher « Mettre en avant » dans le back-office
  * suffit à faire apparaître une techno dans le bandeau.
  */
-export function Technologies({ technologies }: { technologies: Technology[] }) {
+export function Technologies({
+  technologies,
+  t,
+}: {
+  technologies: Technology[];
+  t: { label: string; title: string; otherCategory: string };
+}) {
   if (technologies.length === 0) return null;
 
   const featured = technologies.filter((tech) => tech.featured);
@@ -36,7 +42,7 @@ export function Technologies({ technologies }: { technologies: Technology[] }) {
   for (const tech of technologies) {
     const key = tech.category?.id ?? "autres";
     if (!groups.has(key)) {
-      groups.set(key, { name: tech.category?.name ?? "Autres", items: [] });
+      groups.set(key, { name: tech.category?.name ?? t.otherCategory, items: [] });
     }
     groups.get(key)!.items.push(tech);
   }
@@ -45,8 +51,8 @@ export function Technologies({ technologies }: { technologies: Technology[] }) {
     <Section id="technologies" className="bg-sunken/40">
       <div className="container-content">
         <Reveal className="mb-10 max-w-2xl">
-          <SectionLabel index="04">Technologies</SectionLabel>
-          <h2 className="text-display-md font-display">Ma stack au quotidien</h2>
+          <SectionLabel index="04">{t.label}</SectionLabel>
+          <h2 className="text-display-md font-display">{t.title}</h2>
         </Reveal>
       </div>
 

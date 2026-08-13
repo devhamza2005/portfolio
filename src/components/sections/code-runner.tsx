@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Copy, Play, RotateCcw, Loader2, TriangleAlert } from "lucide-react";
+import { Check, Copy, Play, RotateCcw, Loader2, ShieldCheck, TriangleAlert } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { CodeSample } from "@/config/code-samples";
@@ -41,7 +41,11 @@ export type RunnerMessages = {
   response: string;
   awaiting: string;
   disclaimer: string;
-  executionLabel: string;
+  /** Mention permanente : rien n'est exécuté côté serveur. */
+  secureNotice: string;
+  /** Remplace toute formulation qui laisserait croire à une vraie exécution. */
+  simulationCompleted: string;
+  simulatedDuration: string;
   selectAria: string;
   outputAria: string;
 };
@@ -170,6 +174,17 @@ export function CodeRunner({ samples, t }: { samples: RunnerSample[]; t: RunnerM
         })}
       </div>
 
+      {/*
+        Mention PERMANENTE, visible avant même toute interaction : le visiteur
+        doit comprendre au premier coup d'œil que le résultat est une réponse
+        pré-écrite, pas la sortie d'un serveur. Elle reste affichée pendant et
+        après l'exécution — jamais masquée par le résultat.
+      */}
+      <p className="border-border bg-elevated text-muted inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs">
+        <ShieldCheck className="text-success size-3.5 shrink-0" aria-hidden />
+        {t.secureNotice}
+      </p>
+
       {/* ── Fenêtre ──────────────────────────────────────────────────── */}
       <div className="border-border bg-surface overflow-hidden rounded-[var(--radius-lg)] border">
         {/* En-tête */}
@@ -293,8 +308,8 @@ export function CodeRunner({ samples, t }: { samples: RunnerSample[]; t: RunnerM
             ) : null}
 
             {phase === "done" && outcome ? (
-              <span className="text-subtle ms-auto font-mono text-[0.6875rem]" dir="ltr">
-                {t.executionLabel} {outcome.executionTime}
+              <span className="text-subtle ms-auto font-mono text-[0.6875rem]">
+                <span dir="ltr">{outcome.executionTime}</span> · {t.simulatedDuration}
               </span>
             ) : null}
           </div>
@@ -322,6 +337,8 @@ export function CodeRunner({ samples, t }: { samples: RunnerSample[]; t: RunnerM
             ) : outcome ? (
               <>
                 <p className="text-muted mb-2 text-xs" dir="auto">
+                  <span className="text-success font-medium">{t.simulationCompleted}</span>
+                  {" — "}
                   {active.message}
                 </p>
                 <pre className="text-foreground overflow-x-auto font-mono text-xs leading-relaxed">

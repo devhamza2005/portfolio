@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { formatMonthYear } from "@/lib/dates";
 import type { Locale } from "@/lib/i18n/config";
 import { interpolate } from "@/lib/i18n/format";
+import { sectionIndex } from "@/config/sections";
 
 type Certification = {
   id: string;
@@ -30,7 +31,7 @@ type Certification = {
 };
 
 /**
- * Section 10 — Certifications.
+ * Section « Certifications ».
  *
  * La section disparaît entièrement tant qu'aucune certification n'est saisie :
  * une rubrique vide fait plus de mal que son absence.
@@ -50,7 +51,7 @@ export function Certifications({
     <Section id="certifications">
       <div className="container-content">
         <Reveal className="mb-10 max-w-2xl">
-          <SectionLabel index="10">{t.label}</SectionLabel>
+          <SectionLabel index={sectionIndex("certifications")}>{t.label}</SectionLabel>
           <h2 className="text-display-md font-display">{t.title}</h2>
         </Reveal>
 

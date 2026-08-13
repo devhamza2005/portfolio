@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { formatYearRange } from "@/lib/dates";
 import type { Locale } from "@/lib/i18n/config";
 import { interpolate } from "@/lib/i18n/format";
+import { sectionIndex } from "@/config/sections";
 
 /** La couleur du badge est une décision de design, elle ne se traduit pas. */
 const STATUS_VARIANT: Record<string, "success" | "warning" | "brand"> = {
@@ -34,7 +35,7 @@ type Education = {
 };
 
 /**
- * Section 08 — Formation.
+ * Section « Formation ».
  *
  * La note et la mention sont mises en avant avec l'accent ambre — c'est
  * exactement le genre de détail qu'un recruteur cherche du regard, il ne doit
@@ -57,7 +58,7 @@ export function EducationSection({
     <Section id="education" className="bg-sunken/40">
       <div className="container-content">
         <Reveal className="mb-12 max-w-2xl">
-          <SectionLabel index="08">{t.label}</SectionLabel>
+          <SectionLabel index={sectionIndex("education")}>{t.label}</SectionLabel>
           <h2 className="text-display-md font-display">{t.title}</h2>
         </Reveal>
 

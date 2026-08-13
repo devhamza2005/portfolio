@@ -25,7 +25,7 @@ type Props = {
 };
 
 /**
- * Section 01 — Hero.
+ * Section « Hero ».
  *
  * Tout le contenu vient du profil en base : le nom, le titre, la phrase
  * d'accroche, la disponibilité et les liens sont modifiables depuis

@@ -5,6 +5,7 @@ import { Marquee } from "@/components/motion/marquee";
 import { Reveal, Section, StaggerGroup, StaggerItem } from "@/components/motion/reveal";
 import { SectionLabel } from "@/components/motion/text-reveal";
 import { cn } from "@/lib/utils";
+import { sectionIndex } from "@/config/sections";
 
 type Technology = {
   id: string;
@@ -18,7 +19,7 @@ type Technology = {
 };
 
 /**
- * Section 06 — Technologies.
+ * Section « Technologies ».
  *
  * Un bandeau défilant met en avant les technologies marquées « vedette »,
  * puis la stack complète est présentée groupée par catégorie. Les deux listes
@@ -51,7 +52,7 @@ export function Technologies({
     <Section id="technologies" className="bg-sunken/40">
       <div className="container-content">
         <Reveal className="mb-10 max-w-2xl">
-          <SectionLabel index="04">{t.label}</SectionLabel>
+          <SectionLabel index={sectionIndex("technologies")}>{t.label}</SectionLabel>
           <h2 className="text-display-md font-display">{t.title}</h2>
         </Reveal>
       </div>

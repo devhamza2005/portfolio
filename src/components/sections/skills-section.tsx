@@ -4,6 +4,7 @@ import { SectionLabel } from "@/components/motion/text-reveal";
 import { SkillsTabs } from "@/components/sections/skills";
 import { interpolate } from "@/lib/i18n/format";
 import type { SkillGroup } from "@/server/queries/portfolio";
+import { sectionIndex } from "@/config/sections";
 
 /**
  * Enveloppe serveur de la section Compétences.
@@ -61,7 +62,7 @@ export function SkillsSection({
     <Section id="skills">
       <div className="container-content">
         <Reveal className="mb-10 max-w-2xl">
-          <SectionLabel index="03">{t.label}</SectionLabel>
+          <SectionLabel index={sectionIndex("skills")}>{t.label}</SectionLabel>
           <h2 className="text-display-md font-display">
             {interpolate(t.titleBefore, { count: total })}{" "}
             <span className="text-gradient-brand">{t.titleAccent}</span> {t.titleAfter}

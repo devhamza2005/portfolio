@@ -70,10 +70,12 @@
       "copyAria": "Copier l'extrait de code",
       "response": "Réponse",
       "awaiting": "En attente d'exécution.",
-      "disclaimer": "Démonstration : aucun code n'est réellement exécuté. Les extraits et leurs réponses sont figés dans le dépôt — le site n'expose aucune surface d'exécution de code.",
-      "executionLabel": "durée",
+      "disclaimer": "Les extraits et leurs réponses sont figés dans le dépôt. Les durées sont indicatives : elles décrivent une exécution réelle observée, elles ne sont pas mesurées ici.",
       "selectAria": "Choisir un exemple de code",
-      "outputAria": "Résultat de l'exécution"
+      "outputAria": "Résultat de l'exécution",
+      "secureNotice": "Simulation sécurisée — aucun code n'est exécuté sur le serveur.",
+      "simulationCompleted": "Simulation terminée",
+      "simulatedDuration": "durée simulée"
     },
     "samples": {
       "spring-convention": {
@@ -196,15 +198,6 @@
           "Émission à la connexion",
           "Vérification de la signature",
           "Expiration et rafraîchissement"
-        ]
-      },
-      "gateway": {
-        "name": "Passerelle",
-        "description": "Le point d'entrée unique des microservices. Elle authentifie une fois, puis route vers le bon service.",
-        "responsibilities": [
-          "Routage des requêtes",
-          "Répartition de charge",
-          "Authentification centralisée"
         ]
       },
       "conventionService": {

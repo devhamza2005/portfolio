@@ -9,9 +9,10 @@ import { Button } from "@/components/ui/button";
 import { localizedPath, type Locale } from "@/lib/i18n/config";
 import { interpolate } from "@/lib/i18n/format";
 import type { ProjectCard as ProjectCardData } from "@/server/queries/portfolio";
+import { sectionIndex } from "@/config/sections";
 
 /**
- * Section 09 — Projets.
+ * Section « Projets ».
  *
  * Le premier projet marqué « vedette » occupe une carte large ; les suivants
  * s'affichent en grille. Au-delà de six, un lien renvoie vers /projects plutôt
@@ -49,7 +50,7 @@ export function Projects({
       <div className="container-content">
         <Reveal className="mb-10 flex flex-wrap items-end justify-between gap-6">
           <div className="max-w-2xl">
-            <SectionLabel index="09">{t.label}</SectionLabel>
+            <SectionLabel index={sectionIndex("projects")}>{t.label}</SectionLabel>
             <h2 className="text-display-md font-display">
               {t.titleBefore} <span className="text-gradient-brand">{t.titleAccent}</span>
               {t.titleAfter}

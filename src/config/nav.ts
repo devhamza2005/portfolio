@@ -9,6 +9,7 @@
  * correspondante dans les trois dictionnaires — TypeScript signale l'oubli.
  */
 
+import { HOME_SECTIONS } from "@/config/sections";
 import { localizedPath, type Locale } from "@/lib/i18n/config";
 
 /** Identifiants des entrées de navigation — doivent exister dans `nav.items`. */
@@ -48,18 +49,10 @@ export function navHref(locale: Locale, path: string): string {
   return hash ? `${base}#${hash}` : base;
 }
 
-/** Toutes les ancres suivies par l'indicateur de section active. */
-export const OBSERVED_SECTIONS = [
-  "about",
-  "services",
-  "skills",
-  "technologies",
-  "lab",
-  "architecture",
-  "experience",
-  "education",
-  "projects",
-  "certifications",
-  "achievements",
-  "contact",
-] as const;
+/**
+ * Ancres suivies par l'indicateur de section active de la navbar.
+ *
+ * Dérivée de `HOME_SECTIONS` : l'ordre des sections n'est déclaré qu'à un
+ * seul endroit, et cette liste ne peut donc plus diverger de l'affichage.
+ */
+export const OBSERVED_SECTIONS = HOME_SECTIONS;

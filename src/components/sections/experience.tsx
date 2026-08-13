@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { formatPeriod } from "@/lib/dates";
 import type { Locale } from "@/lib/i18n/config";
+import { sectionIndex } from "@/config/sections";
 
 type Experience = {
   id: string;
@@ -26,7 +27,7 @@ type Experience = {
 };
 
 /**
- * Section 07 — Expérience professionnelle, en frise verticale.
+ * Section « Expérience professionnelle, en frise verticale ».
  *
  * Le trait vertical et les pastilles sont dessinés en CSS. Chaque entrée est
  * un `<li>` dans une liste ordonnée : la chronologie est portée par le HTML,
@@ -53,7 +54,7 @@ export function ExperienceSection({
     <Section id="experience">
       <div className="container-content">
         <Reveal className="mb-12 max-w-2xl">
-          <SectionLabel index="07">{t.label}</SectionLabel>
+          <SectionLabel index={sectionIndex("experience")}>{t.label}</SectionLabel>
           <h2 className="text-display-md font-display">{t.title}</h2>
         </Reveal>
 

@@ -187,12 +187,6 @@ SecurityFilterChain filtres(HttpSecurity http) throws Exception {
     },
   },
 
-  gateway: {
-    id: "gateway",
-    kind: "gateway",
-    icon: "Network",
-    techs: ["Spring Cloud Gateway", "Load balancing"],
-  },
 
   conventionService: {
     id: "conventionService",

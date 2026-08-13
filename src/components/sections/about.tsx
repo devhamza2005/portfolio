@@ -6,6 +6,7 @@ import { Reveal, Section, StaggerGroup, StaggerItem } from "@/components/motion/
 import { SectionLabel } from "@/components/motion/text-reveal";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { sectionIndex } from "@/config/sections";
 
 type Props = {
   bioShort: string | null;
@@ -27,7 +28,7 @@ type Props = {
 };
 
 /**
- * Section 03 — À propos.
+ * Section « À propos ».
  *
  * La biographie est stockée en texte : les doubles retours à la ligne y font
  * office de séparateurs de paragraphes, ce qui évite d'imposer un éditeur
@@ -75,7 +76,7 @@ export function About({ bioShort, bioLong, location, avatar, qualities, language
           {/* Texte */}
           <div>
             <Reveal>
-              <SectionLabel index="01">{t.label}</SectionLabel>
+              <SectionLabel index={sectionIndex("about")}>{t.label}</SectionLabel>
               <h2 className="text-display-md font-display mb-6">
                 {t.titleBefore} <span className="text-gradient-brand">{t.titleAccent}</span>
                 {t.titleAfter}

@@ -3,9 +3,13 @@ import { SectionLabel } from "@/components/motion/text-reveal";
 import { CodeRunner, type RunnerMessages } from "@/components/sections/code-runner";
 import { CODE_SAMPLES } from "@/config/code-samples";
 import { highlight } from "@/lib/code/highlight";
+import { sectionIndex } from "@/config/sections";
 
 /**
- * Section 05 — Engineering Lab.
+ * Engineering Lab.
+ *
+ * Son numéro d'affichage vient de `HOME_SECTIONS` (src/config/sections.ts) :
+ * il n'est plus écrit nulle part et suit l'ordre réel de la page.
  *
  * ── Pourquoi ici ──────────────────────────────────────────────────────────
  *
@@ -43,7 +47,7 @@ export function EngineeringLab({ t }: { t: LabMessages }) {
     <Section id="lab">
       <div className="container-content">
         <Reveal className="mb-10 max-w-2xl">
-          <SectionLabel index="05">{t.label}</SectionLabel>
+          <SectionLabel index={sectionIndex("lab")}>{t.label}</SectionLabel>
           <h2 className="text-display-md font-display">{t.title}</h2>
           <p className="text-muted mt-4 leading-relaxed">{t.intro}</p>
         </Reveal>

@@ -4,7 +4,7 @@ import { StaggerGroup, StaggerItem } from "@/components/motion/reveal";
 import type { PublicStat } from "@/server/queries/portfolio";
 
 /**
- * Section 02 — Statistiques.
+ * Section « Statistiques ».
  *
  * Chaque valeur provient d'un `count()` réel sur la base (§25). Supprimer un
  * projet depuis le back-office fait baisser le compteur automatiquement.

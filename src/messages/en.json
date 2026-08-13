@@ -70,10 +70,12 @@
       "copyAria": "Copy the code snippet",
       "response": "Response",
       "awaiting": "Waiting to run.",
-      "disclaimer": "Demonstration only: no code is actually executed. The snippets and their responses are fixed in the repository — the site exposes no code execution surface.",
-      "executionLabel": "took",
+      "disclaimer": "The snippets and their responses are fixed in the repository. Durations are indicative: they describe a real execution once observed, they are not measured here.",
       "selectAria": "Choose a code sample",
-      "outputAria": "Execution result"
+      "outputAria": "Execution result",
+      "secureNotice": "Secure simulation — no code is executed on the server.",
+      "simulationCompleted": "Simulation completed",
+      "simulatedDuration": "simulated duration"
     },
     "samples": {
       "spring-convention": {
@@ -196,15 +198,6 @@
           "Issued at sign-in",
           "Signature verification",
           "Expiry and refresh"
-        ]
-      },
-      "gateway": {
-        "name": "Gateway",
-        "description": "The single entry point for the microservices. It authenticates once, then routes to the right service.",
-        "responsibilities": [
-          "Request routing",
-          "Load balancing",
-          "Centralised authentication"
         ]
       },
       "conventionService": {

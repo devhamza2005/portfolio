@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { formatYear } from "@/lib/dates";
 import type { Locale } from "@/lib/i18n/config";
+import { sectionIndex } from "@/config/sections";
 
 type Achievement = {
   id: string;
@@ -22,7 +23,7 @@ type Achievement = {
   featured: boolean;
 };
 
-/** Section 11 — Réalisations et distinctions. */
+/** Section « Réalisations et distinctions ». */
 export function Achievements({
   achievements,
   locale,
@@ -38,7 +39,7 @@ export function Achievements({
     <Section id="achievements" className="bg-sunken/40">
       <div className="container-content">
         <Reveal className="mb-10 max-w-2xl">
-          <SectionLabel index="11">{t.label}</SectionLabel>
+          <SectionLabel index={sectionIndex("achievements")}>{t.label}</SectionLabel>
           <h2 className="text-display-md font-display">{t.title}</h2>
         </Reveal>
 

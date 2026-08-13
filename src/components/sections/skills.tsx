@@ -9,7 +9,7 @@ import type { SkillGroup } from "@/server/queries/portfolio";
 import { cn } from "@/lib/utils";
 
 /**
- * Section 05 — Compétences, regroupées par catégorie.
+ * Section « Compétences, regroupées par catégorie ».
  *
  * Les catégories, leur ordre et les niveaux viennent tous de la base :
  * ajouter une catégorie depuis /admin/categories crée un nouvel onglet, sans

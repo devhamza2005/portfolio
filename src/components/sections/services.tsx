@@ -5,6 +5,7 @@ import { Reveal, Section, StaggerGroup, StaggerItem } from "@/components/motion/
 import { SpotlightCard } from "@/components/motion/spotlight-card";
 import { SectionLabel } from "@/components/motion/text-reveal";
 import { Card } from "@/components/ui/card";
+import { sectionIndex } from "@/config/sections";
 
 type Service = {
   id: string;
@@ -14,7 +15,7 @@ type Service = {
   features: string[];
 };
 
-/** Section 04 — « What I do ». */
+/** Section « What I do ». */
 export function Services({
   services,
   t,
@@ -28,7 +29,7 @@ export function Services({
     <Section id="services" className="bg-sunken/40">
       <div className="container-content">
         <Reveal className="mb-12 max-w-2xl">
-          <SectionLabel index="02">{t.label}</SectionLabel>
+          <SectionLabel index={sectionIndex("services")}>{t.label}</SectionLabel>
           <h2 className="text-display-md font-display">{t.title}</h2>
         </Reveal>
 

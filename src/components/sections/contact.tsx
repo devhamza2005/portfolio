@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import type { Locale } from "@/lib/i18n/config";
+import { sectionIndex } from "@/config/sections";
 
 type Props = {
   email: string;
@@ -30,7 +31,7 @@ type Props = {
   locale: Locale;
 };
 
-/** Section 12 — Contact. */
+/** Section « Contact ». */
 export function Contact({
   email,
   location,
@@ -48,7 +49,7 @@ export function Contact({
       <div className="container-content">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
           <Reveal>
-            <SectionLabel index="12">{t.label}</SectionLabel>
+            <SectionLabel index={sectionIndex("contact")}>{t.label}</SectionLabel>
             <h2 className="text-display-md font-display mb-5">
               {t.titleBefore} <span className="text-gradient-brand">{t.titleAccent}</span>
               {t.titleAfter}

@@ -12,14 +12,18 @@ import {
   USED_NODE_IDS,
 } from "@/config/architecture";
 import { highlight } from "@/lib/code/highlight";
+import { sectionIndex } from "@/config/sections";
 
 /**
- * Section 06 — Architecture Lab.
+ * Architecture Lab.
+ *
+ * Son numéro d'affichage vient de `HOME_SECTIONS` (src/config/sections.ts) :
+ * il n'est plus écrit nulle part et suit l'ordre réel de la page.
  *
  * ── Pourquoi ici ──────────────────────────────────────────────────────────
  *
  * Juste après l'Engineering Lab, qui montre du code, et avant le Parcours :
- * outils (04) → code (05) → architecture (06) → où cela a servi (07). La
+ * outils → code → architecture → où cela a servi. La
  * progression va du concret vers la vision d'ensemble, ce qui est exactement
  * l'ordre dans lequel un recruteur technique évalue un profil.
  *
@@ -78,7 +82,7 @@ export function ArchitectureLab({ t }: { t: ArchitectureMessages }) {
     <Section id="architecture" className="bg-sunken/40">
       <div className="container-content">
         <Reveal className="mb-10 max-w-2xl">
-          <SectionLabel index="06">{t.label}</SectionLabel>
+          <SectionLabel index={sectionIndex("architecture")}>{t.label}</SectionLabel>
           <h2 className="text-display-md font-display">{t.title}</h2>
           <p className="text-muted mt-4 leading-relaxed">{t.intro}</p>
         </Reveal>

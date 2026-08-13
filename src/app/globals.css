@@ -284,6 +284,7 @@
   --animate-float: float 7s ease-in-out infinite;
   --animate-shimmer: shimmer 2.4s linear infinite;
   --animate-caret: caret 1.05s steps(1) infinite;
+  --animate-flow: flow 1.6s linear infinite;
 
   /* Largeur de contenu */
   --container-content: 76rem; /* 1216px */
@@ -339,6 +340,16 @@
   }
   to {
     background-position: -200% 0;
+  }
+}
+/* Flux qui descend le long des connecteurs du diagramme d'architecture.
+   La valeur correspond au motif `stroke-dasharray` posé sur le tracé. */
+@keyframes flow {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
   }
 }
 @keyframes caret {

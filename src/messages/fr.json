@@ -102,6 +102,185 @@
       }
     }
   },
+  "architecture": {
+    "label": "Architecture Lab",
+    "title": "Penser le système avant d'écrire le code",
+    "intro": "Quatre façons d'assembler la même application. Choisissez une vue, cliquez sur un composant : responsabilités, technologies, routes exposées et extrait de code.",
+    "diagram": {
+      "viewsAria": "Choisir une vue d'architecture",
+      "nodesAria": "Composants de l'architecture",
+      "hint": "Cliquez sur un composant pour voir son rôle en détail.",
+      "close": "Fermer le détail",
+      "responsibilities": "Responsabilités",
+      "technologies": "Technologies",
+      "endpoints": "Routes exposées",
+      "codeExample": "Exemple de code"
+    },
+    "views": {
+      "monolith": {
+        "name": "MVC / Monolithe",
+        "description": "Une seule application, des couches nettes : le contrôleur reçoit, le service décide, le dépôt persiste. C'est l'architecture des projets académiques et le socle qu'il faut maîtriser avant de découper quoi que ce soit."
+      },
+      "rest": {
+        "name": "API REST Spring Boot",
+        "description": "Le front est séparé du back et dialogue par HTTP. Spring Security et JWT filtrent chaque requête avant qu'elle n'atteigne la logique métier."
+      },
+      "microservices": {
+        "name": "Microservices",
+        "description": "Deux services autonomes derrière une même façade REST. Chacun porte son domaine ; la façade authentifie une fois et route ensuite."
+      },
+      "deployment": {
+        "name": "Docker / Déploiement",
+        "description": "De la validation automatique jusqu'au conteneur en exécution : ce qui transforme un dépôt Git en application accessible."
+      }
+    },
+    "nodes": {
+      "frontend": {
+        "name": "Frontend",
+        "description": "L'interface utilisateur. Elle ne fait aucune règle métier : elle affiche, collecte et transmet.",
+        "responsibilities": [
+          "Rendu et navigation",
+          "Envoi du jeton à chaque requête",
+          "Affichage des erreurs renvoyées"
+        ]
+      },
+      "controller": {
+        "name": "Contrôleur MVC",
+        "description": "Le point d'entrée HTTP du monolithe. Il traduit une requête en appel de service et choisit la vue à rendre.",
+        "responsibilities": [
+          "Lecture des paramètres",
+          "Appel de la couche service",
+          "Choix de la vue"
+        ]
+      },
+      "serviceLayer": {
+        "name": "Couche service",
+        "description": "Là où vivent les règles. Une convention ne se valide pas dans un contrôleur : elle se valide ici, dans une transaction.",
+        "responsibilities": [
+          "Application des règles métier",
+          "Gestion des transactions",
+          "Orchestration des dépôts"
+        ]
+      },
+      "repository": {
+        "name": "Dépôt / JPA",
+        "description": "L'accès aux données, isolé derrière une interface. Le reste du code ignore qu'il y a du SQL en dessous.",
+        "responsibilities": [
+          "Requêtes et pagination",
+          "Correspondance objet-relationnel",
+          "Isolation du SQL"
+        ]
+      },
+      "api": {
+        "name": "API REST",
+        "description": "La façade HTTP. Elle expose des ressources, valide les entrées et renvoie des statuts explicites.",
+        "responsibilities": [
+          "Exposition des ressources",
+          "Validation des entrées",
+          "Statuts HTTP corrects"
+        ]
+      },
+      "security": {
+        "name": "Spring Security",
+        "description": "Le filtre qui s'exécute avant tout le reste. Il refuse une requête non authentifiée sans que la logique métier ne soit jamais atteinte.",
+        "responsibilities": [
+          "Chaîne de filtres et sessions sans état",
+          "Contrôle des rôles (RBAC)",
+          "Protection endpoint par endpoint"
+        ]
+      },
+      "jwt": {
+        "name": "JWT",
+        "description": "Le jeton signé qui porte l'identité et les rôles. Aucune session en mémoire côté serveur : le jeton se suffit.",
+        "responsibilities": [
+          "Émission à la connexion",
+          "Vérification de la signature",
+          "Expiration et rafraîchissement"
+        ]
+      },
+      "gateway": {
+        "name": "Passerelle",
+        "description": "Le point d'entrée unique des microservices. Elle authentifie une fois, puis route vers le bon service.",
+        "responsibilities": [
+          "Routage des requêtes",
+          "Répartition de charge",
+          "Authentification centralisée"
+        ]
+      },
+      "conventionService": {
+        "name": "Service Conventions",
+        "description": "Le domaine des conventions : cycle de vie, validation, historique. Il ne connaît rien des documents.",
+        "responsibilities": [
+          "Cycle de vie d'une convention",
+          "Workflow de validation",
+          "Historique et traçabilité"
+        ]
+      },
+      "documentService": {
+        "name": "Service Documents",
+        "description": "Le domaine des pièces jointes : dépôt, récupération, suppression. Il ne connaît rien des conventions.",
+        "responsibilities": [
+          "Dépôt et récupération",
+          "Contrôle du type et de la taille",
+          "Suppression du stockage"
+        ]
+      },
+      "postgres": {
+        "name": "PostgreSQL",
+        "description": "La source de vérité. Les contraintes y sont posées en base, pas seulement dans le code.",
+        "responsibilities": [
+          "Persistance transactionnelle",
+          "Contraintes et index",
+          "Intégrité référentielle"
+        ]
+      },
+      "cicd": {
+        "name": "CI / CD",
+        "description": "Ce qui vérifie avant de livrer : compilation, tests, qualité. Un échec bloque le déploiement.",
+        "responsibilities": [
+          "Compilation et tests",
+          "Analyse de qualité",
+          "Blocage si le seuil n'est pas tenu"
+        ]
+      },
+      "dockerImage": {
+        "name": "Image Docker",
+        "description": "Une construction en plusieurs étapes : on compile dans une image lourde, on n'expédie qu'un JRE minimal.",
+        "responsibilities": [
+          "Construction multi-étapes",
+          "Image finale allégée",
+          "Environnement reproductible"
+        ]
+      },
+      "appContainer": {
+        "name": "Conteneur applicatif",
+        "description": "L'application en exécution, avec sa sonde de santé et ses variables d'environnement.",
+        "responsibilities": [
+          "Exécution de l'application",
+          "Sonde de santé",
+          "Configuration par variables"
+        ]
+      },
+      "dbContainer": {
+        "name": "Conteneur PostgreSQL",
+        "description": "La base en conteneur, isolée du réseau public et jointe uniquement par l'application.",
+        "responsibilities": [
+          "Isolation réseau",
+          "Initialisation du schéma",
+          "Accès réservé à l'application"
+        ]
+      },
+      "volume": {
+        "name": "Volume persistant",
+        "description": "Ce qui survit au conteneur. Sans lui, un redémarrage effacerait les données.",
+        "responsibilities": [
+          "Persistance des données",
+          "Sauvegarde et restauration",
+          "Indépendance du cycle de vie"
+        ]
+      }
+    }
+  },
   "experience": {
     "label": "Parcours",
     "title": "Expérience professionnelle"

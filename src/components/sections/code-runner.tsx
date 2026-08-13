@@ -4,7 +4,8 @@ import { Check, Copy, Play, RotateCcw, Loader2, TriangleAlert } from "lucide-rea
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { CodeSample } from "@/config/code-samples";
-import type { CodeLine, Tone } from "@/lib/code/highlight";
+import type { CodeLine } from "@/lib/code/highlight";
+import { TONE_CLASS } from "@/lib/code/tones";
 import { simulatedRunner, type RunOutcome } from "@/lib/code/runner";
 import { cn } from "@/lib/utils";
 
@@ -29,18 +30,6 @@ import { cn } from "@/lib/utils";
  * une sortie de terminal se lisent de gauche à droite, même sur la version
  * arabe. Seuls l'en-tête et les libellés suivent le sens de la page.
  */
-
-/** Mêmes teintes que la fenêtre de code du Hero — les deux doivent se répondre. */
-const TONE_CLASS: Record<Tone, string> = {
-  keyword: "text-[#c792ea]",
-  annotation: "text-[#ffcb6b]",
-  type: "text-[#ff8a80]",
-  string: "text-[#c3e88d]",
-  comment: "text-subtle italic",
-  fn: "text-[#f48fb1]",
-  number: "text-[#ffab70]",
-  plain: "",
-};
 
 export type RunnerMessages = {
   run: string;

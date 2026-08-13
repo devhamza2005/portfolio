@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/json-ld";
 import { About } from "@/components/sections/about";
 import { Achievements } from "@/components/sections/achievements";
+import { ArchitectureLab } from "@/components/sections/architecture-lab";
 import { Certifications } from "@/components/sections/certifications";
 import { Contact } from "@/components/sections/contact";
 import { EducationSection } from "@/components/sections/education";
@@ -186,6 +187,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <Technologies technologies={technologies} t={t.technologies} />
 
       <EngineeringLab t={t.lab} />
+
+      <ArchitectureLab t={t.architecture} />
 
       <ExperienceSection
         experiences={experiences}

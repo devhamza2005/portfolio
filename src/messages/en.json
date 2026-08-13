@@ -102,6 +102,185 @@
       }
     }
   },
+  "architecture": {
+    "label": "Architecture Lab",
+    "title": "Designing the system before writing the code",
+    "intro": "Four ways to assemble the same application. Pick a view, click a component: responsibilities, technologies, exposed routes and a code snippet.",
+    "diagram": {
+      "viewsAria": "Choose an architecture view",
+      "nodesAria": "Architecture components",
+      "hint": "Click a component to see its role in detail.",
+      "close": "Close details",
+      "responsibilities": "Responsibilities",
+      "technologies": "Technologies",
+      "endpoints": "Exposed routes",
+      "codeExample": "Code example"
+    },
+    "views": {
+      "monolith": {
+        "name": "MVC / Monolith",
+        "description": "One application, clean layers: the controller receives, the service decides, the repository persists. This is the academic baseline — and the foundation you must master before splitting anything."
+      },
+      "rest": {
+        "name": "Spring Boot REST API",
+        "description": "Front and back are separated and talk over HTTP. Spring Security and JWT filter every request before it reaches the business logic."
+      },
+      "microservices": {
+        "name": "Microservices",
+        "description": "Two autonomous services behind a single REST façade. Each owns its domain; the façade authenticates once, then routes."
+      },
+      "deployment": {
+        "name": "Docker / Deployment",
+        "description": "From automated checks to a running container: what turns a Git repository into a reachable application."
+      }
+    },
+    "nodes": {
+      "frontend": {
+        "name": "Frontend",
+        "description": "The user interface. It holds no business rule: it renders, collects and forwards.",
+        "responsibilities": [
+          "Rendering and navigation",
+          "Sending the token with every request",
+          "Displaying returned errors"
+        ]
+      },
+      "controller": {
+        "name": "MVC controller",
+        "description": "The monolith's HTTP entry point. It turns a request into a service call and picks the view to render.",
+        "responsibilities": [
+          "Reading parameters",
+          "Calling the service layer",
+          "Choosing the view"
+        ]
+      },
+      "serviceLayer": {
+        "name": "Service layer",
+        "description": "Where the rules live. An agreement is not approved in a controller: it is approved here, inside a transaction.",
+        "responsibilities": [
+          "Applying business rules",
+          "Transaction management",
+          "Orchestrating repositories"
+        ]
+      },
+      "repository": {
+        "name": "Repository / JPA",
+        "description": "Data access, isolated behind an interface. The rest of the code never knows there is SQL underneath.",
+        "responsibilities": [
+          "Queries and pagination",
+          "Object-relational mapping",
+          "SQL isolation"
+        ]
+      },
+      "api": {
+        "name": "REST API",
+        "description": "The HTTP façade. It exposes resources, validates input and returns explicit statuses.",
+        "responsibilities": [
+          "Exposing resources",
+          "Input validation",
+          "Correct HTTP statuses"
+        ]
+      },
+      "security": {
+        "name": "Spring Security",
+        "description": "The filter that runs before everything else. It rejects an unauthenticated request without the business logic ever being reached.",
+        "responsibilities": [
+          "Filter chain and stateless sessions",
+          "Role-based access control",
+          "Endpoint-level protection"
+        ]
+      },
+      "jwt": {
+        "name": "JWT",
+        "description": "The signed token carrying identity and roles. No server-side session: the token is enough.",
+        "responsibilities": [
+          "Issued at sign-in",
+          "Signature verification",
+          "Expiry and refresh"
+        ]
+      },
+      "gateway": {
+        "name": "Gateway",
+        "description": "The single entry point for the microservices. It authenticates once, then routes to the right service.",
+        "responsibilities": [
+          "Request routing",
+          "Load balancing",
+          "Centralised authentication"
+        ]
+      },
+      "conventionService": {
+        "name": "Conventions service",
+        "description": "The agreements domain: lifecycle, approval, history. It knows nothing about documents.",
+        "responsibilities": [
+          "Agreement lifecycle",
+          "Approval workflow",
+          "History and auditability"
+        ]
+      },
+      "documentService": {
+        "name": "Documents service",
+        "description": "The attachments domain: upload, retrieval, deletion. It knows nothing about agreements.",
+        "responsibilities": [
+          "Upload and retrieval",
+          "Type and size checks",
+          "Removal from storage"
+        ]
+      },
+      "postgres": {
+        "name": "PostgreSQL",
+        "description": "The source of truth. Constraints live in the database, not only in the code.",
+        "responsibilities": [
+          "Transactional persistence",
+          "Constraints and indexes",
+          "Referential integrity"
+        ]
+      },
+      "cicd": {
+        "name": "CI / CD",
+        "description": "What verifies before shipping: build, tests, quality. A failure blocks the deployment.",
+        "responsibilities": [
+          "Build and tests",
+          "Quality analysis",
+          "Blocking when the gate fails"
+        ]
+      },
+      "dockerImage": {
+        "name": "Docker image",
+        "description": "A multi-stage build: compile in a heavy image, ship only a minimal JRE.",
+        "responsibilities": [
+          "Multi-stage build",
+          "Slimmer final image",
+          "Reproducible environment"
+        ]
+      },
+      "appContainer": {
+        "name": "Application container",
+        "description": "The running application, with its health check and environment variables.",
+        "responsibilities": [
+          "Running the application",
+          "Health check",
+          "Configuration through variables"
+        ]
+      },
+      "dbContainer": {
+        "name": "PostgreSQL container",
+        "description": "The database in a container, isolated from the public network and reachable only by the application.",
+        "responsibilities": [
+          "Network isolation",
+          "Schema initialisation",
+          "Application-only access"
+        ]
+      },
+      "volume": {
+        "name": "Persistent volume",
+        "description": "What outlives the container. Without it, a restart would wipe the data.",
+        "responsibilities": [
+          "Data persistence",
+          "Backup and restore",
+          "Independent lifecycle"
+        ]
+      }
+    }
+  },
   "experience": {
     "label": "Experience",
     "title": "Professional experience"

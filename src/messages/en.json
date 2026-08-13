@@ -57,6 +57,51 @@
     "title": "My everyday stack",
     "otherCategory": "Other"
   },
+  "lab": {
+    "label": "Engineering Lab",
+    "title": "Code, not claims",
+    "intro": "Six snippets taken from my actual stack. Pick one, run it, and see the expected response — status, output and duration.",
+    "runner": {
+      "run": "Run",
+      "running": "Running…",
+      "reset": "Reset",
+      "copy": "Copy",
+      "copied": "Copied",
+      "copyAria": "Copy the code snippet",
+      "response": "Response",
+      "awaiting": "Waiting to run.",
+      "disclaimer": "Demonstration only: no code is actually executed. The snippets and their responses are fixed in the repository — the site exposes no code execution surface.",
+      "executionLabel": "took",
+      "selectAria": "Choose a code sample",
+      "outputAria": "Execution result"
+    },
+    "samples": {
+      "spring-convention": {
+        "title": "Approving an agreement",
+        "message": "The agreement moves to the VALIDEE status and the approver is recorded."
+      },
+      "zod-validation": {
+        "title": "Form validation",
+        "message": "All three fields are rejected: the schema returns one issue per field."
+      },
+      "node-cache": {
+        "title": "Cached read",
+        "message": "Cache miss on first call: the database is queried, then the result is cached."
+      },
+      "python-rfid": {
+        "title": "Reading an RFID badge",
+        "message": "The badge is read over the serial port and its identifier is timestamped."
+      },
+      "sql-stats": {
+        "title": "Projects per category",
+        "message": "Published projects aggregated, empty categories included."
+      },
+      "docker-build": {
+        "title": "Production image",
+        "message": "Multi-stage image built on an Alpine base, with a health check."
+      }
+    }
+  },
   "experience": {
     "label": "Experience",
     "title": "Professional experience"

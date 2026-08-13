@@ -48,7 +48,7 @@ export function Contact({
       <div className="container-content">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
           <Reveal>
-            <SectionLabel index="10">{t.label}</SectionLabel>
+            <SectionLabel index="11">{t.label}</SectionLabel>
             <h2 className="text-display-md font-display mb-5">
               {t.titleBefore} <span className="text-gradient-brand">{t.titleAccent}</span>
               {t.titleAfter}

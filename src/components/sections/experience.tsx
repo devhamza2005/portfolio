@@ -53,7 +53,7 @@ export function ExperienceSection({
     <Section id="experience">
       <div className="container-content">
         <Reveal className="mb-12 max-w-2xl">
-          <SectionLabel index="05">{t.label}</SectionLabel>
+          <SectionLabel index="06">{t.label}</SectionLabel>
           <h2 className="text-display-md font-display">{t.title}</h2>
         </Reveal>
 

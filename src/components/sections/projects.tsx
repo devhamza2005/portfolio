@@ -49,7 +49,7 @@ export function Projects({
       <div className="container-content">
         <Reveal className="mb-10 flex flex-wrap items-end justify-between gap-6">
           <div className="max-w-2xl">
-            <SectionLabel index="07">{t.label}</SectionLabel>
+            <SectionLabel index="08">{t.label}</SectionLabel>
             <h2 className="text-display-md font-display">
               {t.titleBefore} <span className="text-gradient-brand">{t.titleAccent}</span>
               {t.titleAfter}

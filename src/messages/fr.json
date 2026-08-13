@@ -57,6 +57,51 @@
     "title": "Ma stack au quotidien",
     "otherCategory": "Autres"
   },
+  "lab": {
+    "label": "Engineering Lab",
+    "title": "Du code, pas des promesses",
+    "intro": "Six extraits tirés de ma stack réelle. Choisissez-en un, lancez-le, et voyez la réponse attendue — statut, sortie et durée.",
+    "runner": {
+      "run": "Exécuter",
+      "running": "Exécution…",
+      "reset": "Réinitialiser",
+      "copy": "Copier",
+      "copied": "Copié",
+      "copyAria": "Copier l'extrait de code",
+      "response": "Réponse",
+      "awaiting": "En attente d'exécution.",
+      "disclaimer": "Démonstration : aucun code n'est réellement exécuté. Les extraits et leurs réponses sont figés dans le dépôt — le site n'expose aucune surface d'exécution de code.",
+      "executionLabel": "durée",
+      "selectAria": "Choisir un exemple de code",
+      "outputAria": "Résultat de l'exécution"
+    },
+    "samples": {
+      "spring-convention": {
+        "title": "Validation d'une convention",
+        "message": "La convention passe au statut VALIDEE et l'auteur de la validation est tracé."
+      },
+      "zod-validation": {
+        "title": "Validation d'un formulaire",
+        "message": "Les trois champs sont refusés : le schéma renvoie une erreur par champ."
+      },
+      "node-cache": {
+        "title": "Lecture avec cache",
+        "message": "Cache vide au premier appel : la base est interrogée, puis le résultat est mis en cache."
+      },
+      "python-rfid": {
+        "title": "Lecture d'un badge RFID",
+        "message": "Le badge est lu sur le port série et son identifiant est horodaté."
+      },
+      "sql-stats": {
+        "title": "Projets par catégorie",
+        "message": "Agrégation des projets publiés, catégories vides comprises."
+      },
+      "docker-build": {
+        "title": "Image de production",
+        "message": "Image multi-étapes construite sur une base Alpine, avec sonde de santé."
+      }
+    }
+  },
   "experience": {
     "label": "Parcours",
     "title": "Expérience professionnelle"

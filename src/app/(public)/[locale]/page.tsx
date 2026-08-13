@@ -6,6 +6,7 @@ import { Achievements } from "@/components/sections/achievements";
 import { Certifications } from "@/components/sections/certifications";
 import { Contact } from "@/components/sections/contact";
 import { EducationSection } from "@/components/sections/education";
+import { EngineeringLab } from "@/components/sections/engineering-lab";
 import { ExperienceSection } from "@/components/sections/experience";
 import { Hero } from "@/components/sections/hero";
 import { Projects } from "@/components/sections/projects";
@@ -183,6 +184,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <SkillsSection groups={skillGroups} t={t.skills} proficiency={t.enums.proficiency} />
 
       <Technologies technologies={technologies} t={t.technologies} />
+
+      <EngineeringLab t={t.lab} />
 
       <ExperienceSection
         experiences={experiences}

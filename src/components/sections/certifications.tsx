@@ -50,7 +50,7 @@ export function Certifications({
     <Section id="certifications">
       <div className="container-content">
         <Reveal className="mb-10 max-w-2xl">
-          <SectionLabel index="08">{t.label}</SectionLabel>
+          <SectionLabel index="09">{t.label}</SectionLabel>
           <h2 className="text-display-md font-display">{t.title}</h2>
         </Reveal>
 

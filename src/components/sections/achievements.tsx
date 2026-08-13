@@ -38,7 +38,7 @@ export function Achievements({
     <Section id="achievements" className="bg-sunken/40">
       <div className="container-content">
         <Reveal className="mb-10 max-w-2xl">
-          <SectionLabel index="09">{t.label}</SectionLabel>
+          <SectionLabel index="10">{t.label}</SectionLabel>
           <h2 className="text-display-md font-display">{t.title}</h2>
         </Reveal>
 

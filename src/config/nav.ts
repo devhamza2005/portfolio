@@ -54,6 +54,7 @@ export const OBSERVED_SECTIONS = [
   "services",
   "skills",
   "technologies",
+  "lab",
   "experience",
   "education",
   "projects",

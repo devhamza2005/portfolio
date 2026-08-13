@@ -3,8 +3,10 @@
 import { createHash } from "node:crypto";
 import { headers } from "next/headers";
 
+import { DEFAULT_LOCALE, isLocale, type Locale } from "@/lib/i18n/config";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 import { hit } from "@/lib/rate-limit";
-import { contactSchema } from "@/schemas/contact.schema";
+import { makeContactSchema } from "@/schemas/contact.schema";
 import { db } from "@/server/db";
 
 export type ContactState = {
@@ -25,12 +27,38 @@ export type ContactState = {
  * /admin/messages, même si aucun service d'email n'est configuré : la boîte de
  * réception du back-office est la garantie qu'aucune prise de contact ne se
  * perd, indépendamment de l'envoi d'email.
+ *
+ * ── Langue des messages (phase B) ─────────────────────────────────────────
+ *
+ * Les retours de cette action sont AFFICHÉS au visiteur : ils doivent suivre
+ * la langue de la page. La locale arrive par un champ caché du formulaire, et
+ * non par `headers()` : une Server Action n'est jamais mise en cache, mais
+ * `next/root-params` n'y est pas disponible et lire un en-tête introduirait
+ * une dépendance à la requête dont on n'a pas besoin. Une valeur absente ou
+ * inconnue retombe sur le français.
+ *
+ * La logique métier — validation, honeypot, limitation de débit, écriture en
+ * base — est strictement INCHANGÉE.
  */
 export async function sendContactMessage(
   _prev: ContactState,
   formData: FormData,
 ): Promise<ContactState> {
-  const parsed = contactSchema.safeParse({
+  const raw = String(formData.get("locale") ?? "");
+  const locale: Locale = isLocale(raw) ? raw : DEFAULT_LOCALE;
+  const dictionary = await getDictionary(locale);
+  const t = dictionary.contactForm.errors;
+
+  const parsed = makeContactSchema({
+    nameRequired: t.nameRequired,
+    nameTooLong: t.nameTooLong,
+    emailRequired: t.emailRequired,
+    emailInvalid: t.emailInvalid,
+    subjectTooLong: t.subjectTooLong,
+    messageTooShort: t.messageTooShort,
+    messageTooLong: t.messageTooLong,
+    rejected: t.rejected,
+  }).safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
     subject: formData.get("subject"),
@@ -48,10 +76,10 @@ export async function sendContactMessage(
     // Le piège rempli n'est jamais signalé comme tel : inutile d'expliquer
     // à un robot pourquoi il a échoué.
     if (fieldErrors["website"]) {
-      return { status: "success", message: "Merci, votre message a bien été envoyé." };
+      return { status: "success", message: t.sent };
     }
 
-    return { status: "error", message: "Vérifiez les champs signalés.", fieldErrors };
+    return { status: "error", message: t.checkFields, fieldErrors };
   }
 
   const headerList = await headers();
@@ -61,10 +89,7 @@ export async function sendContactMessage(
 
   const limit = hit(`contact:${ipHash}`, 3, 3600);
   if (!limit.success) {
-    return {
-      status: "error",
-      message: "Vous avez déjà envoyé plusieurs messages. Réessayez dans une heure.",
-    };
+    return { status: "error", message: t.rateLimited };
   }
 
   try {
@@ -79,15 +104,9 @@ export async function sendContactMessage(
       },
     });
 
-    return {
-      status: "success",
-      message: "Message envoyé. Je vous réponds dans les meilleurs délais.",
-    };
+    return { status: "success", message: t.sent };
   } catch (error) {
     console.error("[contact.actions]", error);
-    return {
-      status: "error",
-      message: "L'envoi a échoué. Réessayez, ou écrivez-moi directement par email.",
-    };
+    return { status: "error", message: t.sendFailed };
   }
 }

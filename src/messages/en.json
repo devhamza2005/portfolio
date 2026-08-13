@@ -113,6 +113,20 @@
     "successTitle": "Message sent",
     "successBody": "Thank you — your message has been delivered. I will get back to you shortly.",
     "errorGeneric": "Sending failed. Please check the fields and try again.",
+    "errors": {
+      "nameRequired": "Your name is required",
+      "nameTooLong": "120 characters maximum",
+      "emailRequired": "Your email is required",
+      "emailInvalid": "Invalid email address",
+      "subjectTooLong": "200 characters maximum",
+      "messageTooShort": "Your message must be at least 20 characters",
+      "messageTooLong": "4000 characters maximum",
+      "rejected": "Request rejected",
+      "checkFields": "Please check the highlighted fields.",
+      "rateLimited": "You have already sent several messages. Try again in an hour.",
+      "sendFailed": "Sending failed. Try again, or email me directly.",
+      "sent": "Message sent. I will reply as soon as possible."
+    },
     "honeypot": "Do not fill in"
   },
   "footer": {

@@ -21,12 +21,8 @@ import { localizedPath, type Locale } from "@/lib/i18n/config";
 import { getDictionary, requireLocale } from "@/lib/i18n/dictionaries";
 import { alternatesFor, openGraph, robotsFor, truncate, twitterCard } from "@/lib/seo";
 import { breadcrumbJsonLd, projectJsonLd } from "@/lib/structured-data";
-import {
-  getAdjacentProjects,
-  getProfile,
-  getProjectBySlug,
-  getPublishedProjectRefs,
-} from "@/server/queries/portfolio";
+import { getProfileLocalized, getProjectBySlugLocalized } from "@/server/queries/localized";
+import { getAdjacentProjects, getPublishedProjectRefs } from "@/server/queries/portfolio";
 
 /**
  * Étude de cas d'un projet.
@@ -52,8 +48,8 @@ export async function generateMetadata({
   const locale: Locale = requireLocale(raw);
   const [t, project, profile] = await Promise.all([
     getDictionary(locale),
-    getProjectBySlug(slug),
-    getProfile(),
+    getProjectBySlugLocalized(slug, locale),
+    getProfileLocalized(locale),
   ]);
 
   if (!project) {
@@ -102,7 +98,7 @@ export default async function ProjectCaseStudyPage({
   const { locale: raw, slug } = await params;
   const locale = requireLocale(raw);
   const t = await getDictionary(locale);
-  const project = await getProjectBySlug(slug);
+  const project = await getProjectBySlugLocalized(slug, locale);
 
   // Slug inconnu ou projet dépublié → 404 propre.
   if (!project) notFound();

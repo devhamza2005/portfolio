@@ -5,6 +5,7 @@ import { useActionState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { FieldError, Input, Label, Textarea } from "@/components/ui/input";
+import type { Locale } from "@/lib/i18n/config";
 import { type ContactState, sendContactMessage } from "@/server/actions/contact.actions";
 
 const INITIAL: ContactState = { status: "idle" };
@@ -37,7 +38,7 @@ export type ContactFormMessages = {
  * libellés traduits pour le succès et l'erreur générale ; seules les erreurs
  * de validation champ par champ restent francophones.
  */
-export function ContactForm({ t }: { t: ContactFormMessages }) {
+export function ContactForm({ t, locale }: { t: ContactFormMessages; locale: Locale }) {
   const [state, formAction, isPending] = useActionState(sendContactMessage, INITIAL);
 
   if (state.status === "success") {
@@ -48,20 +49,27 @@ export function ContactForm({ t }: { t: ContactFormMessages }) {
       >
         <CheckCircle2 className="text-success size-8" />
         <p className="font-display text-base font-semibold">{t.successTitle}</p>
-        <p className="text-muted max-w-sm text-sm">{t.successBody}</p>
+        <p className="text-muted max-w-sm text-sm">{state.message ?? t.successBody}</p>
       </div>
     );
   }
 
   return (
     <form action={formAction} className="grid gap-5" noValidate>
+      {/*
+        Langue de la page, transmise a la Server Action : c'est elle qui
+        determine la langue des messages de validation. Une Server Action ne
+        peut pas lire `next/root-params`.
+      */}
+      <input type="hidden" name="locale" value={locale} />
+
       {state.status === "error" ? (
         <div
           role="alert"
           className="border-danger/30 bg-danger/10 text-danger flex items-start gap-2.5 rounded-[var(--radius-md)] border px-4 py-3 text-sm"
         >
           <AlertCircle className="mt-0.5 size-4 shrink-0" />
-          <span>{t.errorGeneric}</span>
+          <span>{state.message ?? t.errorGeneric}</span>
         </div>
       ) : null}
 

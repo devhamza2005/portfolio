@@ -13,7 +13,11 @@ import { getDictionary, requireLocale, type Messages } from "@/lib/i18n/dictiona
 import { interpolate } from "@/lib/i18n/format";
 import { alternatesFor, openGraph, robotsFor, truncate, twitterCard } from "@/lib/seo";
 import { breadcrumbJsonLd, projectCollectionJsonLd } from "@/lib/structured-data";
-import { getProfile, getProjectCategories, getProjects } from "@/server/queries/portfolio";
+import {
+  getProfileLocalized,
+  getProjectCategoriesLocalized,
+  getProjectsLocalized,
+} from "@/server/queries/localized";
 
 /** Description partagée par les métadonnées et le JSON-LD — une seule vérité. */
 function describeCollection(t: Messages, name: string, count: number): string {
@@ -30,8 +34,8 @@ export async function generateMetadata({
   const locale: Locale = requireLocale((await params).locale);
   const [t, profile, projects] = await Promise.all([
     getDictionary(locale),
-    getProfile(),
-    getProjects(),
+    getProfileLocalized(locale),
+    getProjectsLocalized(locale),
   ]);
   const name = profile?.fullName ?? siteConfig.fallback.name;
   const description = describeCollection(t, name, projects.length);
@@ -69,9 +73,9 @@ export default async function ProjectsPage({
   const t = await getDictionary(locale);
 
   const [projects, categories, profile] = await Promise.all([
-    getProjects(),
-    getProjectCategories(),
-    getProfile(),
+    getProjectsLocalized(locale),
+    getProjectCategoriesLocalized(locale),
+    getProfileLocalized(locale),
   ]);
 
   const technologies = new Set(

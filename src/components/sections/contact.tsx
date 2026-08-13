@@ -7,6 +7,7 @@ import { ContactForm } from "@/components/sections/contact-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import type { Locale } from "@/lib/i18n/config";
 
 type Props = {
   email: string;
@@ -26,6 +27,7 @@ type Props = {
   };
   form: React.ComponentProps<typeof ContactForm>["t"];
   downloadCvLabel: string;
+  locale: Locale;
 };
 
 /** Section 12 — Contact. */
@@ -39,6 +41,7 @@ export function Contact({
   t,
   form,
   downloadCvLabel,
+  locale,
 }: Props) {
   return (
     <Section id="contact">
@@ -120,7 +123,7 @@ export function Contact({
 
           <Reveal delay={0.1}>
             <Card variant="glass" className="p-6 sm:p-8">
-              <ContactForm t={form} />
+              <ContactForm t={form} locale={locale} />
             </Card>
           </Reveal>
         </div>

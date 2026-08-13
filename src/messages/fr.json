@@ -113,6 +113,20 @@
     "successTitle": "Message envoyé",
     "successBody": "Merci — votre message a bien été transmis. Je vous réponds au plus vite.",
     "errorGeneric": "L'envoi a échoué. Vérifiez les champs et réessayez.",
+    "errors": {
+      "nameRequired": "Votre nom est requis",
+      "nameTooLong": "120 caractères maximum",
+      "emailRequired": "Votre email est requis",
+      "emailInvalid": "Adresse email invalide",
+      "subjectTooLong": "200 caractères maximum",
+      "messageTooShort": "Votre message doit faire au moins 20 caractères",
+      "messageTooLong": "4000 caractères maximum",
+      "rejected": "Requête rejetée",
+      "checkFields": "Vérifiez les champs signalés.",
+      "rateLimited": "Vous avez déjà envoyé plusieurs messages. Réessayez dans une heure.",
+      "sendFailed": "L'envoi a échoué. Réessayez, ou écrivez-moi directement par email.",
+      "sent": "Message envoyé. Je vous réponds dans les meilleurs délais."
+    },
     "honeypot": "Ne pas remplir"
   },
   "footer": {

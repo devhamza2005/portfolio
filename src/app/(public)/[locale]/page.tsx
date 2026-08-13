@@ -18,20 +18,20 @@ import { getDictionary, requireLocale } from "@/lib/i18n/dictionaries";
 import { alternatesFor, openGraph, resolveSeoIdentity, robotsFor, truncate, twitterCard } from "@/lib/seo";
 import { personJsonLd, webSiteJsonLd } from "@/lib/structured-data";
 import {
-  getAchievements,
-  getCertifications,
-  getEducation,
-  getExperiences,
-  getLanguages,
-  getProfile,
-  getProjects,
-  getQualities,
-  getServices,
-  getSkillGroups,
-  getSocialLinks,
-  getStats,
-  getTechnologies,
-} from "@/server/queries/portfolio";
+  getAchievementsLocalized,
+  getCertificationsLocalized,
+  getEducationLocalized,
+  getExperiencesLocalized,
+  getLanguagesLocalized,
+  getProfileLocalized,
+  getProjectsLocalized,
+  getQualitiesLocalized,
+  getServicesLocalized,
+  getSkillGroupsLocalized,
+  getSocialLinksLocalized,
+  getStatsLocalized,
+} from "@/server/queries/localized";
+import { getTechnologies } from "@/server/queries/portfolio";
 
 /**
  * Page d'accueil — composition des sections.
@@ -59,7 +59,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const locale = requireLocale((await params).locale);
-  const profile = await getProfile();
+  const profile = await getProfileLocalized(locale);
   const { name, title, description, ogImage } = resolveSeoIdentity(profile);
   const shortDescription = truncate(description);
 
@@ -100,19 +100,20 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     certifications,
     achievements,
   ] = await Promise.all([
-    getProfile(),
-    getSocialLinks(),
-    getStats(),
-    getQualities(),
-    getLanguages(),
-    getServices(),
-    getSkillGroups(),
+    getProfileLocalized(locale),
+    getSocialLinksLocalized(locale),
+    getStatsLocalized(locale),
+    getQualitiesLocalized(locale),
+    getLanguagesLocalized(locale),
+    getServicesLocalized(locale),
+    getSkillGroupsLocalized(locale),
+    // Les technologies ne sont PAS traduites : leurs noms sont des marques.
     getTechnologies(),
-    getExperiences(),
-    getEducation(),
-    getProjects(),
-    getCertifications(),
-    getAchievements(),
+    getExperiencesLocalized(locale),
+    getEducationLocalized(locale),
+    getProjectsLocalized(locale),
+    getCertificationsLocalized(locale),
+    getAchievementsLocalized(locale),
   ]);
 
   const name = profile?.fullName ?? siteConfig.fallback.name;
@@ -215,6 +216,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         t={t.contact}
         form={t.contactForm}
         downloadCvLabel={t.nav.downloadCv}
+        locale={locale}
       />
     </>
   );

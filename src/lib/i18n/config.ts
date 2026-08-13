@@ -25,7 +25,11 @@ export type Locale = (typeof LOCALES)[number];
  * (projets, bio, expériences) est rédigé en français, et toute traduction
  * manquante y retombe.
  */
-export const DEFAULT_LOCALE: Locale = "fr";
+// `satisfies` plutôt qu'une annotation `: Locale` : le type reste le littéral
+// « fr », ce qui permet à TypeScript de restreindre l'union après un test
+// `locale === DEFAULT_LOCALE`. Avec l'annotation, `fr` restait dans l'union et
+// les requêtes Prisma refusaient une locale qui ne peut valoir que `en` ou `ar`.
+export const DEFAULT_LOCALE = "fr" satisfies Locale;
 
 /** Sens d'écriture. Seul l'arabe est de droite à gauche. */
 export const DIRECTION: Record<Locale, "ltr" | "rtl"> = {
@@ -85,6 +89,25 @@ export function isLocale(value: string): value is Locale {
  * l'indexation, sans rien changer d'autre.
  */
 export const NOINDEX_LOCALES: readonly Locale[] = ["en", "ar"];
+
+/**
+ * Seuils d'indexabilité — palier A et palier B.
+ *
+ * Un seuil unique serait trompeur : traduire 95 % des noms de compétences en
+ * laissant le `<title>` en français produirait une page « indexable » et
+ * pourtant inutilisable. D'où deux paliers, tous deux obligatoires.
+ *
+ *  • PALIER A — champs qui alimentent `<title>`, `<meta description>` et les
+ *    titres de premier niveau (voir `seoCritical` du registre) : 100 % exigés.
+ *  • PALIER B — tout le reste du contenu éditorial : 90 % exigés.
+ *
+ * ⚠️ Atteindre ces seuils ne lève PAS le `noindex` tout seul. Le tableau de
+ * bord /admin/translations signale l'éligibilité ; l'ouverture à l'indexation
+ * reste une décision humaine, qui consiste à retirer la locale de
+ * `NOINDEX_LOCALES` ci-dessus. Ce choix est délibéré : publier trois versions
+ * d'un même site est une décision de référencement, pas un effet de bord.
+ */
+export const INDEX_THRESHOLDS = { seoCritical: 1, body: 0.9 } as const;
 
 /** Vrai tant que la locale ne doit pas être indexée (voir ci-dessus). */
 export function isNoindexLocale(locale: Locale): boolean {

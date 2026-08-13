@@ -109,9 +109,9 @@ model Profile {
   /// Titre principal affiché sous le nom dans le Hero.
   headline String
   /// Sous-titre technique : « Java | Spring Boot | React ».
-  subline String?
+  subline  String?
   /// Phrase courte et forte du Hero.
-  tagline String?
+  tagline  String?
 
   bioShort String? @db.Text
   bioLong  String? @db.Text
@@ -148,17 +148,17 @@ model Profile {
 }
 
 model SocialLink {
-  id String @id @default(cuid())
+  id       String  @id @default(cuid())
   /// Clé technique : github, linkedin, email, x, dribbble…
-  platform String @unique
+  platform String  @unique
   label    String
   url      String
   /// Nom d'icône (lucide ou simple-icons) — aucun upload nécessaire.
-  iconKey String?
+  iconKey  String?
   /// Afficher dans le Hero, en plus du footer.
-  inHero  Boolean @default(true)
-  visible Boolean @default(true)
-  order   Int     @default(0)
+  inHero   Boolean @default(true)
+  visible  Boolean @default(true)
+  order    Int     @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -180,13 +180,13 @@ model Quality {
 
 /// Langues parlées (§6).
 model Language {
-  id   String @id @default(cuid())
-  name String
+  id      String  @id @default(cuid())
+  name    String
   /// Niveau libre : « Langue maternelle », « Courant », « B2 »…
-  level String?
+  level   String?
   /// Pourcentage optionnel, pour la barre de progression.
   percent Int?
-  order   Int  @default(0)
+  order   Int     @default(0)
 
   @@index([order])
   @@map("languages")
@@ -204,16 +204,16 @@ enum CategoryKind {
 }
 
 model Category {
-  id   String       @id @default(cuid())
-  kind CategoryKind
-  name String
-  slug String
+  id          String       @id @default(cuid())
+  kind        CategoryKind
+  name        String
+  slug        String
   /// Description courte affichée en tête de groupe.
   description String?
   iconKey     String?
   /// Couleur d'accent optionnelle (hex) pour différencier les groupes.
-  color String?
-  order Int     @default(0)
+  color       String?
+  order       Int          @default(0)
 
   technologies Technology[]
   skills       Skill[]
@@ -245,11 +245,11 @@ model Technology {
   /// Icône vectorielle (clé simple-icons, ex. « springboot ») — aucun upload requis.
   iconKey String?
   /// Logo téléversé, prioritaire sur iconKey s'il est renseigné.
-  logoId String?
-  logo   Media?  @relation(fields: [logoId], references: [id], onDelete: SetNull)
+  logoId  String?
+  logo    Media?  @relation(fields: [logoId], references: [id], onDelete: SetNull)
   /// Couleur de marque (hex), utilisée sur les badges et le bandeau défilant.
-  color String?
-  url   String?
+  color   String?
+  url     String?
 
   /// Mise en avant dans le bandeau de la section Technologies.
   featured Boolean @default(false)
@@ -551,11 +551,11 @@ model Education {
   field  String?
 
   /// Note obtenue, ex. « 17/20 ».
-  grade String?
+  grade   String?
   /// Mention, ex. « Très Bien ».
   mention String?
   /// Distinction libre, ex. « Soutenance de PFE validée ».
-  honors String?
+  honors  String?
 
   status EducationStatus @default(COMPLETED)
 
@@ -615,9 +615,9 @@ model Certification {
 }
 
 model Achievement {
-  id          String  @id @default(cuid())
-  title       String
-  description String? @db.Text
+  id           String    @id @default(cuid())
+  title        String
+  description  String?   @db.Text
   /// Catégorie libre : Compétition, Distinction, Projet, Communauté…
   category     String?
   organisation String?
@@ -639,14 +639,14 @@ model Achievement {
 
 /// Section « What I do » (§9).
 model Service {
-  id          String @id @default(cuid())
+  id          String   @id @default(cuid())
   title       String
-  description String @db.Text
+  description String   @db.Text
   iconKey     String?
   /// Points détaillés listés dans la carte.
-  features String[]
-  visible  Boolean  @default(true)
-  order    Int      @default(0)
+  features    String[]
+  visible     Boolean  @default(true)
+  order       Int      @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -672,16 +672,16 @@ enum StatSource {
 }
 
 model StatCard {
-  id     String     @id @default(cuid())
-  label  String
-  source StatSource
+  id          String     @id @default(cuid())
+  label       String
+  source      StatSource
   /// Utilisé uniquement lorsque source = MANUAL.
   manualValue Int?
   prefix      String?
   suffix      String?
   iconKey     String?
-  visible     Boolean @default(true)
-  order       Int     @default(0)
+  visible     Boolean    @default(true)
+  order       Int        @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -712,4 +712,55 @@ model ContactMessage {
 
   @@index([isRead, createdAt])
   @@map("contact_messages")
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+//  INTERNATIONALISATION DU CONTENU
+// ───────────────────────────────────────────────────────────────────────────
+
+/// Locales dont le contenu éditorial est traduit.
+///
+/// Le FRANÇAIS n'y figure volontairement pas : il vit dans les colonnes
+/// d'origine et reste la source de vérité. Aucune valeur française n'est
+/// dupliquée ici — une ligne `locale = "fr"` créerait deux vérités
+/// concurrentes pour le même texte.
+///
+/// Un `enum` plutôt qu'un `String` : PostgreSQL refuse alors physiquement une
+/// locale inventée (« EN », « de », « fr »), et TypeScript la refuse à la
+/// compilation. Avec un `String`, une faute de frappe produirait une traduction
+/// invisible, sans la moindre erreur.
+enum ContentLocale {
+  en
+  ar
+}
+
+/// Traduction d'UN champ d'UNE ligne, dans UNE langue.
+///
+/// Table unique et générique : rendre un nouveau modèle traduisible ne demande
+/// AUCUNE migration — seulement une entrée dans le registre applicatif
+/// (src/lib/i18n/content-registry.ts).
+///
+/// `entity` est le nom du modèle en camelCase (« project », « projectFeature »),
+/// `entityId` la clé primaire de la ligne, `field` le nom du champ. Ces trois
+/// valeurs sont contraintes côté serveur par un registre typé, jamais par la
+/// requête : il est impossible d'écrire une traduction sur un champ arbitraire.
+///
+/// Pas de clé étrangère : elle exigerait une colonne nullable par modèle cible,
+/// ou un polymorphisme qu'aucun SGBD ne gère nativement. Les orphelins sont
+/// nettoyés par les Server Actions de suppression.
+model Translation {
+  id       String        @id @default(cuid())
+  entity   String
+  entityId String
+  locale   ContentLocale
+  field    String
+  value    String        @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([entity, entityId, locale, field])
+  @@index([entity, locale])
+  @@index([entity, entityId])
+  @@map("translations")
 }

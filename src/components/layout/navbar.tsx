@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 
 import { Monogram } from "@/components/brand/monogram";
 import { LocaleSwitcher } from "@/components/layout/locale-switcher";
+import { TerminalLauncher } from "@/components/terminal/terminal-launcher";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { SECTION_NAV, OBSERVED_SECTIONS, navHref, type NavId } from "@/config/nav";
@@ -31,6 +32,13 @@ type Props = {
   navItems: Record<NavId, string>;
   localeStrings: { label: string; ariaLabel: string; currentAria: string };
   themeLabel: string;
+  /** Developer Terminal — données et libellés préparés côté serveur. */
+  terminal: {
+    data: React.ComponentProps<typeof TerminalLauncher>["data"];
+    messages: React.ComponentProps<typeof TerminalLauncher>["t"];
+    openLabel: string;
+    shortcutHint: string;
+  };
 };
 
 /**
@@ -56,6 +64,7 @@ export function Navbar({
   navItems,
   localeStrings,
   themeLabel,
+  terminal,
 }: Props) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -183,6 +192,15 @@ export function Navbar({
                 label={localeStrings.label}
                 ariaLabel={localeStrings.ariaLabel}
                 currentAria={localeStrings.currentAria}
+              />
+
+              <TerminalLauncher
+                data={terminal.data}
+                t={terminal.messages}
+                localePrefix={home}
+                openLabel={terminal.openLabel}
+                shortcutHint={terminal.shortcutHint}
+                className="hidden sm:inline-flex"
               />
 
               <ThemeToggle className="size-9" label={themeLabel} />

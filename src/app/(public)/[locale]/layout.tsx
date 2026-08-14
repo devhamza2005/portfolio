@@ -12,6 +12,7 @@ import { DIRECTION, LOCALES, isLocale } from "@/lib/i18n/config";
 import { getDictionaryFor } from "@/lib/i18n/dictionaries";
 import { alternatesFor, robotsFor } from "@/lib/seo";
 import { getCurrentYear } from "@/server/queries/now";
+import { getTerminalData } from "@/server/queries/terminal";
 import { getProfile, getSocialLinks } from "@/server/queries/portfolio";
 
 import "../../globals.css";
@@ -94,11 +95,15 @@ export default async function PublicRootLayout({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  const [t, profile, socialLinks, year] = await Promise.all([
-    getDictionaryFor(locale),
+  const t = await getDictionaryFor(locale);
+
+  const [profile, socialLinks, year, terminal] = await Promise.all([
     getProfile(),
     getSocialLinks(),
     getCurrentYear(),
+    // Instantané pour le Developer Terminal — uniquement des lectures déjà
+    // mises en cache, aucune requête supplémentaire.
+    getTerminalData(locale, t),
   ]);
 
   // Repli si la base n'est pas encore amorcée : le site reste affichable.
@@ -127,6 +132,12 @@ export default async function PublicRootLayout({
             navItems={t.nav.items}
             localeStrings={t.locale}
             themeLabel={t.theme.toggle}
+            terminal={{
+              data: terminal,
+              messages: t.terminal.messages,
+              openLabel: t.terminal.open,
+              shortcutHint: t.terminal.shortcut,
+            }}
           />
 
           <main id="main" className="flex-1">

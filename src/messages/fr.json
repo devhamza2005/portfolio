@@ -25,6 +25,48 @@
   "theme": {
     "toggle": "Changer de thème"
   },
+  "terminal": {
+    "open": "Terminal",
+    "shortcut": "Ctrl + ` pour ouvrir le terminal",
+    "messages": {
+      "welcome": "Terminal développeur de Hamza Fanoune",
+      "hint": "Tapez \"help\" pour voir les commandes disponibles.",
+      "availableCommands": "Commandes disponibles :",
+      "notFound": "Commande inconnue",
+      "notFoundHint": "Tapez \"help\" pour voir les commandes disponibles.",
+      "usage": "Utilisation : open <n>  ·  open architecture <n>  ·  open roadmap",
+      "unknownProject": "Ce projet n'existe pas. Tapez « projects » pour la liste.",
+      "comingSoon": "Étude de cas à venir.",
+      "opening": "ouverture…",
+      "noCv": "Aucun CV n'est disponible pour le moment.",
+      "noGithub": "Aucun profil GitHub n'est configuré.",
+      "descriptions": {
+        "help": "liste les commandes",
+        "about": "qui je suis",
+        "skills": "mes compétences",
+        "projects": "mes projets",
+        "experience": "mon parcours",
+        "architecture": "les architectures",
+        "roadmap": "l'avancement des projets",
+        "github": "mon profil GitHub",
+        "resume": "télécharger mon CV",
+        "contact": "me contacter",
+        "clear": "efface l'écran",
+        "exit": "ferme le terminal"
+      },
+      "labels": {
+        "skills": "Compétences",
+        "projects": "Projets",
+        "experience": "Parcours",
+        "architecture": "Architecture Lab",
+        "roadmap": "Roadmap des projets",
+        "availableArchitectures": "Architectures disponibles :",
+        "progress": "terminé",
+        "close": "Fermer le terminal",
+        "inputAria": "Saisie de commande"
+      }
+    }
+  },
   "hero": {
     "viewProjects": "Voir mes projets",
     "contactMe": "Me contacter",

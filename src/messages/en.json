@@ -25,6 +25,48 @@
   "theme": {
     "toggle": "Toggle theme"
   },
+  "terminal": {
+    "open": "Terminal",
+    "shortcut": "Ctrl + ` to open the terminal",
+    "messages": {
+      "welcome": "Hamza Fanoune's Developer Terminal",
+      "hint": "Type \"help\" to see available commands.",
+      "availableCommands": "Available commands:",
+      "notFound": "Command not found",
+      "notFoundHint": "Type \"help\" to see available commands.",
+      "usage": "Usage: open <n>  ·  open architecture <n>  ·  open roadmap",
+      "unknownProject": "No such project. Type \"projects\" for the list.",
+      "comingSoon": "Case study coming soon.",
+      "opening": "opening…",
+      "noCv": "No CV is available at the moment.",
+      "noGithub": "No GitHub profile is configured.",
+      "descriptions": {
+        "help": "list the commands",
+        "about": "who I am",
+        "skills": "my skills",
+        "projects": "my projects",
+        "experience": "my background",
+        "architecture": "the architectures",
+        "roadmap": "project progress",
+        "github": "my GitHub profile",
+        "resume": "download my CV",
+        "contact": "get in touch",
+        "clear": "clear the screen",
+        "exit": "close the terminal"
+      },
+      "labels": {
+        "skills": "Skills",
+        "projects": "Projects",
+        "experience": "Experience",
+        "architecture": "Architecture Lab",
+        "roadmap": "Project Roadmap",
+        "availableArchitectures": "Available architectures:",
+        "progress": "complete",
+        "close": "Close the terminal",
+        "inputAria": "Command input"
+      }
+    }
+  },
   "hero": {
     "viewProjects": "View my projects",
     "contactMe": "Get in touch",

@@ -25,6 +25,48 @@
   "theme": {
     "toggle": "تغيير المظهر"
   },
+  "terminal": {
+    "open": "الطرفية",
+    "shortcut": "Ctrl + ` لفتح الطرفية",
+    "messages": {
+      "welcome": "طرفية المطور — حمزة فنون",
+      "hint": "اكتب \"help\" لعرض الأوامر المتاحة.",
+      "availableCommands": "الأوامر المتاحة:",
+      "notFound": "الأمر غير موجود",
+      "notFoundHint": "اكتب \"help\" لعرض الأوامر المتاحة.",
+      "usage": "الاستعمال: open <n>  ·  open architecture <n>  ·  open roadmap",
+      "unknownProject": "لا يوجد مشروع بهذا الرقم. اكتب \"projects\" لعرض القائمة.",
+      "comingSoon": "دراسة الحالة قادمة.",
+      "opening": "جارٍ الفتح…",
+      "noCv": "لا توجد سيرة ذاتية متاحة حاليًا.",
+      "noGithub": "لم يتم ضبط أي حساب GitHub.",
+      "descriptions": {
+        "help": "عرض الأوامر",
+        "about": "من أنا",
+        "skills": "مهاراتي",
+        "projects": "مشاريعي",
+        "experience": "مساري المهني",
+        "architecture": "البنيات المعمارية",
+        "roadmap": "تقدّم المشاريع",
+        "github": "حسابي على GitHub",
+        "resume": "تحميل سيرتي الذاتية",
+        "contact": "تواصل معي",
+        "clear": "مسح الشاشة",
+        "exit": "إغلاق الطرفية"
+      },
+      "labels": {
+        "skills": "المهارات",
+        "projects": "المشاريع",
+        "experience": "المسار المهني",
+        "architecture": "مختبر البنية المعمارية",
+        "roadmap": "خارطة طريق المشاريع",
+        "availableArchitectures": "البنيات المتاحة:",
+        "progress": "مكتمل",
+        "close": "إغلاق الطرفية",
+        "inputAria": "إدخال الأمر"
+      }
+    }
+  },
   "hero": {
     "viewProjects": "استعرض مشاريعي",
     "contactMe": "تواصل معي",

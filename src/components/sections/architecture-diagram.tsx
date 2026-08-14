@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronDown, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import type { NodeKind } from "@/config/architecture";
 import type { CodeLine } from "@/lib/code/highlight";
@@ -104,6 +104,27 @@ export function ArchitectureDiagram({
 
   const view = useMemo(() => views.find((v) => v.id === viewId) ?? views[0], [views, viewId]);
   const selected = selectedId ? nodes[selectedId] : null;
+
+  /**
+   * Le Developer Terminal peut demander une vue précise (`open architecture 03`).
+   *
+   * Un évènement plutôt qu'un paramètre d'URL : la section reste prérendue,
+   * le `canonical` et le `hreflang` ne bougent pas, et un rechargement ne
+   * conserve pas un état d'interface dans l'adresse. L'identifiant reçu est
+   * vérifié contre les vues connues avant d'être appliqué.
+   */
+  useEffect(() => {
+    function onRequest(event: Event) {
+      const requested = (event as CustomEvent<string>).detail;
+      if (typeof requested !== "string") return;
+      if (!views.some((item) => item.id === requested)) return;
+      setViewId(requested);
+      setSelectedId(null);
+    }
+
+    window.addEventListener("portfolio:architecture-view", onRequest);
+    return () => window.removeEventListener("portfolio:architecture-view", onRequest);
+  }, [views]);
 
   if (!view) return null;
 

@@ -10,6 +10,7 @@ import { EducationSection } from "@/components/sections/education";
 import { EngineeringLab } from "@/components/sections/engineering-lab";
 import { ExperienceSection } from "@/components/sections/experience";
 import { Hero } from "@/components/sections/hero";
+import { ProjectRoadmap } from "@/components/sections/project-roadmap";
 import { Projects } from "@/components/sections/projects";
 import { Services } from "@/components/sections/services";
 import { SkillsSection } from "@/components/sections/skills-section";
@@ -207,6 +208,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       />
 
       <Projects projects={projects} locale={locale} t={t.projects} status={t.enums.projectStatus} />
+
+      <ProjectRoadmap t={t.roadmap} locale={locale} />
 
       <Certifications certifications={certifications} locale={locale} t={t.certifications} />
 

@@ -38,6 +38,7 @@ export const HOME_SECTIONS = [
   "experience",
   "education",
   "projects",
+  "roadmap",
   "certifications",
   "achievements",
   "contact",

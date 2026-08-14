@@ -294,6 +294,118 @@
     "readCaseStudy": "Read the case study",
     "newWindow": " (opens in a new window)"
   },
+  "roadmap": {
+    "label": "Roadmap",
+    "title": "A project is more than its code",
+    "intro": "Ten stages, from the first analysis to maintenance. Pick a project, click a stage: what it produces, with which tools, and where I stand.",
+    "projectsAria": "Choose a project",
+    "stagesAria": "Project stages",
+    "hint": "Click a stage to see what it produces.",
+    "close": "Close details",
+    "statusLabel": "Status",
+    "technologies": "Technologies",
+    "deliverables": "Deliverables",
+    "progress": "{percent}% of stages completed",
+    "caseStudy": "View the case study",
+    "noCaseStudy": "Case study coming",
+    "status": {
+      "completed": "Completed",
+      "current": "Current",
+      "pending": "Pending"
+    },
+    "stages": {
+      "idea": {
+        "name": "Idea / Analysis",
+        "description": "Understanding the need before writing anything: who the tool serves, which problem it replaces, what already exists.",
+        "deliverables": [
+          "Scoping note",
+          "Analysis of the existing system",
+          "Functional scope"
+        ]
+      },
+      "spec": {
+        "name": "Specification",
+        "description": "Turning the need into verifiable requirements. A requirement you cannot test is not one.",
+        "deliverables": [
+          "Requirements document",
+          "Use cases",
+          "Business rules"
+        ]
+      },
+      "uml": {
+        "name": "UML design",
+        "description": "Laying out objects, their relationships and the flows before coding. A wrong diagram costs an hour; a wrong model costs the project.",
+        "deliverables": [
+          "Class diagram",
+          "Sequence diagrams",
+          "Use case diagram"
+        ]
+      },
+      "architecture": {
+        "name": "Architecture",
+        "description": "Deciding the split: layered monolith or separate services, where the boundaries run, how components talk to each other.",
+        "deliverables": [
+          "Architecture diagram",
+          "Technology choices",
+          "Layer breakdown"
+        ]
+      },
+      "database": {
+        "name": "Database",
+        "description": "Modelling the data and putting the constraints in the database, not only in the code.",
+        "deliverables": [
+          "Relational model",
+          "Schema and indexes",
+          "Migrations"
+        ]
+      },
+      "development": {
+        "name": "Development",
+        "description": "Writing the code in shippable increments. Every increment must be demonstrable.",
+        "deliverables": [
+          "REST API",
+          "Authentication",
+          "User interfaces"
+        ]
+      },
+      "tests": {
+        "name": "Testing",
+        "description": "Checking what was promised at the specification stage, and measuring the quality of the code produced.",
+        "deliverables": [
+          "Unit tests",
+          "Integration tests",
+          "Quality analysis"
+        ]
+      },
+      "cicd": {
+        "name": "CI / CD",
+        "description": "Automating verification and delivery: a failure must block the release, not merely slow it down.",
+        "deliverables": [
+          "Build pipeline",
+          "Automated tests",
+          "Quality gate"
+        ]
+      },
+      "deployment": {
+        "name": "Deployment",
+        "description": "Shipping reproducibly: the same image, the same variables, the same result.",
+        "deliverables": [
+          "Containerisation",
+          "Environment variables",
+          "Go-live"
+        ]
+      },
+      "maintenance": {
+        "name": "Maintenance",
+        "description": "What begins where many stop: fixing, evolving, keeping dependencies current.",
+        "deliverables": [
+          "Fixes",
+          "Enhancements",
+          "Updates"
+        ]
+      }
+    }
+  },
   "certifications": {
     "label": "Certifications",
     "title": "Certifications and credentials",

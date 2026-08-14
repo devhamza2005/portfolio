@@ -294,6 +294,118 @@
     "readCaseStudy": "Lire l'étude de cas",
     "newWindow": " (nouvelle fenêtre)"
   },
+  "roadmap": {
+    "label": "Roadmap",
+    "title": "Un projet ne se résume pas à son code",
+    "intro": "Dix étapes, de la première analyse à la maintenance. Choisissez un projet, cliquez sur une étape : ce qu'elle produit, avec quels outils, et où j'en suis.",
+    "projectsAria": "Choisir un projet",
+    "stagesAria": "Étapes du projet",
+    "hint": "Cliquez sur une étape pour voir ce qu'elle produit.",
+    "close": "Fermer le détail",
+    "statusLabel": "Statut",
+    "technologies": "Technologies",
+    "deliverables": "Livrables",
+    "progress": "{percent} % des étapes terminées",
+    "caseStudy": "Voir l'étude de cas",
+    "noCaseStudy": "Étude de cas à venir",
+    "status": {
+      "completed": "Terminée",
+      "current": "En cours",
+      "pending": "À venir"
+    },
+    "stages": {
+      "idea": {
+        "name": "Idée / Analyse",
+        "description": "Comprendre le besoin avant d'écrire quoi que ce soit : à qui sert l'outil, quel problème il remplace, ce qui existe déjà.",
+        "deliverables": [
+          "Note de cadrage",
+          "Analyse de l'existant",
+          "Périmètre fonctionnel"
+        ]
+      },
+      "spec": {
+        "name": "Spécification",
+        "description": "Traduire le besoin en exigences vérifiables. Une exigence qu'on ne sait pas tester n'en est pas une.",
+        "deliverables": [
+          "Cahier des charges",
+          "Cas d'utilisation",
+          "Règles de gestion"
+        ]
+      },
+      "uml": {
+        "name": "Conception UML",
+        "description": "Poser les objets, leurs relations et les enchaînements avant de coder. Un diagramme faux coûte une heure ; un modèle faux coûte le projet.",
+        "deliverables": [
+          "Diagramme de classes",
+          "Diagrammes de séquence",
+          "Diagramme de cas d'utilisation"
+        ]
+      },
+      "architecture": {
+        "name": "Architecture",
+        "description": "Décider du découpage : monolithe en couches ou services séparés, où passent les frontières, comment les composants se parlent.",
+        "deliverables": [
+          "Schéma d'architecture",
+          "Choix technologiques",
+          "Découpage en couches"
+        ]
+      },
+      "database": {
+        "name": "Base de données",
+        "description": "Modéliser les données et poser les contraintes dans la base, pas seulement dans le code.",
+        "deliverables": [
+          "Modèle relationnel",
+          "Schéma et index",
+          "Migrations"
+        ]
+      },
+      "development": {
+        "name": "Développement",
+        "description": "Écrire le code, par incréments livrables. Chaque incrément doit pouvoir être montré.",
+        "deliverables": [
+          "API REST",
+          "Authentification",
+          "Interfaces utilisateur"
+        ]
+      },
+      "tests": {
+        "name": "Tests",
+        "description": "Vérifier ce qui a été promis à l'étape de spécification, et mesurer la qualité du code produit.",
+        "deliverables": [
+          "Tests unitaires",
+          "Tests d'intégration",
+          "Analyse de qualité"
+        ]
+      },
+      "cicd": {
+        "name": "CI / CD",
+        "description": "Automatiser la vérification et la livraison : un échec doit bloquer la mise en production, pas la ralentir.",
+        "deliverables": [
+          "Pipeline de build",
+          "Tests automatisés",
+          "Portail de qualité"
+        ]
+      },
+      "deployment": {
+        "name": "Déploiement",
+        "description": "Mettre en ligne de façon reproductible : la même image, les mêmes variables, le même résultat.",
+        "deliverables": [
+          "Conteneurisation",
+          "Variables d'environnement",
+          "Mise en production"
+        ]
+      },
+      "maintenance": {
+        "name": "Maintenance",
+        "description": "Ce qui commence là où beaucoup s'arrêtent : corriger, faire évoluer, garder les dépendances à jour.",
+        "deliverables": [
+          "Corrections",
+          "Évolutions",
+          "Mises à jour"
+        ]
+      }
+    }
+  },
   "certifications": {
     "label": "Certifications",
     "title": "Certifications et attestations",

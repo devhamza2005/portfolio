@@ -73,6 +73,15 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Générer les types de routes Next.js
+        # `tsconfig.json` référence `.next/types/**` (props générées pour
+        # chaque layout/page — `LayoutProps` par exemple). Sur un poste de
+        # développement, ce dossier existe déjà grâce aux `next dev`/`build`
+        # précédents ; sur une machine CI fraîche, personne ne l'a jamais créé.
+        # `next typegen` le génère sans lancer de build complet, ni toucher à
+        # la base de données.
+        run: npx next typegen
+
       - name: Vérification des types
         run: npm run typecheck
 

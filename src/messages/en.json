@@ -484,6 +484,20 @@
       }
     }
   },
+  "github": {
+    "label": "GitHub",
+    "title": "GitHub activity, live",
+    "subtitle": "Repositories, languages and latest commits — read live from my profile, nothing made up.",
+    "stats": {
+      "repos": "Public repos",
+      "stars": "Stars",
+      "followers": "Followers"
+    },
+    "languages": "Most used languages",
+    "activity": "Recent activity",
+    "viewProfile": "View GitHub profile",
+    "noDescription": "No description."
+  },
   "certifications": {
     "label": "Certifications",
     "title": "Certifications and credentials",

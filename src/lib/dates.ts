@@ -118,3 +118,55 @@ export function formatYearRange(
 
   return `${startYear} — ${endYear}`;
 }
+
+const RELATIVE_CACHE = new Map<Locale, Intl.RelativeTimeFormat>();
+
+function relativeFormatter(locale: Locale): Intl.RelativeTimeFormat {
+  let cached = RELATIVE_CACHE.get(locale);
+
+  if (!cached) {
+    cached = new Intl.RelativeTimeFormat(INTL_LOCALES[locale], { numeric: "auto" });
+    RELATIVE_CACHE.set(locale, cached);
+  }
+
+  return cached;
+}
+
+const RELATIVE_UNITS: [Intl.RelativeTimeFormatUnit, number][] = [
+  ["year", 60 * 60 * 24 * 365],
+  ["month", 60 * 60 * 24 * 30],
+  ["week", 60 * 60 * 24 * 7],
+  ["day", 60 * 60 * 24],
+  ["hour", 60 * 60],
+  ["minute", 60],
+];
+
+/**
+ * Distance au présent, en toutes lettres — « il y a 3 jours », « 3 days ago ».
+ *
+ * `Intl.RelativeTimeFormat` est natif : aucune dépendance, et le sens de
+ * lecture arabe est déjà correct dans la chaîne produite, sans intervention.
+ * Utilisé par la section GitHub pour l'activité récente — une valeur figée
+ * comme « le 3 mars » vieillirait mal pour un flux qui se veut « en direct ».
+ */
+export function formatRelative(
+  value: Date | string | null | undefined,
+  locale: Locale = DEFAULT_LOCALE,
+): string {
+  const date = toDate(value);
+  if (!date) return "";
+
+  const diffSeconds = (date.getTime() - Date.now()) / 1000;
+  const absSeconds = Math.abs(diffSeconds);
+
+  if (absSeconds < 60) return relativeFormatter(locale).format(0, "second");
+
+  for (const [unit, seconds] of RELATIVE_UNITS) {
+    if (absSeconds >= seconds) {
+      const value = Math.round(diffSeconds / seconds);
+      return relativeFormatter(locale).format(value, unit);
+    }
+  }
+
+  return relativeFormatter(locale).format(Math.round(diffSeconds / 60), "minute");
+}

@@ -9,6 +9,7 @@ import { Contact } from "@/components/sections/contact";
 import { EducationSection } from "@/components/sections/education";
 import { EngineeringLab } from "@/components/sections/engineering-lab";
 import { ExperienceSection } from "@/components/sections/experience";
+import { GithubStatsSection } from "@/components/sections/github-stats";
 import { Hero } from "@/components/sections/hero";
 import { ProjectRoadmap } from "@/components/sections/project-roadmap";
 import { Projects } from "@/components/sections/projects";
@@ -34,7 +35,9 @@ import {
   getSocialLinksLocalized,
   getStatsLocalized,
 } from "@/server/queries/localized";
+import { getGithubStats, withActivityLabels } from "@/server/queries/github";
 import { getTechnologies } from "@/server/queries/portfolio";
+import { extractGithubUsername } from "@/lib/github/username";
 
 /**
  * Page d'accueil — composition des sections.
@@ -118,6 +121,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     getCertificationsLocalized(locale),
     getAchievementsLocalized(locale),
   ]);
+
+  // Le nom d'utilisateur GitHub n'est écrit nulle part : il est extrait du
+  // même lien social que la navbar, le Developer Terminal et la Command
+  // Palette lisent déjà — une seule source, jamais dupliquée.
+  const githubUsername = extractGithubUsername(
+    socialLinks.find((link) => link.platform.toLowerCase() === "github")?.url,
+  );
+  const githubStats = await withActivityLabels(await getGithubStats(githubUsername), locale);
 
   const name = profile?.fullName ?? siteConfig.fallback.name;
   const email = profile?.email ?? "";
@@ -210,6 +221,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <Projects projects={projects} locale={locale} t={t.projects} status={t.enums.projectStatus} />
 
       <ProjectRoadmap t={t.roadmap} locale={locale} />
+
+      <GithubStatsSection stats={githubStats} t={t.github} />
 
       <Certifications certifications={certifications} locale={locale} t={t.certifications} />
 

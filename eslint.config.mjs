@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Rapport généré par `npm run test:coverage` — déjà ignoré par Git, mais
+    // ESLint (config plate) ne lit pas `.gitignore` de lui-même.
+    "coverage/**",
   ]),
 ]);
 

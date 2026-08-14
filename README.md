@@ -1,5 +1,7 @@
 # Portfolio — Hamza Fanoune
 
+[![CI](https://github.com/devhamza2005/portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/devhamza2005/portfolio/actions/workflows/ci.yml)
+
 Portfolio personnel de **Hamza Fanoune**, développeur Full Stack Java (Spring Boot / React), basé à Casablanca.
 
 Ce dépôt n'est pas un template statique : c'est une **application full-stack** dont le contenu

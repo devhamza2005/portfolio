@@ -1,0 +1,86 @@
+name: CI
+
+# ═══════════════════════════════════════════════════════════════════════════
+#  INTÉGRATION CONTINUE
+# ═══════════════════════════════════════════════════════════════════════════
+#
+# ── Aucun secret requis ─────────────────────────────────────────────────────
+#
+# `next build` interroge la base pendant le prérendu (§19 du projet) : ce
+# job démarre donc un PostgreSQL ÉPHÉMÈRE, propre à ce run, migré mais jamais
+# amorcé (`db:seed` n'est pas lancé). Le code tolère déjà une base vide —
+# chaque requête de src/server/queries/ utilise findMany/findFirst, jamais
+# les variantes *OrThrow, et chaque section se masque sans donnée plutôt que
+# de planter (Certifications, GitHub Stats…).
+#
+# AUTH_SECRET ci-dessous n'est PAS un secret réel : c'est une valeur jetable,
+# recréée à chaque run, qui ne protège aucune donnée et ne sert qu'à
+# satisfaire la validation de src/lib/env.ts pendant le build. La production
+# sur Vercel utilise un AUTH_SECRET totalement distinct, jamais présent ici.
+#
+# STORAGE_PROVIDER=local évite toute dépendance à Cloudinary : le build ne
+# téléverse aucun média, et le code bascule déjà sur le stockage local quand
+# les clés Cloudinary sont absentes (comportement documenté, pas un
+# contournement ajouté pour la CI).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: portfolio_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/portfolio_ci
+      DIRECT_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/portfolio_ci
+      AUTH_SECRET: ci-only-placeholder-value-not-a-real-secret-0000
+      AUTH_URL: http://localhost:3000
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      STORAGE_PROVIDER: local
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Installer Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Installer les dépendances
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Vérification des types
+        run: npm run typecheck
+
+      - name: Tests unitaires
+        run: npm run test:run
+
+      - name: Appliquer les migrations (base éphémère du job)
+        run: npx prisma migrate deploy
+
+      - name: Build de production
+        run: npm run build

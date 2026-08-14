@@ -149,8 +149,9 @@ export const ROADMAP_PROJECTS: readonly RoadmapProject[] = [
     /**
      * Seul projet dont l'avancement est directement observable dans ce dépôt :
      * conçu, développé, base en place, déployé sur Vercel, et maintenu en
-     * continu. Aucun pipeline d'intégration continue n'existe encore
-     * (`.github/workflows` est vide) — l'étape reste donc en attente.
+     * continu. `.github/workflows/ci.yml` exécute lint, vérification des
+     * types, tests Vitest et build à chaque push — l'étape CI/CD est donc
+     * bien terminée (phase 7).
      */
     stages: {
       idea: "completed",
@@ -160,7 +161,7 @@ export const ROADMAP_PROJECTS: readonly RoadmapProject[] = [
       database: "completed",
       development: "completed",
       tests: "completed",
-      cicd: "pending",
+      cicd: "completed",
       deployment: "completed",
       maintenance: "current",
     },

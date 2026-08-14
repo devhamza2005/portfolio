@@ -7,11 +7,21 @@ name: CI
 # ── Aucun secret requis ─────────────────────────────────────────────────────
 #
 # `next build` interroge la base pendant le prérendu (§19 du projet) : ce
-# job démarre donc un PostgreSQL ÉPHÉMÈRE, propre à ce run, migré mais jamais
-# amorcé (`db:seed` n'est pas lancé). Le code tolère déjà une base vide —
-# chaque requête de src/server/queries/ utilise findMany/findFirst, jamais
-# les variantes *OrThrow, et chaque section se masque sans donnée plutôt que
-# de planter (Certifications, GitHub Stats…).
+# job démarre donc un PostgreSQL ÉPHÉMÈRE, propre à ce run, migré PUIS amorcé
+# via le même `db:seed` que le projet utilise déjà en local. Le code tolère
+# une base vide pour la plupart des requêtes (findMany/findFirst, jamais les
+# variantes *OrThrow ; chaque section se masque sans donnée plutôt que de
+# planter — Certifications, GitHub Stats…), mais Cache Components impose une
+# règle propre à `generateStaticParams` : elle DOIT rendre au moins un
+# résultat pour un segment dynamique (`/projects/[slug]`), sans quoi le build
+# échoue à la validation. Semer au moins un projet publié est donc requis —
+# une base migrée-mais-vide ne suffit pas ici.
+#
+# Le contenu semé est le contenu ÉDITORIAL RÉEL du portfolio (celui déjà
+# public sur le site en production) : rien d'inventé pour la CI. Le script
+# est idempotent (upsert) et ne crée AUCUN compte administrateur tant que
+# ADMIN_EMAIL/ADMIN_PASSWORD ne sont pas fournis — ils ne le sont
+# volontairement pas ici, la CI n'a besoin de se connecter à aucun compte.
 #
 # AUTH_SECRET ci-dessous n'est PAS un secret réel : c'est une valeur jetable,
 # recréée à chaque run, qui ne protège aucune donnée et ne sert qu'à
@@ -90,6 +100,9 @@ jobs:
 
       - name: Appliquer les migrations (base éphémère du job)
         run: npx prisma migrate deploy
+
+      - name: Amorcer le contenu éditorial réel (base éphémère du job)
+        run: npm run db:seed
 
       - name: Build de production
         run: npm run build

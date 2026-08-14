@@ -67,6 +67,42 @@
       }
     }
   },
+  "commandPalette": {
+    "open": "Search",
+    "placeholder": "Search portfolio…",
+    "empty": "No results.",
+    "recent": "Recent",
+    "categories": {
+      "navigation": "Navigation",
+      "actions": "Actions",
+      "preferences": "Preferences"
+    },
+    "labels": {
+      "about": "About",
+      "projects": "Projects",
+      "skills": "Skills",
+      "experience": "Experience",
+      "architecture": "Architecture",
+      "roadmap": "Roadmap",
+      "contact": "Contact",
+      "github": "GitHub",
+      "resume": "Download CV",
+      "terminal": "Open Terminal",
+      "language": "Change language",
+      "theme": "Toggle theme"
+    },
+    "hints": {
+      "navigate": "Navigate",
+      "select": "Select",
+      "close": "Close"
+    },
+    "aria": {
+      "dialog": "Command palette",
+      "close": "Close the palette",
+      "input": "Search for a command",
+      "back": "Back to the command list"
+    }
+  },
   "hero": {
     "viewProjects": "View my projects",
     "contactMe": "Get in touch",

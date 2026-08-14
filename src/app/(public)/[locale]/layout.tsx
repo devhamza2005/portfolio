@@ -138,6 +138,7 @@ export default async function PublicRootLayout({
               openLabel: t.terminal.open,
               shortcutHint: t.terminal.shortcut,
             }}
+            command={t.commandPalette}
           />
 
           <main id="main" className="flex-1">

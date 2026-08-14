@@ -74,6 +74,19 @@ export function TerminalLauncher({
     return () => document.removeEventListener("keydown", onKeyDown);
   }, []);
 
+  /**
+   * Ouverture depuis l'extérieur — la Command Palette s'en sert.
+   *
+   * Un évènement plutôt qu'un état partagé : le terminal reste maître de son
+   * ouverture, de son piège à focus et de son historique. Rien d'autre n'a
+   * besoin de les connaître, et aucune seconde instance n'est créée.
+   */
+  useEffect(() => {
+    const onRequest = () => setOpen(true);
+    window.addEventListener("portfolio:open-terminal", onRequest);
+    return () => window.removeEventListener("portfolio:open-terminal", onRequest);
+  }, []);
+
   return (
     <>
       <button

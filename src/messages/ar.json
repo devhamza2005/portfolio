@@ -67,6 +67,42 @@
       }
     }
   },
+  "commandPalette": {
+    "open": "بحث",
+    "placeholder": "البحث في معرض الأعمال…",
+    "empty": "لا توجد نتائج.",
+    "recent": "الأحدث",
+    "categories": {
+      "navigation": "التنقل",
+      "actions": "الإجراءات",
+      "preferences": "التفضيلات"
+    },
+    "labels": {
+      "about": "نبذة عني",
+      "projects": "المشاريع",
+      "skills": "المهارات",
+      "experience": "الخبرات",
+      "architecture": "البنية المعمارية",
+      "roadmap": "خارطة الطريق",
+      "contact": "التواصل",
+      "github": "GitHub",
+      "resume": "تحميل السيرة الذاتية",
+      "terminal": "فتح الطرفية",
+      "language": "تغيير اللغة",
+      "theme": "تغيير المظهر"
+    },
+    "hints": {
+      "navigate": "تنقّل",
+      "select": "اختيار",
+      "close": "إغلاق"
+    },
+    "aria": {
+      "dialog": "لوحة الأوامر",
+      "close": "إغلاق اللوحة",
+      "input": "البحث عن أمر",
+      "back": "العودة إلى قائمة الأوامر"
+    }
+  },
   "hero": {
     "viewProjects": "استعرض مشاريعي",
     "contactMe": "تواصل معي",

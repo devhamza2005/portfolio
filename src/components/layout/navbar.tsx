@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Monogram } from "@/components/brand/monogram";
+import { CommandPaletteLauncher } from "@/components/command-palette/command-palette-launcher";
 import { LocaleSwitcher } from "@/components/layout/locale-switcher";
 import { TerminalLauncher } from "@/components/terminal/terminal-launcher";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
@@ -39,6 +40,11 @@ type Props = {
     openLabel: string;
     shortcutHint: string;
   };
+  /**
+   * Command Palette. Les données réutilisent l'instantané du terminal — le CV
+   * et le profil GitHub n'ont pas à être relus une seconde fois.
+   */
+  command: React.ComponentProps<typeof CommandPaletteLauncher>["t"];
 };
 
 /**
@@ -65,6 +71,7 @@ export function Navbar({
   localeStrings,
   themeLabel,
   terminal,
+  command,
 }: Props) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -187,6 +194,14 @@ export function Navbar({
             </ul>
 
             <div className="ms-auto flex shrink-0 items-center gap-2 lg:ms-0">
+              {/* Volontairement visible à toutes les largeurs — voir le
+                  commentaire du lanceur. */}
+              <CommandPaletteLauncher
+                locale={locale}
+                data={{ githubUrl: terminal.data.githubUrl, cvUrl: terminal.data.cvUrl }}
+                t={command}
+              />
+
               <LocaleSwitcher
                 locale={locale}
                 label={localeStrings.label}

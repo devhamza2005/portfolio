@@ -4,6 +4,8 @@ import { randomBytes } from "node:crypto";
 import { mkdir, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 
+import { MIME_EXTENSIONS, sanitizeFileBaseName } from "@/lib/upload";
+
 import type { StorageProvider, StoredFile, UploadOptions } from "./types";
 
 /**
@@ -19,33 +21,17 @@ import type { StorageProvider, StoredFile, UploadOptions } from "./types";
 
 const UPLOAD_ROOT = path.join(process.cwd(), "public", "uploads");
 
-const EXTENSIONS: Record<string, string> = {
-  "image/jpeg": ".jpg",
-  "image/png": ".png",
-  "image/webp": ".webp",
-  "image/avif": ".avif",
-  "image/gif": ".gif",
-  "application/pdf": ".pdf",
-};
-
 /**
  * Construit un nom de fichier sûr.
- * Le nom d'origine est réduit à des caractères inoffensifs, puis suffixé d'un
- * jeton aléatoire : cela neutralise toute tentative de traversée de répertoire
- * (« ../../ ») et évite les collisions.
+ * Le nom d'origine est réduit à des caractères inoffensifs (`sanitizeFileBaseName`,
+ * partagée avec le fournisseur Cloudinary), puis suffixé d'un jeton aléatoire :
+ * cela neutralise toute tentative de traversée de répertoire (« ../../ ») et
+ * évite les collisions.
  */
 function safeFilename(original: string, mime: string): string {
-  const base = path
-    .basename(original, path.extname(original))
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 48);
-
+  const base = sanitizeFileBaseName(original);
   const token = randomBytes(6).toString("hex");
-  const extension = EXTENSIONS[mime] ?? "";
+  const extension = MIME_EXTENSIONS[mime] ?? "";
   return `${base || "fichier"}-${token}${extension}`;
 }
 

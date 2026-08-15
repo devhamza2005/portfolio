@@ -7,6 +7,7 @@ import { TextReveal } from "@/components/motion/text-reveal";
 import { HeroCode } from "@/components/sections/hero-code";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DownloadLink } from "@/components/ui/download-link";
 
 type Props = {
   name: string;
@@ -96,10 +97,10 @@ export function Hero({
 
               {cvUrl ? (
                 <Button asChild size="lg" variant="secondary">
-                  <a href={cvUrl} download>
+                  <DownloadLink href={cvUrl}>
                     <Download />
                     {cvLabel ?? downloadCvLabel}
-                  </a>
+                  </DownloadLink>
                 </Button>
               ) : null}
 

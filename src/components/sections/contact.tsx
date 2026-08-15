@@ -7,6 +7,7 @@ import { ContactForm } from "@/components/sections/contact-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { DownloadLink } from "@/components/ui/download-link";
 import type { Locale } from "@/lib/i18n/config";
 import { sectionIndex } from "@/config/sections";
 
@@ -95,10 +96,10 @@ export function Contact({
             <div className="mt-6 flex flex-wrap items-center gap-3">
               {cvUrl ? (
                 <Button asChild variant="secondary" size="md">
-                  <a href={cvUrl} download>
+                  <DownloadLink href={cvUrl}>
                     <Download />
                     {downloadCvLabel}
-                  </a>
+                  </DownloadLink>
                 </Button>
               ) : null}
 

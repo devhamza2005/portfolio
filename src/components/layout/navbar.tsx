@@ -11,6 +11,7 @@ import { LocaleSwitcher } from "@/components/layout/locale-switcher";
 import { TerminalLauncher } from "@/components/terminal/terminal-launcher";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { Button } from "@/components/ui/button";
+import { DownloadLink } from "@/components/ui/download-link";
 import { SECTION_NAV, OBSERVED_SECTIONS, navHref, type NavId } from "@/config/nav";
 import { localizedPath, type Locale } from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
@@ -222,9 +223,7 @@ export function Navbar({
 
               {cvUrl ? (
                 <Button asChild size="sm" className="hidden sm:inline-flex">
-                  <a href={cvUrl} download>
-                    {t.cvShort}
-                  </a>
+                  <DownloadLink href={cvUrl}>{t.cvShort}</DownloadLink>
                 </Button>
               ) : null}
 
@@ -295,9 +294,9 @@ export function Navbar({
               style={{ transitionDelay: open ? "280ms" : "0ms" }}
             >
               <Button asChild size="lg" tabIndex={open ? 0 : -1}>
-                <a href={cvUrl} download onClick={() => setOpen(false)}>
+                <DownloadLink href={cvUrl} onClick={() => setOpen(false)}>
                   {t.downloadCv}
-                </a>
+                </DownloadLink>
               </Button>
             </div>
           ) : null}

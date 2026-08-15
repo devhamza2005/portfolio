@@ -37,6 +37,41 @@ export const REJECTED_MIME_NOTE =
 export const ACCEPT_ATTRIBUTE = ACCEPTED_MIME_TYPES.join(",");
 
 /**
+ * Extension associée à chaque type MIME accepté.
+ *
+ * Partagée par les fournisseurs de stockage (local, Cloudinary) : un fichier
+ * doit garder la même extension quel que soit l'hébergeur, et un PDF livré
+ * sans elle n'est reconnu par aucun système d'exploitation à la réception.
+ */
+export const MIME_EXTENSIONS: Record<string, string> = {
+  "image/jpeg": ".jpg",
+  "image/png": ".png",
+  "image/webp": ".webp",
+  "image/avif": ".avif",
+  "image/gif": ".gif",
+  "application/pdf": ".pdf",
+};
+
+/**
+ * Réduit un nom de fichier d'origine à sa base sûre, SANS extension :
+ * diacritiques retirés, caractères non alphanumériques réduits à des tirets.
+ *
+ * Isomorphe à dessein (pas de `node:path`) : ce module n'a pas de dépendance
+ * serveur, et cette fonction doit rester appelable des deux côtés.
+ */
+export function sanitizeFileBaseName(original: string, maxLength = 48): string {
+  const withoutExtension = original.replace(/\.[^.]+$/, "");
+
+  return withoutExtension
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, maxLength);
+}
+
+/**
  * Signatures binaires (magic bytes) des formats acceptés.
  *
  * Le `Content-Type` annoncé par le navigateur est contrôlé par l'appelant et

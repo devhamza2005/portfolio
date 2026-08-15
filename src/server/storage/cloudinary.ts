@@ -1,8 +1,11 @@
 import "server-only";
 
+import { randomBytes } from "node:crypto";
+
 import { v2 as cloudinary } from "cloudinary";
 
 import { env } from "@/lib/env";
+import { MIME_EXTENSIONS, sanitizeFileBaseName } from "@/lib/upload";
 import type { StorageProvider, StoredFile, UploadOptions } from "./types";
 
 /**
@@ -26,6 +29,35 @@ function configure() {
   configured = true;
 }
 
+/**
+ * Construit l'identifiant public envoyé à Cloudinary.
+ *
+ * ── Pourquoi pas `use_filename` ─────────────────────────────────────────────
+ *
+ * Le fichier arrive ici sous forme d'octets bruts (`upload_stream`), sans
+ * métadonnée de nom attachée au flux : Cloudinary ne peut alors pas dériver
+ * `use_filename` du nom d'origine et retombe sur un nom générique suivi d'un
+ * suffixe aléatoire (« file_xxxxxx ») — c'est exactement le bug corrigé ici.
+ * `options.filename` (le nom réel du fichier téléversé) est déjà transmis par
+ * la route d'upload ; il suffit de s'en servir explicitement.
+ *
+ * ── Pourquoi l'extension seulement pour `raw` ───────────────────────────────
+ *
+ * Pour une image, Cloudinary ajoute LUI-MÊME l'extension du format détecté à
+ * la fin de l'URL de livraison ; l'inclure aussi dans `public_id` produirait
+ * une double extension (« photo.jpg.jpg »). Un fichier `raw` (PDF), à
+ * l'inverse, ne reçoit AUCUN traitement de format : l'URL de livraison est
+ * exactement `public_id`, extension comprise. Sans elle, aucun navigateur ni
+ * système d'exploitation ne reconnaît le fichier téléchargé — c'est ce qui
+ * cassait le bouton CV du portfolio public.
+ */
+function buildPublicId(filename: string, mime: string, resourceType: "raw" | "image"): string {
+  const base = sanitizeFileBaseName(filename) || "fichier";
+  const token = randomBytes(6).toString("hex");
+  const extension = resourceType === "raw" ? (MIME_EXTENSIONS[mime] ?? "") : "";
+  return `${base}-${token}${extension}`;
+}
+
 export const cloudinaryProvider: StorageProvider = {
   name: "cloudinary",
 
@@ -36,16 +68,17 @@ export const cloudinaryProvider: StorageProvider = {
     // Les PDF passent en `raw` : Cloudinary ne doit pas tenter de les traiter
     // comme des images.
     const resourceType = options.mime === "application/pdf" ? "raw" : "image";
+    const publicId = buildPublicId(options.filename, options.mime, resourceType);
 
     const result = await new Promise<Record<string, unknown>>((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
         {
           folder,
           resource_type: resourceType,
-          // Cloudinary ajoute un suffixe aléatoire : deux fichiers de même nom
-          // ne s'écrasent jamais.
-          use_filename: true,
-          unique_filename: true,
+          public_id: publicId,
+          // Le jeton aléatoire de `buildPublicId` évite déjà toute collision ;
+          // `overwrite: false` reste une seconde barrière, sans effet en
+          // pratique.
           overwrite: false,
         },
         (error, uploadResult) => {
